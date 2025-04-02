@@ -28,9 +28,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <NextAuthProvider>
           <ErudaProvider>
-            <MiniKitProvider>
-              {children}
-            </MiniKitProvider>
+            <MiniKitProvider>{children}</MiniKitProvider>
           </ErudaProvider>
         </NextAuthProvider>
       </body>
