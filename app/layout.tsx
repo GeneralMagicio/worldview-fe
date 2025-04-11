@@ -3,7 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import MiniKitProvider from "@/components/minikit-provider";
 import dynamic from "next/dynamic";
-import NextAuthProvider from "@/components/next-auth-provider";
+import { AuthProvider } from "@/context/AuthContext";
+import { FetchPatchProvider } from "@/components/FetchPatchProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,11 +27,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NextAuthProvider>
+        <AuthProvider>
           <ErudaProvider>
-            <MiniKitProvider>{children}</MiniKitProvider>
+            <MiniKitProvider>
+              <FetchPatchProvider />
+              {children}
+            </MiniKitProvider>
           </ErudaProvider>
-        </NextAuthProvider>
+        </AuthProvider>
       </body>
     </html>
   );

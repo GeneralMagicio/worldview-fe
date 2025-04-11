@@ -1,9 +1,9 @@
+import { NextRequest, NextResponse } from "next/server";
 import {
   verifyCloudProof,
   IVerifyResponse,
   ISuccessResult,
 } from "@worldcoin/minikit-js";
-import { NextRequest, NextResponse } from "next/server";
 
 interface IRequestPayload {
   payload: ISuccessResult;
@@ -20,8 +20,6 @@ export async function POST(req: NextRequest) {
     action,
     signal
   )) as IVerifyResponse; // Wrapper on this
-  
-  console.log(verifyRes);
 
   if (verifyRes.success) {
     // This is where you should perform backend actions if the verification succeeds
