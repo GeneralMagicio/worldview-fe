@@ -4,6 +4,7 @@ import "./globals.css";
 import MiniKitProvider from "@/components/minikit-provider";
 import dynamic from "next/dynamic";
 import { AuthProvider } from "@/context/AuthContext";
+import { FetchPatchProvider } from "@/components/FetchPatchProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,7 +29,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <ErudaProvider>
-            <MiniKitProvider>{children}</MiniKitProvider>
+            <MiniKitProvider>
+              <FetchPatchProvider />
+              {children}
+            </MiniKitProvider>
           </ErudaProvider>
         </AuthProvider>
       </body>
