@@ -6,6 +6,12 @@ export type TokenPayload = {
   exp: number;
 };
 
+export const setToken = (token: string) => {
+  if (typeof window === "undefined") return;
+
+  localStorage.setItem("authToken", token);
+};
+
 export const getToken = () => {
   return typeof window !== "undefined"
     ? localStorage.getItem("authToken")

@@ -12,6 +12,7 @@ import {
   isTokenExpired,
   clearToken,
   scheduleAutoLogout,
+  setToken as setTokenFromLib,
 } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
@@ -19,16 +20,19 @@ type AuthContextType = {
   token: string | null;
   isLoggedIn: boolean;
   logout: () => void;
+  storeToken: (token: string) => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   token: null,
   isLoggedIn: false,
   logout: () => {},
+  storeToken: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -42,6 +46,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
+  // store the token after successful login
+  const storeToken = (token: string) => {
+    setTokenFromLib(token);
+    setToken(token);
+    router.push("/");
+
+    scheduleAutoLogout(token, logout);
+  };
+
   const logout = () => {
     clearToken();
     setToken(null);
@@ -49,7 +62,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, isLoggedIn: !!token, logout }}>
+    <AuthContext.Provider
+      value={{ token, isLoggedIn: !!token, logout, storeToken }}
+    >
       {children}
     </AuthContext.Provider>
   );
