@@ -1,6 +1,6 @@
 export default function BlurredCard() {
   return (
-    <div className="w-[90%] bg-white rounded-xl p-6 flex-1 mb-6 shadow-[0_0_16px_0_#00000029] animate-fadeInUp">
+    <div className="w-full bg-white rounded-xl p-6 flex-1 mb-6 shadow-[0_0_16px_0_#00000029] animate-fadeInUp">
       <div className="flex items-center gap-3 mb-4">
         <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
         <div className="flex-1">

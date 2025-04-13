@@ -1,4 +1,4 @@
-import { SplashScreen } from "@/components/Login/SplashScreen";
+import { SplashScreen } from "@/components/login/SplashScreen";
 
 export default function Home() {
   return (

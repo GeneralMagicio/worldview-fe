@@ -4,7 +4,7 @@ import MiniKitProvider from "@/components/minikit-provider";
 import dynamic from "next/dynamic";
 import { AuthProvider } from "@/context/AuthContext";
 import { FetchPatchProvider } from "@/lib/FetchPatchProvider";
-import { ReactQueryClientProvider } from "@/lib/ReactQueryClientProvider";
+import { ReactQueryClientProvider } from "@/components/react-query-client-provider";
 
 export const metadata: Metadata = {
   title: "WorldView - Voting App",
