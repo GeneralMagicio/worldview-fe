@@ -1,10 +1,9 @@
+import { IconProps } from "./types";
+
 export default function CloseIcon({
   size = 20,
   color = "#191C20",
-}: {
-  size?: number;
-  color?: string;
-}) {
+}: IconProps) {
   return (
     <svg
       width={size}

@@ -1,10 +1,6 @@
-export default function CheckIcon({
-  size = 21,
-  color = "#0025DC",
-}: {
-  size?: number;
-  color?: string;
-}) {
+import { IconProps } from "./types";
+
+export default function CheckIcon({ size = 21, color = "#0025DC" }: IconProps) {
   return (
     <svg
       width={size}

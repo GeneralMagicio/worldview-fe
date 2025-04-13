@@ -8,10 +8,21 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Rubik', 'sans-serif'],
+        sora: ['Sora', 'sans-serif'],
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "category-noise": "url('/category-bg.svg')"
+      },
+      colors: {
+        success: {
+          900: '#18964F',
+        },
+        primary: '#161C1F'
       },
       keyframes: {
         fadeInUp: {
