@@ -22,6 +22,8 @@ export default function Home() {
     { option: "Avalanche", percentage: 10, count: 3162, isDragging: false },
     { option: "BNB Smart Chain", percentage: 0, count: 0, isDragging: false },
   ]);
+
+  const tags = ["technology", "blockchain", "web3"];
   const [showQVInfoModal, setShowQVInfoModal] = useState(false);
   const [showVotingSuccessModal, setShowVotingSuccessModal] = useState(false);
 
@@ -54,14 +56,10 @@ export default function Home() {
     let percentage = Math.round(((clientX - rect.left) / rect.width) * 100);
     percentage = Math.max(0, Math.min(100, percentage));
 
-    // Update only the selected option's percentage
     const newVotes = [...votes];
     newVotes[index].percentage = percentage;
 
-    // Update vote count for this option only
-    // Assuming 16,386 is the total possible votes for 100%
-    const totalPossibleVotes = 16386;
-    newVotes[index].count = Math.round((percentage / 100) * totalPossibleVotes);
+    newVotes[index].count = Math.sqrt(percentage);
 
     setVotes(newVotes);
   };
@@ -101,11 +99,7 @@ export default function Home() {
     const newVotes = [...votes];
     newVotes[index].percentage = Math.max(0, newVotes[index].percentage - 1);
 
-    // Update vote count for this option only
-    const totalPossibleVotes = 16386;
-    newVotes[index].count = Math.round(
-      (newVotes[index].percentage / 100) * totalPossibleVotes
-    );
+    newVotes[index].count = Math.sqrt(newVotes[index].percentage);
 
     setVotes(newVotes);
   };
@@ -116,11 +110,7 @@ export default function Home() {
     const newVotes = [...votes];
     newVotes[index].percentage = Math.min(100, newVotes[index].percentage + 1);
 
-    // Update vote count for this option only
-    const totalPossibleVotes = 16386;
-    newVotes[index].count = Math.round(
-      (newVotes[index].percentage / 100) * totalPossibleVotes
-    );
+    newVotes[index].count = Math.sqrt(newVotes[index].percentage);
 
     setVotes(newVotes);
   };
@@ -129,9 +119,13 @@ export default function Home() {
     votes.every((vote) => vote.percentage === 0) ||
     votes.reduce((acc, vote) => acc + vote.percentage, 0) > 100;
 
+  const disableRestOfOptions =
+    votes.reduce((acc, vote) => acc + vote.percentage, 0) > 100 &&
+    votes.some((vote) => vote.percentage === 0);
+
   return (
     <div className="bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029]">
-      {/* Poll Header */}
+      {/* Poll Voting Card Header */}
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
@@ -149,7 +143,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Poll Question */}
+      {/* Poll Tittle + Description */}
       <div className="pb-2">
         <h2 className=" text-gray-900 text-xl font-medium leading-tight mb-2">
           Which crypto tokens are based on Ethereum blockchain network?
@@ -164,15 +158,14 @@ export default function Home() {
 
         {/* Tags */}
         <div className="flex gap-2 mb-6">
-          <span className="px-3 py-1 bg-gray-300 border border-gray-300 text-gray-900 rounded-full font-medium text-sm">
-            technology
-          </span>
-          <span className="px-3 py-1 bg-gray-300 border border-gray-300 text-gray-900 rounded-full font-medium text-sm">
-            blockchain
-          </span>
-          <span className="px-3 py-1 bg-gray-300 border border-gray-300 text-gray-900 rounded-full font-medium text-sm">
-            web3
-          </span>
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="px-3 py-1 bg-gray-300 border border-gray-300 text-gray-900 rounded-full font-medium text-sm"
+            >
+              {tag}
+            </span>
+          ))}
         </div>
 
         {/* Poll Options */}
