@@ -23,7 +23,7 @@ export default function CustomCheckbox({
       </div>
       <label
         htmlFor={id}
-        className="text-lg text-primary font-medium cursor-pointer"
+        className="text-primary font-medium cursor-pointer"
         onClick={() => onChange(!checked)}
       >
         {label}

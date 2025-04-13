@@ -5,6 +5,12 @@ import PlusIcon from "./PlusIcon";
 import ArrowLeft from "./ArrowLeft";
 import FilterHorizontal from "./FilterHorizontal";
 import SearchIcon from "./SearchIcon";
+import SlidingIcon from "./SlidingIcon";
+import StatisticBarsIcon from "./StatisticBarsIcon";
+import ShareIcon from "./ShareIcon";
+import InfoIcon from "./InfoIcon";
+import MinusRoundIcon from "./MinusRoundIcon";
+import PlusRoundIcon from "./PlusRoundIcon";
 
 export {
   CloseIcon,
@@ -14,4 +20,10 @@ export {
   ArrowLeft,
   FilterHorizontal,
   SearchIcon,
+  SlidingIcon,
+  StatisticBarsIcon,
+  ShareIcon,
+  InfoIcon,
+  MinusRoundIcon,
+  PlusRoundIcon,
 };

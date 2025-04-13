@@ -8,7 +8,7 @@ export default function RecentPolls() {
 
   return (
     <div className="mb-6">
-      <h2 className="text-gray-900 text-lg font-bold mb-4">Recent Polls</h2>
+      <h2 className="text-gray-900 text-xl font-medium mb-4">Recent Polls</h2>
       {isLoading ? (
         <LoadingPolls />
       ) : error ? (

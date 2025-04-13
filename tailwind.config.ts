@@ -22,7 +22,8 @@ const config: Config = {
         success: {
           900: '#18964F',
         },
-        primary: '#161C1F'
+        primary: '#161C1F',
+        secondary: '#EBECEF',
       },
       keyframes: {
         fadeInUp: {

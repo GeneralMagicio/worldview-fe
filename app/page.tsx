@@ -13,7 +13,7 @@ export default function MainView() {
           </button>
         </div>
 
-        <h1 className="text-gray-900 text-xl font-bold mb-6">
+        <h1 className="text-gray-900 text-xl font-medium leading-tight mb-6">
           Discover polls to vote on or create your own!
         </h1>
 
@@ -38,13 +38,13 @@ export default function MainView() {
 
         {/* Bottom Buttons */}
         <Link
-          className="w-full py-3 bg-gray-300 text-primary font-semibold rounded-lg flex items-center justify-center mb-4 border border-gray-300"
+          className="w-full py-3 bg-gray-300 text-primary font-medium rounded-lg flex items-center justify-center mb-8 border border-gray-300"
           href="/polls"
         >
           Explore all
         </Link>
         <Link
-          className="w-full py-3 bg-primary text-white font-semibold rounded-lg flex items-center justify-center gap-2"
+          className="w-full py-3 bg-primary text-white text-lg font-medium rounded-lg flex items-center justify-center gap-2"
           href="/polls/create"
         >
           <PlusIcon />

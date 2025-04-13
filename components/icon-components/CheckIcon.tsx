@@ -12,9 +12,9 @@ export default function CheckIcon({ size = 14, color = "white" }: IconProps) {
       <path
         d="M11.6666 3.5L5.24992 9.91667L2.33325 7"
         stroke={color}
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

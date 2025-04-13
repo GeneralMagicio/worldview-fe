@@ -131,7 +131,7 @@ export default function FilterModal({
 
         {/* Modal content */}
         <div className="p-6">
-          <h2 className="text-xl font-semibold text-center mb-8">
+          <h2 className="text-xl font-medium text-center mb-8">
             Select filters
           </h2>
 
@@ -171,14 +171,14 @@ export default function FilterModal({
           </div>
 
           <button
-            className="w-full bg-gray-900 text-white rounded-md py-4 mt-8 text-lg font-sora"
+            className="w-full bg-gray-900 text-white rounded-lg py-4 mt-8 text-sm font-medium font-sora"
             onClick={() => setFiltersOpen(false)}
           >
             Apply Filters
           </button>
 
           <button
-            className="w-full text-center text-gray-500 mt-4 py-2 font-medium font-sora"
+            className="w-full text-center text-gray-500 mt-4 py-2 text-sm font-semibold font-sora"
             onClick={() =>
               setFilters({
                 livePolls: true,
