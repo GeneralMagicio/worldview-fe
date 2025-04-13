@@ -1,7 +1,6 @@
 export const getRelativeTimeString = (
   targetDate: string | Date,
-  suffix: boolean = true
-): { timeLeft: string; isPassed: boolean } => {
+): { timeLeft: string; isEnded: boolean } => {
   const now = new Date();
   const date = new Date(targetDate);
   const diff = date.getTime() - now.getTime(); // in ms
@@ -29,9 +28,5 @@ export const getRelativeTimeString = (
     result = `${minutes}m`;
   }
 
-  if (suffix) {
-    result += diff > 0 ? " left" : " ago";
-  }
-
-  return { timeLeft: result, isPassed: diff < 0 };
+  return { timeLeft: result, isEnded: diff < 0 };
 };

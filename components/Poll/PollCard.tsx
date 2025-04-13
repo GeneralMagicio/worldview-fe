@@ -4,10 +4,7 @@ import { getRelativeTimeString } from "@/utils/time";
 import { useRouter } from "next/navigation";
 
 export default function PollCard({ poll }: { poll: IPoll }) {
-  const { timeLeft, isPassed } = getRelativeTimeString(
-    new Date(poll.endDate),
-    true
-  );
+  const { timeLeft, isEnded } = getRelativeTimeString(new Date(poll.endDate));
 
   const router = useRouter();
 
@@ -25,10 +22,17 @@ export default function PollCard({ poll }: { poll: IPoll }) {
         <div className="flex items-center gap-1">
           <div
             className={`w-2 h-2 rounded-full ${
-              isPassed ? "bg-red-500" : "bg-success-900"
+              isEnded ? "bg-gray-400" : "bg-success-900"
             }`}
           />
-          <span className="text-sm text-gray-900">{timeLeft}</span>
+
+          {isEnded ? (
+            <span className="text-xs text-gray-900">Voting Ended</span>
+          ) : (
+            <span className="text-sm text-gray-900">
+              {timeLeft} <span className="text-xs">Left</span>
+            </span>
+          )}
         </div>
       </div>
 
@@ -59,7 +63,7 @@ export default function PollCard({ poll }: { poll: IPoll }) {
       </div>
 
       <button
-        className="w-full py-2.5 bg-gray-200 text-gray-900 font-semibold rounded-lg"
+        className="w-full py-2.5 bg-gray-200 text-gray-900 font-medium rounded-lg"
         onClick={() => router.push(`/poll/${poll.pollId}`)}
       >
         Vote
