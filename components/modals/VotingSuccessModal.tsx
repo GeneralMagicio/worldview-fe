@@ -1,11 +1,18 @@
 import Image from "next/image";
 import { ShareIcon } from "../icon-components";
+import { handleShare } from "@/utils/share";
 
 interface IModalProps {
   setShowModal: (showModal: boolean) => void;
+  pollTitle: string;
+  pollId: number;
 }
 
-export default function VotingSuccessModal({ setShowModal }: IModalProps) {
+export default function VotingSuccessModal({
+  setShowModal,
+  pollTitle,
+  pollId,
+}: IModalProps) {
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/50">
       <div className="bg-white rounded-3xl max-w-md w-full overflow-hidden">
@@ -35,7 +42,10 @@ export default function VotingSuccessModal({ setShowModal }: IModalProps) {
             Done
           </button>
 
-          <button className="w-full flex items-center justify-center gap-2 text-gray-500 py-4 rounded-xl font-semibold font-sora">
+          <button
+            className="w-full flex items-center justify-center gap-2 text-gray-500 py-4 rounded-xl font-semibold font-sora"
+            onClick={() => handleShare(pollTitle, pollId)}
+          >
             <ShareIcon size={24} />
             Share
           </button>

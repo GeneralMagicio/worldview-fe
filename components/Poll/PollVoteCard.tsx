@@ -14,6 +14,7 @@ import {
 } from "@/components/icon-components";
 import QVInfoModal from "@/components/modals/QVInfoModal";
 import VotingSuccessModal from "@/components/modals/VotingSuccessModal";
+import { handleShare } from "@/utils/share";
 
 export default function Home() {
   const [votes, setVotes] = useState([
@@ -261,7 +262,10 @@ export default function Home() {
             >
               <InfoIcon />
             </button>
-            <button className="rounded-full h-8 w-8">
+            <button
+              className="rounded-full h-8 w-8"
+              onClick={() => handleShare("Test", 1)}
+            >
               <ShareIcon />
             </button>
           </div>
@@ -285,7 +289,11 @@ export default function Home() {
 
       {showQVInfoModal && <QVInfoModal setShowModal={setShowQVInfoModal} />}
       {showVotingSuccessModal && (
-        <VotingSuccessModal setShowModal={setShowVotingSuccessModal} />
+        <VotingSuccessModal
+          setShowModal={setShowVotingSuccessModal}
+          pollTitle={"test"}
+          pollId={1}
+        />
       )}
     </div>
   );
