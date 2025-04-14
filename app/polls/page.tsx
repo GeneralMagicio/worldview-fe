@@ -4,7 +4,7 @@ import { useState } from "react";
 import FilterBar from "@/components/FilterBar";
 import FilterModal from "@/components/modals/FilterModal";
 import Header from "@/components/Header";
-import PollList from "@/components/Poll/PollList";
+import PollList from "@/components/poll/PollList";
 
 export default function PollsPage() {
   const [filtersOpen, setFiltersOpen] = useState(false);

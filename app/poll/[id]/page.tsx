@@ -1,4 +1,4 @@
-import PollVoteCard from "@/components/Poll/PollVoteCard";
+import PollVoteCard from "@/components/poll/PollVoteCard";
 import Header from "@/components/Header";
 
 export default function PollPage() {
