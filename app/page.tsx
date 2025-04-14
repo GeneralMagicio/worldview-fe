@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { UserIcon, PlusIcon } from "@/components/icon-components";
-import CategoryCard from "@/components/category/CategoryCard";
-import RecentPolls from "@/components/poll/RecentPolls";
+import CategoryCard from "@/components/Category/CategoryCard";
+import RecentPolls from "@/components/Poll/RecentPolls";
 
 export default function MainView() {
   return (
