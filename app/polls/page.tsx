@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import FilterBar from "@/components/FilterBar";
-import FilterModal from "@/components/modals/FilterModal";
+import FilterModal from "@/components/Modals/FilterModal";
 import Header from "@/components/Header";
 import PollList from "@/components/Poll/PollList";
 

@@ -12,8 +12,8 @@ import {
   PlusRoundIcon,
   UserIcon,
 } from "@/components/icon-components";
-import QVInfoModal from "@/components/modals/QVInfoModal";
-import VotingSuccessModal from "@/components/modals/VotingSuccessModal";
+import QVInfoModal from "@/components/Modals/QVInfoModal";
+import VotingSuccessModal from "@/components/Modals/VotingSuccessModal";
 import { handleShare } from "@/utils/share";
 
 export default function Home() {
