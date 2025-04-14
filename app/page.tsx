@@ -7,9 +7,12 @@ export default function MainView() {
   return (
     <main className="flex-1 bg-white rounded-t-3xl p-5">
       <div className="flex justify-end mb-4">
-        <button className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
+        <Link
+          className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center"
+          href="/profile/1"
+        >
           <UserIcon />
-        </button>
+        </Link>
       </div>
 
       <h1 className="text-gray-900 text-xl font-medium leading-tight mb-6">

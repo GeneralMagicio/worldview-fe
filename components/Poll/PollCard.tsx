@@ -1,3 +1,5 @@
+"use client";
+
 import { UserIcon } from "@/components/icon-components";
 import { IPoll } from "@/types/poll";
 import { getRelativeTimeString } from "@/utils/time";
