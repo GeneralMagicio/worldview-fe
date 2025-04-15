@@ -29,23 +29,7 @@ export default function MainView() {
         <CategoryCard title="My Votes" icon="/categories/my-votes.svg" />
       </div>
 
-      {/* Polls */}
       <RecentPolls />
-
-      {/* Bottom Buttons */}
-      <Link
-        className="w-full py-3 bg-gray-300 text-primary font-medium rounded-lg flex items-center justify-center mb-8 border border-gray-300"
-        href="/polls"
-      >
-        Explore all
-      </Link>
-      <Link
-        className="w-full py-3 bg-primary text-white text-lg font-medium rounded-lg flex items-center justify-center gap-2"
-        href="/polls/create"
-      >
-        <PlusIcon />
-        Create a New Poll
-      </Link>
     </main>
   );
 }

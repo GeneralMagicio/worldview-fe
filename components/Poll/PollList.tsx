@@ -1,9 +1,11 @@
-import { usePolls } from "@/hooks/usePolls";
+import { usePoll } from "@/hooks/usePoll";
 import BlurredCard from "../Verify/BlurredCard";
 import PollCard from "./PollCard";
 
 export default function PollList() {
-  const { data: polls, isLoading, error } = usePolls();
+  const { getPolls } = usePoll();
+
+  const { data: polls, isLoading, error } = getPolls();
 
   return (
     <div className="mb-6">

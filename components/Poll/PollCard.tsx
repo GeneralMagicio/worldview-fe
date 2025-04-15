@@ -6,12 +6,12 @@ import { getRelativeTimeString } from "@/utils/time";
 import { useRouter } from "next/navigation";
 
 export default function PollCard({ poll }: { poll: IPoll }) {
-  const { timeLeft, isEnded } = getRelativeTimeString(new Date(poll.endDate));
-
   const router = useRouter();
 
+  const { timeLeft, isEnded } = getRelativeTimeString(new Date(poll.endDate));
+
   return (
-    <div className="rounded-xl p-4 border border-secondary shadow-[0px_0px_16px_0px_#00000029]">
+    <div className="rounded-xl p-4 border border-secondary shadow-[0px_0px_16px_0px_#00000029] transition-all hover:shadow-md">
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
