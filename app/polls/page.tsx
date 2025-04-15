@@ -16,20 +16,18 @@ export default function PollsPage() {
   });
 
   return (
-    <main>
-      <div className="flex-1 bg-white rounded-t-3xl p-5">
-        <Header backUrl="/" />
-        <FilterBar setFiltersOpen={setFiltersOpen} />
-        {filtersOpen && (
-          <FilterModal
-            filters={filters}
-            setFilters={setFilters}
-            filtersOpen={filtersOpen}
-            setFiltersOpen={setFiltersOpen}
-          />
-        )}
-        <PollList />
-      </div>
+    <main className="flex-1 bg-white rounded-t-3xl p-5">
+      <Header backUrl="/" />
+      <FilterBar setFiltersOpen={setFiltersOpen} />
+      {filtersOpen && (
+        <FilterModal
+          filters={filters}
+          setFilters={setFilters}
+          filtersOpen={filtersOpen}
+          setFiltersOpen={setFiltersOpen}
+        />
+      )}
+      <PollList />
     </main>
   );
 }

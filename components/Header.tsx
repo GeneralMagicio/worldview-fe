@@ -19,7 +19,7 @@ export default function Header({
       <h1 className="text-xl font-medium text-gray-900">{title}</h1>
       <Link
         className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"
-        href="/create-poll"
+        href="/poll/create"
       >
         <PlusIcon color="#3C424B" />
       </Link>

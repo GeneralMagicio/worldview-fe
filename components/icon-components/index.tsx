@@ -11,6 +11,12 @@ import ShareIcon from "./ShareIcon";
 import InfoIcon from "./InfoIcon";
 import MinusRoundIcon from "./MinusRoundIcon";
 import PlusRoundIcon from "./PlusRoundIcon";
+import ClockIcon from "./ClockIcon";
+import ClockIcon2 from "./ClockIcon2";
+import ChevronLeftIcon from "./ChevronLeftIcon";
+import ChevronRightIcon from "./ChevronRightIcon";
+import CalendarIcon from "./CalendarIcon";
+import XOutlinedIcon from "./XOutlinedIcon";
 
 export {
   CloseIcon,
@@ -26,4 +32,10 @@ export {
   InfoIcon,
   MinusRoundIcon,
   PlusRoundIcon,
+  ClockIcon,
+  ClockIcon2,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CalendarIcon,
+  XOutlinedIcon,
 };

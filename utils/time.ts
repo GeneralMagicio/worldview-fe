@@ -1,5 +1,7 @@
+import { MONTHS } from "@/lib/constants";
+
 export const getRelativeTimeString = (
-  targetDate: string | Date,
+  targetDate: string | Date
 ): { timeLeft: string; isEnded: boolean } => {
   const now = new Date();
   const date = new Date(targetDate);
@@ -29,4 +31,14 @@ export const getRelativeTimeString = (
   }
 
   return { timeLeft: result, isEnded: diff < 0 };
+};
+
+export const formatDate = (date: Date | null): string => {
+  if (!date) return "";
+  return `${MONTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+};
+
+export const parseTime = (timeString: string): { hours: number; minutes: number } => {
+  const [hours, minutes] = timeString.split(":").map(Number);
+  return { hours, minutes };
 };
