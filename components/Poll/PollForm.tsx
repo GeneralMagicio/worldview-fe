@@ -14,6 +14,7 @@ import {
 import { Button } from "../ui/Button";
 import DateTimePicker from "../DateTimePicker/DateTimePicker";
 import PollCreatedModal from "../Modals/PollCreatedModal";
+import DraftPollModal from "../Modals/DraftPollModal";
 
 type DurationType = "24" | "48" | "custom";
 
@@ -36,7 +37,7 @@ export default function PollForm() {
   const [options, setOptions] = useState<string[]>([""]);
   const [duration, setDuration] = useState<DurationType>("24");
   // Success modal state
-  const [pollCreatedModalOpen, setPollCreatedModalOpen] = useState(true);
+  const [pollCreatedModalOpen, setPollCreatedModalOpen] = useState(false);
 
   // Date time state
   const [datePickerOpen, setDatePickerOpen] = useState(false);
@@ -268,6 +269,8 @@ export default function PollForm() {
         pollTitle={question}
         pollId={1}
       />
+
+      <DraftPollModal />
     </div>
   );
 }
