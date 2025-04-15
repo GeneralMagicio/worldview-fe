@@ -3,8 +3,6 @@
 import { useState, type KeyboardEvent } from "react";
 import { Input } from "../ui/Input";
 import { Textarea } from "../ui/Textarea";
-import { Button } from "../ui/Button";
-import DateTimePicker from "../DateTimePicker/DateTimePicker";
 import {
   CalendarIcon,
   PlusIcon,
@@ -13,6 +11,9 @@ import {
   XOutlinedIcon,
   ClockIcon2,
 } from "../icon-components";
+import { Button } from "../ui/Button";
+import DateTimePicker from "../DateTimePicker/DateTimePicker";
+import PollCreatedModal from "../Modals/PollCreatedModal";
 
 type DurationType = "24" | "48" | "custom";
 
@@ -34,6 +35,8 @@ export default function PollForm() {
   const [tagInput, setTagInput] = useState("");
   const [options, setOptions] = useState<string[]>([""]);
   const [duration, setDuration] = useState<DurationType>("24");
+  // Success modal state
+  const [pollCreatedModalOpen, setPollCreatedModalOpen] = useState(true);
 
   // Date time state
   const [datePickerOpen, setDatePickerOpen] = useState(false);
@@ -257,6 +260,13 @@ export default function PollForm() {
         initialEndDate={selectedDateTime.endDate}
         initialStartTime={selectedDateTime.startTime}
         initialEndTime={selectedDateTime.endTime}
+      />
+
+      <PollCreatedModal
+        open={pollCreatedModalOpen}
+        onOpenChange={setPollCreatedModalOpen}
+        pollTitle={question}
+        pollId={1}
       />
     </div>
   );
