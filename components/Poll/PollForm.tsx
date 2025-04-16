@@ -15,6 +15,7 @@ import { Button } from "../ui/Button";
 import DateTimePicker from "../DateTimePicker/DateTimePicker";
 import PollCreatedModal from "../Modals/PollCreatedModal";
 import DraftPollModal from "../Modals/DraftPollModal";
+import { usePoll } from "@/hooks/usePoll";
 
 type DurationType = "24" | "48" | "custom";
 
@@ -26,6 +27,14 @@ type DateTimeValues = {
 };
 
 export default function PollForm() {
+  const { createPoll } = usePoll();
+  const {
+    mutate: createPollMutation,
+    data: poll,
+    isPending: isCreatingPoll,
+    error: createPollError,
+  } = createPoll;
+
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth();
   const currentDay = new Date().getDate();
@@ -36,7 +45,9 @@ export default function PollForm() {
   const [tagInput, setTagInput] = useState("");
   const [options, setOptions] = useState<string[]>([""]);
   const [duration, setDuration] = useState<DurationType>("24");
-  // Success modal state
+
+  // Modal states
+  const [draftModalOpen, setDraftModalOpen] = useState(false);
   const [pollCreatedModalOpen, setPollCreatedModalOpen] = useState(false);
 
   // Date time state
@@ -106,7 +117,7 @@ export default function PollForm() {
     setDuration("custom");
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     console.log({
       question,
       description,
@@ -114,6 +125,14 @@ export default function PollForm() {
       options,
       duration,
       dateTimeSettings: duration === "custom" ? selectedDateTime : duration,
+    });
+
+    createPollMutation({
+      question,
+      description,
+      tags,
+      options,
+      duration,
     });
   };
 
@@ -270,7 +289,10 @@ export default function PollForm() {
         pollId={1}
       />
 
-      <DraftPollModal />
+      <DraftPollModal
+        modalOpen={draftModalOpen}
+        setModalOpen={setDraftModalOpen}
+      />
     </div>
   );
 }

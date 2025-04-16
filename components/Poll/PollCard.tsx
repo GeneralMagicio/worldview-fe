@@ -4,9 +4,12 @@ import { UserIcon } from "@/components/icon-components";
 import { IPoll } from "@/types/poll";
 import { getRelativeTimeString } from "@/utils/time";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function PollCard({ poll }: { poll: IPoll }) {
   const router = useRouter();
+
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const { timeLeft, isEnded } = getRelativeTimeString(new Date(poll.endDate));
 
@@ -18,7 +21,7 @@ export default function PollCard({ poll }: { poll: IPoll }) {
             <UserIcon />
           </div>
           <span className="text-sm text-gray-900">
-            @{poll.authorUserId ?? "user"}
+            @{poll.authorUserId ?? "user"}{" "}
           </span>
         </div>
         <div className="flex items-center gap-1">
@@ -32,7 +35,7 @@ export default function PollCard({ poll }: { poll: IPoll }) {
             <span className="text-xs text-gray-900">Voting Ended</span>
           ) : (
             <span className="text-sm text-gray-900">
-              {timeLeft} <span className="text-xs">Left</span>
+              {timeLeft} <span className="text-xs">left</span>
             </span>
           )}
         </div>
@@ -44,12 +47,20 @@ export default function PollCard({ poll }: { poll: IPoll }) {
 
       {poll.description && (
         <>
-          <p className="text-gray-900 text-sm mb-1 line-clamp-2">
+          +{" "}
+          <p
+            className={`text-gray-900 text-sm mb-1 ${
+              isExpanded ? "" : "line-clamp-2"
+            }`}
+          >
             {poll.description}
           </p>
           {poll.description.length > 100 && (
-            <button className="text-gray-700 font-medium text-xs mb-4">
-              Read more
+            <button
+              className="text-gray-700 font-medium text-xs mb-4"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              {isExpanded ? "Read less" : "Read more"}
             </button>
           )}
         </>

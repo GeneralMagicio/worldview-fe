@@ -22,20 +22,17 @@ export const usePoll = () => {
           limit: String(filters.limit || 10),
           sortBy: filters.sortBy || "endDate",
           sortOrder: filters.sortOrder || "asc",
+          isActive: String(filters.isActive ?? undefined),
+          userVoted: String(filters.userVoted ?? undefined),
+          userCreated: String(filters.userCreated ?? undefined),
         });
-
-        if (filters.isActive !== undefined)
-          params.append("isActive", String(filters.isActive));
-        if (filters.userVoted !== undefined)
-          params.append("userVoted", String(filters.userVoted));
-        if (filters.userCreated !== undefined)
-          params.append("userCreated", String(filters.userCreated));
 
         const res = await fetch(`/poll?${params.toString()}`);
         if (!res.ok) throw new Error("Failed to fetch polls");
 
         const data = await res.json();
-        return data.polls;
+        console.log(data);
+        return data;
       },
     });
   };

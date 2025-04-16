@@ -17,3 +17,10 @@ export interface IVoteResult {
   optionId: number;
   voteCount: number;
 }
+
+export interface IPollFilters {
+  livePolls: boolean;
+  finishedPolls: boolean;
+  pollsVoted: boolean;
+  pollsCreated: boolean;
+}

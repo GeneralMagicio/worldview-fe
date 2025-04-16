@@ -15,7 +15,7 @@ export default function MainView() {
         </Link>
       </div>
 
-      <h1 className="text-gray-900 text-xl font-medium leading-tight mb-6">
+      <h1 className="text-gray-900 text-lg font-medium leading-tight mb-6">
         Discover polls to vote on or create your own!
       </h1>
 

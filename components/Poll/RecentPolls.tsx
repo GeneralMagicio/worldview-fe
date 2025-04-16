@@ -16,7 +16,7 @@ export default function RecentPolls() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const {
-    data: polls,
+    data: pollsData,
     isLoading,
     error,
     refetch,
@@ -25,6 +25,8 @@ export default function RecentPolls() {
     sortBy: "creationDate",
     sortOrder: "desc",
   });
+
+  const polls = pollsData?.polls || [];
 
   // Auto-refresh polls every 5 minutes
   useEffect(() => {
@@ -53,23 +55,16 @@ export default function RecentPolls() {
 
   return (
     <section className="mb-6" aria-labelledby="recent-polls-heading">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-6">
         <h2
           id="recent-polls-heading"
-          className="text-gray-900 text-xl font-medium"
+          className="text-gray-900 text-lg font-medium"
         >
           Recent Polls
         </h2>
 
-        {polls && polls.length > 0 && (
-          <button
-            onClick={handleRefresh}
-            disabled={isLoading || isRefreshing}
-            className="text-sm text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
-            aria-label="Refresh polls"
-          >
-            {isRefreshing ? "Refreshing..." : "Refresh"}
-          </button>
+        {isRefreshing && (
+          <p className="text-gray-500 text-sm">Refreshing...</p>
         )}
       </div>
 
