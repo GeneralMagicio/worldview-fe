@@ -47,7 +47,6 @@ export default function PollCard({ poll }: { poll: IPoll }) {
 
       {poll.description && (
         <>
-          +{" "}
           <p
             className={`text-gray-900 text-sm mb-1 ${
               isExpanded ? "" : "line-clamp-2"
