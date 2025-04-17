@@ -3,6 +3,8 @@
 import { cookies } from "next/headers";
 
 export async function verifyWalletAndWorldID(formData: FormData) {
+  if (!process.env.BACKEND_URL) throw new Error("BACKEND_URL is not set");
+
   const walletPayload = JSON.parse(formData.get("walletPayload") as string);
   const worldIdProof = JSON.parse(formData.get("worldIdProof") as string);
   const nonce = formData.get("nonce") as string;
@@ -25,6 +27,10 @@ export async function verifyWalletAndWorldID(formData: FormData) {
       },
       body: JSON.stringify({ walletPayload, worldIdProof, nonce }),
     });
+
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status} ${res.statusText}`);
+    }
 
     const data = await res.json();
 
