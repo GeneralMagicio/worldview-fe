@@ -20,6 +20,7 @@ export const useWorldAuth = () => {
   const fetchNonce = async () => {
     const res = await fetch("/api/nonce", { credentials: "include" });
     const { nonce } = await res.json();
+
     return nonce;
   };
 
@@ -31,6 +32,7 @@ export const useWorldAuth = () => {
       notBefore: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
       statement: "Sign in to WorldView via World App.",
     });
+
     return finalPayload;
   };
 
@@ -42,19 +44,34 @@ export const useWorldAuth = () => {
   };
 
   const verifyWorldIDProof = async (proof: ISuccessResult) => {
-    const res = await fetch("/api/verify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        payload: proof,
-        action: verifyCommand.action,
-        signal: verifyCommand.signal,
-      }),
-    });
+    try {
+      const res = await fetch("/api/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          payload: proof,
+          action: verifyCommand.action,
+          signal: verifyCommand.signal,
+        }),
+        signal: AbortSignal.timeout(15000),
+      });
 
-    const json = await res.json();
-    if (json.status !== 200)
-      throw new Error("World ID proof verification failed");
+      if (!res.ok) {
+        throw new Error(`API error: ${res.status} ${res.statusText}`);
+      }
+
+      const json = await res.json();
+
+      if (json.status !== 200)
+        throw new Error("World ID proof verification failed");
+
+      return json;
+    } catch (error) {
+      console.error("World ID verification error:", error);
+      throw error instanceof Error
+        ? error
+        : new Error("World ID proof verification failed");
+    }
   };
 
   const verifyPayload = async (
@@ -82,11 +99,15 @@ export const useWorldAuth = () => {
 
     try {
       setIsLoggingIn(true);
+
+      // verification level: device
+      const worldIdProof = await startWorldIDVerification();
+      await verifyWorldIDProof(worldIdProof);
+
+      // siwe auth level
       const nonce = await fetchNonce();
       const walletPayload = await performWalletAuth(nonce);
-      const worldIdProof = await startWorldIDVerification();
 
-      await verifyWorldIDProof(worldIdProof);
       await verifyPayload(walletPayload, worldIdProof, nonce);
     } catch (err) {
       console.error("Login failed:", err);
