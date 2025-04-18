@@ -38,7 +38,24 @@ export const formatDate = (date: Date | null): string => {
   return `${MONTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
 };
 
-export const parseTime = (timeString: string): { hours: number; minutes: number } => {
+export const formatShortDate = (date: Date | null): string => {
+  if (!date) return "";
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+};
+
+export const parseTime = (
+  timeString: string
+): { hours: number; minutes: number } => {
   const [hours, minutes] = timeString.split(":").map(Number);
   return { hours, minutes };
+};
+
+export const combineDateTime = (date: Date, timeString: string) => {
+  const [hours, minutes] = timeString.split(":").map(Number);
+  const newDate = new Date(date);
+  newDate.setHours(hours, minutes, 0, 0);
+  return newDate;
 };

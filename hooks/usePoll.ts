@@ -1,6 +1,7 @@
+import { IPoll } from "@/types/poll";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-interface UsePollParams {
+interface IUsePollParams {
   page?: number;
   limit?: number;
   isActive?: boolean;
@@ -10,10 +11,20 @@ interface UsePollParams {
   sortOrder?: "asc" | "desc";
 }
 
+interface ICreatePollData {
+  title: string;
+  description: string;
+  options: string[];
+  startDate: string;
+  endDate: string;
+  tags: string[];
+  isAnonymous?: boolean;
+}
+
 export const usePoll = () => {
   const queryClient = useQueryClient();
 
-  const getPolls = (filters: UsePollParams = {}) => {
+  const getPolls = (filters: IUsePollParams = {}) => {
     return useQuery({
       queryKey: ["polls", filters],
       queryFn: async () => {
@@ -50,7 +61,7 @@ export const usePoll = () => {
   };
 
   const createPoll = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: ICreatePollData): Promise<IPoll> => {
       const res = await fetch("/poll", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -65,11 +76,10 @@ export const usePoll = () => {
   });
 
   const deletePoll = useMutation({
-    mutationFn: async ({ id, body }: { id: number; body: any }) => {
+    mutationFn: async ({ id }: { id: number }) => {
       const res = await fetch(`/poll/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error("Failed to delete poll");
       return res.json();
