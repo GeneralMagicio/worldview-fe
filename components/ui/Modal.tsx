@@ -13,6 +13,19 @@ interface ModalProps {
 export function Modal({ open, onClose, children, className = "" }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
+  // Focus trap logic for accessibility
+  useEffect(() => {
+    if (open && modalRef.current) {
+      const focusableElements = modalRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+
+      if (focusableElements.length > 0) {
+        (focusableElements[0] as HTMLElement).focus();
+      }
+    }
+  }, [open]);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -45,6 +58,9 @@ export function Modal({ open, onClose, children, className = "" }: ModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div
         ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="Modal"
         className={`bg-white rounded-xl max-w-sm w-full max-h-[90vh] overflow-auto ${className}`}
       >
         {children}

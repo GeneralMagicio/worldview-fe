@@ -44,3 +44,10 @@ export const scheduleAutoLogout = (token: string, logout: () => void) => {
     logout();
   }
 };
+
+export const getWorldID = () => {
+  const token = getToken();
+  if (!token) return null;
+  const decoded = jwtDecode<TokenPayload>(token);
+  return decoded.worldID;
+};

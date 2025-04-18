@@ -9,7 +9,7 @@ interface IModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   pollTitle: string;
-  pollId: number;
+  pollId: number | undefined;
 }
 
 export default function PollCreatedModal({
@@ -48,7 +48,7 @@ export default function PollCreatedModal({
         <Button
           variant="primary"
           className="w-full flex items-center justify-center gap-2 font-medium"
-          onClick={() => handleShare(pollTitle, pollId)}
+          onClick={() => handleShare(pollTitle, pollId ?? 0)}
         >
           <ShareIcon size={24} color="white" />
           Share this Poll
