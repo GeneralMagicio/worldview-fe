@@ -60,10 +60,9 @@ export function Modal({ open, onClose, children, className = "" }: ModalProps) {
         ref={modalRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="Modal"
         className={`bg-white rounded-xl max-w-sm w-full max-h-[90vh] overflow-auto ${className}`}
       >
-        {children}
+          {children}
       </div>
     </div>
   );

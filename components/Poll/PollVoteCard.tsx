@@ -12,8 +12,8 @@ import {
 import QVInfoModal from "@/components/Modals/QVInfoModal";
 import VotingSuccessModal from "@/components/Modals/VotingSuccessModal";
 import { handleShare } from "@/utils/share";
-import { usePoll } from "@/hooks/usePoll";
-import { useUser } from "@/hooks/useUser";
+import { getPollDetails } from "@/hooks/usePoll";
+import { getUserVotes } from "@/hooks/useUser";
 
 type VoteState = {
   option: string;
@@ -23,9 +23,6 @@ type VoteState = {
 };
 
 export default function PollVoteCard({ pollId }: { pollId: number }) {
-  const { getPollDetails } = usePoll();
-  const { getUserVotes } = useUser();
-
   const { data: pollData } = getPollDetails(pollId);
   const {
     data: userVotes,
@@ -394,7 +391,7 @@ const UserLoadingSkeleton = () => {
       <div className="w-10 h-10 rounded-full bg-gray-200"></div>
       <div className="w-10 h-10 rounded-full bg-gray-200"></div>
       <div className="w-10 h-10 rounded-full bg-gray-200"></div>
-      <div className="w-10 h-10 rounded-full bg-gray-200"></div>
+      <div className="w-10 h-10 roundaria-labelledbyed-full bg-gray-200"></div>
       <div className="w-10 h-10 rounded-full bg-gray-200"></div>
     </div>
   );

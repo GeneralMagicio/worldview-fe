@@ -102,7 +102,7 @@ export const useWorldAuth = () => {
       const result = await verifyNonceCookie(nonce);
 
       if (!result.isValid) {
-        setError(AUTH_ERRORS.NONCE_VERIFICATION_FAILED);
+        setError(AUTH_ERRORS.LOGIN_FAILED);
         return {
           success: false,
           error: AUTH_ERRORS.NONCE_VERIFICATION_FAILED,

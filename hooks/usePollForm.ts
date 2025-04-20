@@ -3,10 +3,9 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatISO } from "date-fns";
-import { usePoll } from "@/hooks/usePoll";
+import { createPoll } from "@/hooks/usePoll";
 import { pollSchema } from "@/validation/pollSchemas";
 import { combineDateTime, formatShortDate } from "@/utils/time";
-import { useAuth } from "@/context/AuthContext";
 
 type DateTimeValues = {
   startDate: Date | null;
@@ -18,14 +17,12 @@ type DateTimeValues = {
 export type PollFormData = z.infer<typeof pollSchema>;
 
 export function usePollForm() {
-  const { worldID } = useAuth();
-  const { createPoll } = usePoll();
   const {
     mutate: createPollMutation,
     data: poll,
     isPending: isCreatingPoll,
     error: createPollError,
-  } = createPoll;
+  } = createPoll();
 
   // Date initialization
   const currentYear = new Date().getFullYear();
@@ -39,7 +36,6 @@ export function usePollForm() {
   const form = useForm<PollFormData>({
     resolver: zodResolver(pollSchema),
     defaultValues: {
-      worldID: worldID ?? "",
       title: "",
       description: "",
       options: ["", ""],
@@ -83,11 +79,6 @@ export function usePollForm() {
   });
   const [customDateRange, setCustomDateRange] = useState<string | null>(null);
   const [customTimeRange, setCustomTimeRange] = useState<string | null>(null);
-
-  // Set world ID
-  useEffect(() => {
-    setValue("worldID", worldID || "");
-  }, [setValue, worldID]);
 
   // Check for API errors
   useEffect(() => {
@@ -160,35 +151,47 @@ export function usePollForm() {
     }
   };
 
-  const setDateRange = (duration: 24 | 48 | "custom", endDate: Date) => {
+  const setDateRange = (
+    duration: 24 | 48 | "custom",
+    startDate: Date,
+    endDate: Date
+  ) => {
     const now = new Date();
-
-    const formattedStartDate = formatISO(
-      new Date(new Date().setMinutes(now.getMinutes() + 2))
-    );
-    let formattedEndDate: string = "";
-
-    if (duration === 48) {
-      formattedEndDate = formatISO(
-        new Date(new Date().setHours(new Date().getHours() + 48))
-      );
-    }
+    let end: Date;
+    let start: Date;
 
     if (duration === 24) {
-      formattedEndDate = formatISO(
-        new Date(new Date().setHours(new Date().getHours() + 24))
-      );
-    }
-
-    if (duration === "custom") {
-      if (endDate < now) {
+      start = now;
+      end = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    } else if (duration === 48) {
+      start = now;
+      end = new Date(now.getTime() + 48 * 60 * 60 * 1000);
+    } else {
+      if (startDate < now) {
+        setGeneralError("Start date cannot be in the past");
+        return { formattedStartDate: "", formattedEndDate: "" };
+      }
+      if (endDate < startDate) {
         setGeneralError("End date cannot be before start date");
         return { formattedStartDate: "", formattedEndDate: "" };
       }
-      formattedEndDate = formatISO(endDate);
+      if (startDate === endDate) {
+        setGeneralError("Start date and end date cannot be the same");
+        return { formattedStartDate: "", formattedEndDate: "" };
+      }
+
+      if (startDate === now) {
+        start = now;
+      } else {
+        start = startDate;
+      }
+      end = endDate;
     }
 
-    return { formattedStartDate, formattedEndDate };
+    return {
+      formattedStartDate: formatISO(start),
+      formattedEndDate: formatISO(end),
+    };
   };
 
   const onSubmit = (data: PollFormData) => {
@@ -205,6 +208,7 @@ export function usePollForm() {
 
     const { formattedStartDate, formattedEndDate } = setDateRange(
       duration,
+      new Date(data.startDate),
       new Date(data.endDate)
     );
 

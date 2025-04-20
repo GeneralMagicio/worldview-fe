@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 export const pollSchema = z.object({
-  worldID: z.string().nonempty("World ID is required"),
   title: z
     .string()
     .nonempty("Poll question is required")

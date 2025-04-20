@@ -45,7 +45,7 @@ export const formatDate = (date: Date | null): string => {
 };
 
 export const formatShortDate = (date: Date | null): string => {
-  if (!date) return "";
+  if (!date) return "-";
   return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",

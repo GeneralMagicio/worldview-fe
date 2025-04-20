@@ -48,6 +48,10 @@ export const scheduleAutoLogout = (token: string, logout: () => void) => {
 export const getWorldID = () => {
   const token = getToken();
   if (!token) return null;
-  const decoded = jwtDecode<TokenPayload>(token);
-  return decoded.worldID;
+  try {
+    const decoded = jwtDecode<TokenPayload>(token);
+    return decoded.worldID;
+  } catch {
+    return null;
+  }
 };

@@ -48,7 +48,7 @@ export default function PollCreatedModal({
         <Button
           variant="primary"
           className="w-full flex items-center justify-center gap-2 font-medium"
-          onClick={() => handleShare(pollTitle, pollId ?? 0)}
+          onClick={() => handleShare(pollTitle, pollId!)}
         >
           <ShareIcon size={24} color="white" />
           Share this Poll

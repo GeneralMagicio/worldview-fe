@@ -32,7 +32,7 @@ export async function verifyNonceCookie(submittedNonce: string) {
     const isValid = storedNonce === submittedNonce;
 
     if (isValid) {
-      cookies().delete("siwe");
+      cookies().delete("siwe_nonce");
     }
 
     return { isValid };
