@@ -4,6 +4,7 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query";
+import { useAuth } from "@/context/AuthContext";
 
 const MAX_RETRIES = 2;
 
@@ -15,27 +16,35 @@ interface IUser {
   updatedAt: string;
 }
 
-interface UserActivity {
+interface IUserActivity {
   id: string;
   userId: string;
   activityType: string;
   timestamp: string;
 }
 
-interface SetVoteParams {
-  pollId: string;
+interface ISetVoteParams {
+  pollId: number;
+  weightDistribution: Record<string, number>;
+}
+
+interface IEditVoteParams {
+  voteID: string;
   weightDistribution: Record<string, number>;
 }
 
 interface IGetUserVotesResponse {
+  voteID: string;
   options: string[];
   votingPower: number;
   weightDistribution: Record<string, number>;
 }
 
-export const getUserData = (): UseQueryResult<IUser> => {
+export const useUserData = (): UseQueryResult<IUser> => {
+  const { worldID } = useAuth();
+
   return useQuery({
-    queryKey: ["user", "data"],
+    queryKey: ["user", "data", worldID],
     queryFn: async () => {
       const res = await fetch("/user/getUserData");
       if (!res.ok) throw new Error("Failed to fetch user data");
@@ -45,23 +54,22 @@ export const getUserData = (): UseQueryResult<IUser> => {
   });
 };
 
-export const getUserActivities = ({
+export const useUserActivities = ({
   filter,
   search,
 }: {
   filter: "active" | "inactive" | "created" | "participated";
   search: string;
 }): UseQueryResult<{
-  activities: UserActivity[];
+  activities: IUserActivity[];
   total: number;
 }> => {
+  const { worldID } = useAuth();
+
   return useQuery({
-    queryKey: ["user", "activities", filter, search],
+    queryKey: ["user", "activities", filter, search, worldID],
     queryFn: async () => {
-      const urlParams = new URLSearchParams({
-        filter,
-        search,
-      });
+      const urlParams = new URLSearchParams({ filter, search });
 
       const res = await fetch(
         `/user/getUserActivities?${urlParams.toString()}`
@@ -72,11 +80,13 @@ export const getUserActivities = ({
   });
 };
 
-export const getUserVotes = (
+export const useGetUserVotes = (
   pollId: number
 ): UseQueryResult<IGetUserVotesResponse> => {
+  const { worldID } = useAuth();
+
   return useQuery({
-    queryKey: ["user", "votes", pollId],
+    queryKey: ["user", "votes", pollId, worldID],
     queryFn: async () => {
       const urlParams = new URLSearchParams({
         pollId: String(pollId),
@@ -97,51 +107,48 @@ export const getUserVotes = (
   });
 };
 
-export const setVote = () => {
+export const useSetVote = () => {
   const queryClient = useQueryClient();
+  const { worldID } = useAuth();
 
   return useMutation({
-    mutationFn: async (params: SetVoteParams) => {
+    mutationFn: async (params: ISetVoteParams) => {
       const res = await fetch("/user/setVote", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(params),
       });
 
       if (!res.ok) throw new Error("Failed to set vote");
       return res.json();
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["poll", variables.pollId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["poll", variables.pollId],
+        queryKey: ["user", "votes", variables.pollId, worldID],
       });
     },
   });
 };
 
-export const editVote = () => {
+export const useEditVote = () => {
   const queryClient = useQueryClient();
+  const { worldID } = useAuth();
 
   return useMutation({
-    mutationFn: async (params: SetVoteParams) => {
+    mutationFn: async (params: IEditVoteParams) => {
       const res = await fetch("/user/editVote", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(params),
       });
 
       if (!res.ok) throw new Error("Failed to edit vote");
       return res.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", "votes"] });
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["user", "votes", variables.voteID, worldID],
+      });
     },
   });
 };

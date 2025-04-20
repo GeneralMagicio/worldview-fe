@@ -13,7 +13,7 @@ import QVInfoModal from "@/components/Modals/QVInfoModal";
 import VotingSuccessModal from "@/components/Modals/VotingSuccessModal";
 import { handleShare } from "@/utils/share";
 import { getPollDetails } from "@/hooks/usePoll";
-import { getUserVotes } from "@/hooks/useUser";
+import { useGetUserVotes, useSetVote, useEditVote } from "@/hooks/useUser";
 
 type VoteState = {
   option: string;
@@ -23,16 +23,18 @@ type VoteState = {
 };
 
 export default function PollVoteCard({ pollId }: { pollId: number }) {
-  const { data: pollData } = getPollDetails(pollId);
+  const { data: pollData, isLoading: pollLoading } = getPollDetails(pollId);
+  const { mutate: editVote, isPending: editVotePending } = useEditVote();
+  const { mutate: setVote, isPending: setVotePending } = useSetVote();
   const {
     data: userVotes,
     isFetched: userVotesFetched,
     isLoading: userVotesLoading,
-  } = getUserVotes(pollId);
+  } = useGetUserVotes(pollId);
 
   const pollDetails = pollData?.poll;
   const isActive = pollData?.isActive;
-  // const pollResults = pollData?.optionsTotalVotes;
+  const pollOptions = pollDetails?.options;
 
   const { timeLeft } = getRelativeTimeString(
     new Date(pollDetails?.endDate ?? "")
@@ -75,10 +77,40 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
 
     const newVotes = [...votes];
     newVotes[index].percentage = percentage;
-
     newVotes[index].count = Math.sqrt(percentage);
 
     setVotes(newVotes);
+  };
+
+  const handleVote = () => {
+    let weightDistribution: Record<string, number> = {};
+
+    if (votes) {
+      weightDistribution = votes.reduce<Record<string, number>>((acc, vote) => {
+        acc[vote.option] = vote.percentage || 0;
+        return acc;
+      }, {});
+    } else {
+      weightDistribution =
+        pollOptions?.reduce<Record<string, number>>((acc, option) => {
+          acc[option] = 0;
+          return acc;
+        }, {}) ?? {};
+    }
+
+    if (userVotes) {
+      editVote({
+        voteID: userVotes.voteID,
+        weightDistribution,
+      });
+    } else {
+      setVote({
+        pollId,
+        weightDistribution,
+      });
+    }
+
+    setShowVotingSuccessModal(true);
   };
 
   // Add event listeners for mouse/touch events outside the component
@@ -115,21 +147,21 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
 
   useEffect(() => {
     if (!userVotes) {
-      const defaultVotes = pollDetails?.options.map((option) => ({
-        option: option,
-        percentage: 0,
-        count: 0,
-        isDragging: false,
-      }));
-
-      setVotes(defaultVotes);
+      setVotes(
+        pollDetails?.options.map((option) => ({
+          option: option,
+          percentage: 0,
+          count: 0,
+          isDragging: false,
+        }))
+      );
       return;
     }
 
     const mappedUserVotes = userVotes?.options.map((option) => ({
       option: option,
       percentage: userVotes?.weightDistribution[option] ?? 0,
-      count: userVotes?.votingPower ?? 0,
+      count: Math.sqrt(userVotes?.weightDistribution[option] ?? 0),
       isDragging: false,
     }));
 
@@ -148,9 +180,10 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         : vote
     );
 
-    newVotes[index].count = Math.sqrt(newVotes?.[index].percentage ?? 0);
-
-    setVotes(newVotes);
+    if (newVotes) {
+      newVotes[index].count = Math.sqrt(newVotes[index].percentage);
+      setVotes(newVotes);
+    }
   };
 
   const increaseVote = (index: number) => {
@@ -165,9 +198,10 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         : vote
     );
 
-    newVotes[index].count = Math.sqrt(newVotes?.[index].percentage ?? 0);
-
-    setVotes(newVotes);
+    if (newVotes) {
+      newVotes[index].count = Math.sqrt(newVotes[index].percentage);
+      setVotes(newVotes);
+    }
   };
 
   const voteButtonDisabled =
@@ -176,13 +210,9 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
     votes?.every((vote) => vote.percentage === 0) ||
     votes?.reduce((acc, vote) => acc + vote.percentage, 0) > 100;
 
-  const disableRestOfOptions =
-    !votes ||
-    votes?.length === 0 ||
-    (votes?.reduce((acc, vote) => acc + vote.percentage, 0) > 100 &&
-      votes?.some((vote) => vote.percentage === 0));
-
   if (!pollId) return null;
+
+  const isLoading = pollLoading || userVotesLoading;
 
   return (
     <div className="bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029]">
@@ -190,73 +220,101 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
-            <UserIcon />
+            {isLoading ? (
+              <div className="w-5 h-5 rounded-full bg-gray-300 animate-pulse" />
+            ) : (
+              <UserIcon />
+            )}
           </div>
-          <span className="text-sm text-gray-900">
-            {pollDetails?.author?.name}
-          </span>
+          {isLoading ? (
+            <div className="w-24 h-4 rounded-full bg-gray-200 animate-pulse"></div>
+          ) : (
+            <span className="text-sm text-gray-900">
+              {pollDetails?.author?.name}
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-1">
-          <div
-            className={`w-2 h-2 rounded-full ${
-              isActive ? "bg-success-900" : "bg-gray-400"
-            }`}
-          />
-
-          {isActive ? (
-            <span className="text-sm text-gray-900">
-              {timeLeft} <span className="text-xs">left</span>
-            </span>
+          {isLoading ? (
+            <div className="w-24 h-4 rounded-full bg-gray-200 animate-pulse"></div>
           ) : (
-            <span className="text-xs text-gray-900">Voting Ended</span>
+            <>
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  isActive ? "bg-success-900" : "bg-gray-400"
+                }`}
+              />
+              {isActive ? (
+                <span className="text-sm text-gray-900">
+                  {timeLeft} <span className="text-xs">left</span>
+                </span>
+              ) : (
+                <span className="text-xs text-gray-900">Voting Ended</span>
+              )}
+            </>
           )}
         </div>
       </div>
 
-      {/* Poll Tittle + Description */}
+      {/* Poll Title + Description */}
       <div className="pb-2">
-        <h2 className=" text-gray-900 text-xl font-medium leading-tight mb-2">
-          {pollDetails?.title}
-        </h2>
-
-        {pollDetails?.description && (
+        {isLoading ? (
+          <div className="space-y-2 mb-4">
+            <div className="h-6 bg-gray-200 rounded-md w-3/4 animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded-md w-full animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded-md w-5/6 animate-pulse"></div>
+          </div>
+        ) : (
           <>
-            <p
-              className={`text-gray-900 text-sm mb-1 ${
-                isExpanded ? "" : "line-clamp-2"
-              }`}
-            >
-              {pollDetails?.description}
-            </p>
-            {pollDetails?.description.length > 100 && (
-              <button
-                className="text-gray-700 font-medium text-xs mb-4"
-                onClick={() => setIsExpanded(!isExpanded)}
-              >
-                {isExpanded ? "Read less" : "Read more"}
-              </button>
+            <h2 className="text-gray-900 text-xl font-medium leading-tight mb-2">
+              {pollDetails?.title}
+            </h2>
+
+            {pollDetails?.description && (
+              <>
+                <p
+                  className={`text-gray-900 text-sm mb-1 ${
+                    isExpanded ? "" : "line-clamp-2"
+                  }`}
+                >
+                  {pollDetails?.description}
+                </p>
+                {pollDetails?.description.length > 100 && (
+                  <button
+                    className="text-gray-700 font-medium text-xs mb-4"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                  >
+                    {isExpanded ? "Read less" : "Read more"}
+                  </button>
+                )}
+              </>
             )}
           </>
         )}
 
         {/* Tags */}
-        <div className="flex gap-2 mb-6">
-          {pollDetails?.tags.map((tag) => (
-            <span
-              key={tag}
-              className="px-3 py-1 bg-gray-300 border border-gray-300 text-gray-900 rounded-full font-medium text-sm"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex gap-2 mb-6">
+            <div className="h-6 w-16 bg-gray-200 rounded-full animate-pulse"></div>
+            <div className="h-6 w-20 bg-gray-200 rounded-full animate-pulse"></div>
+          </div>
+        ) : (
+          <div className="flex gap-2 mb-6">
+            {pollDetails?.tags.map((tag) => (
+              <span
+                key={tag}
+                className="px-3 py-1 bg-gray-300 border border-gray-300 text-gray-900 rounded-full font-medium text-sm"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* Poll Options */}
         <div className="space-y-6 mb-4">
-          {userVotesLoading ? (
-            <div className="flex items-center justify-center h-24">
-              <UserLoadingSkeleton />
-            </div>
+          {isLoading ? (
+            <OptionsLoadingSkeleton />
           ) : (
             votes &&
             votes.map((vote, index) => (
@@ -337,19 +395,31 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         {/* Poll Footer */}
         <div className="border-t border-gray-200 py-4 flex justify-between items-center">
           <div className="flex items-center gap-x-2">
-            <span className="text-gray-900 font-medium">10</span>
-            <span className="text-gray-700 text-sm">voters participated</span>
+            {isLoading ? (
+              <div className="h-4 w-32 bg-gray-200 rounded-md animate-pulse"></div>
+            ) : (
+              <>
+                <span className="text-gray-900 font-medium">
+                  {pollDetails?.participantCount}
+                </span>
+                <span className="text-gray-700 text-sm">
+                  voters participated
+                </span>
+              </>
+            )}
           </div>
           <div className="flex gap-3">
             <button
-              className="rounded-full h-8 w-8"
+              className="rounded-full h-8 w-8 disabled:opacity-50"
               onClick={() => setShowQVInfoModal(true)}
+              disabled={isLoading || editVotePending || setVotePending}
             >
               <InfoIcon />
             </button>
             <button
-              className="rounded-full h-8 w-8"
-              onClick={() => handleShare("Test", 1)}
+              className="rounded-full h-8 w-8 disabled:opacity-50"
+              onClick={() => handleShare(pollDetails?.title ?? "", pollId)}
+              disabled={isLoading || editVotePending || setVotePending}
             >
               <ShareIcon />
             </button>
@@ -359,14 +429,25 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         {/* Vote button */}
         <button
           className="w-full bg-gray-900 text-white h-14 rounded-xl mb-3 font-semibold font-sora disabled:bg-gray-200 disabled:text-gray-400"
-          onClick={() => setShowVotingSuccessModal(true)}
-          disabled={voteButtonDisabled}
+          onClick={handleVote}
+          disabled={
+            isLoading || voteButtonDisabled || editVotePending || setVotePending
+          }
         >
-          Vote
+          {isLoading
+            ? "Loading..."
+            : editVotePending
+            ? "Saving..."
+            : setVotePending
+            ? "Submitting..."
+            : "Vote"}
         </button>
 
         {/* View Results */}
-        <button className="w-full flex items-center justify-center bg-gray-50 gap-2 py-3 text-gray-700 font-semibold rounded-xl font-sora">
+        <button
+          className="w-full flex items-center justify-center bg-gray-50 gap-2 py-3 text-gray-700 font-semibold rounded-xl font-sora disabled:opacity-50"
+          disabled={isLoading || editVotePending || setVotePending}
+        >
           <StatisticBarsIcon />
           View Poll Results
         </button>
@@ -376,23 +457,34 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
       {showVotingSuccessModal && (
         <VotingSuccessModal
           setShowModal={setShowVotingSuccessModal}
-          pollTitle={"test"}
-          pollId={1}
+          pollTitle={pollDetails?.title ?? ""}
+          pollId={pollId}
         />
       )}
     </div>
   );
 }
 
-const UserLoadingSkeleton = () => {
+const OptionsLoadingSkeleton = () => {
   return (
-    <div className="flex items-center justify-center h-24">
-      <div className="w-10 h-10 rounded-full bg-gray-200"></div>
-      <div className="w-10 h-10 rounded-full bg-gray-200"></div>
-      <div className="w-10 h-10 rounded-full bg-gray-200"></div>
-      <div className="w-10 h-10 rounded-full bg-gray-200"></div>
-      <div className="w-10 h-10 roundaria-labelledbyed-full bg-gray-200"></div>
-      <div className="w-10 h-10 rounded-full bg-gray-200"></div>
-    </div>
+    <>
+      {[1, 2, 3].map((index) => (
+        <div key={index} className="space-y-1">
+          <div className="flex items-center justify-between">
+            <div className="relative w-full h-10 bg-gray-100 rounded-lg overflow-hidden">
+              <div className="absolute left-0 top-0 bottom-0 h-full w-1/4 bg-gray-200 rounded-lg animate-pulse" />
+            </div>
+            <div className="flex items-center gap-3 ml-3">
+              <div className="w-6 h-6 rounded-full bg-gray-200 animate-pulse" />
+              <div className="w-10 h-4 bg-gray-200 rounded-md animate-pulse" />
+              <div className="w-6 h-6 rounded-full bg-gray-200 animate-pulse" />
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <div className="w-16 h-4 bg-gray-200 rounded-md animate-pulse" />
+          </div>
+        </div>
+      ))}
+    </>
   );
 };
