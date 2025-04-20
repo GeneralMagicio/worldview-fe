@@ -4,8 +4,9 @@ import {
   VerificationLevel,
   ISuccessResult,
 } from "@worldcoin/minikit-js";
-import { verifyWalletAndWorldID } from "@/app/actions/verify";
+import { getNonce, verifyNonceCookie } from "@/app/actions/verify";
 import { useAuth } from "@/context/AuthContext";
+import { AUTH_ERRORS } from "@/lib/constants/authErrors";
 
 const verifyCommand = {
   action: "verify",
@@ -13,34 +14,51 @@ const verifyCommand = {
   verification_level: VerificationLevel.Device,
 };
 
+export type AuthResult = {
+  success: boolean;
+  data?: any;
+  error?: string;
+};
+
 export const useWorldAuth = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { storeToken, isLoggedIn } = useAuth();
 
-  const fetchNonce = async () => {
-    const res = await fetch("/api/nonce", { credentials: "include" });
-    const { nonce } = await res.json();
-
-    return nonce;
-  };
-
   const performWalletAuth = async (nonce: string) => {
-    const { finalPayload } = await MiniKit.commandsAsync.walletAuth({
-      nonce,
-      requestId: "0",
-      expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      notBefore: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      statement: "Sign in to WorldView via World App.",
-    });
-
-    return finalPayload;
+    try {
+      const { finalPayload } = await MiniKit.commandsAsync.walletAuth({
+        nonce,
+        requestId: "0",
+        expirationTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        notBefore: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        statement: "Sign in to WorldView via World App.",
+      });
+      return finalPayload;
+    } catch (err) {
+      setError(AUTH_ERRORS.WALLET_AUTH_FAILED);
+      throw AUTH_ERRORS.WALLET_AUTH_FAILED;
+    }
   };
 
   const startWorldIDVerification = async () => {
-    const { finalPayload } = await MiniKit.commandsAsync.verify(verifyCommand);
-    if (finalPayload.status === "error")
-      throw new Error("World ID verification failed");
-    return finalPayload;
+    try {
+      const { finalPayload } = await MiniKit.commandsAsync.verify(
+        verifyCommand
+      );
+      if (finalPayload.status === "error") {
+        setError(AUTH_ERRORS.WORLD_ID_VERIFICATION_FAILED);
+        throw AUTH_ERRORS.WORLD_ID_VERIFICATION_FAILED;
+      }
+      return finalPayload;
+    } catch (err) {
+      if (err && typeof err === "object" && "code" in err) {
+        throw err;
+      }
+
+      setError(AUTH_ERRORS.WORLD_ID_VERIFICATION_ERROR);
+      throw AUTH_ERRORS.WORLD_ID_VERIFICATION_ERROR;
+    }
   };
 
   const verifyWorldIDProof = async (proof: ISuccessResult) => {
@@ -57,20 +75,21 @@ export const useWorldAuth = () => {
       });
 
       if (!res.ok) {
-        throw new Error(`API error: ${res.status} ${res.statusText}`);
+        setError(AUTH_ERRORS.API_ERROR);
+        throw AUTH_ERRORS.API_ERROR;
       }
 
       const json = await res.json();
 
-      if (json.status !== 200)
-        throw new Error("World ID proof verification failed");
+      if (json.status !== 200) {
+        setError(AUTH_ERRORS.PROOF_VERIFICATION_FAILED);
+        throw AUTH_ERRORS.PROOF_VERIFICATION_FAILED;
+      }
 
       return json;
-    } catch (error) {
-      console.error("World ID verification error:", error);
-      throw error instanceof Error
-        ? error
-        : new Error("World ID proof verification failed");
+    } catch (err) {
+      setError(AUTH_ERRORS.PROOF_VERIFICATION_ERROR);
+      throw AUTH_ERRORS.PROOF_VERIFICATION_ERROR;
     }
   };
 
@@ -78,43 +97,110 @@ export const useWorldAuth = () => {
     walletPayload: any,
     worldIdProof: ISuccessResult,
     nonce: string
-  ) => {
-    const formData = new FormData();
-    formData.append("walletPayload", JSON.stringify(walletPayload));
-    formData.append("worldIdProof", JSON.stringify(worldIdProof));
-    formData.append("nonce", nonce);
+  ): Promise<AuthResult> => {
+    try {
+      const result = await verifyNonceCookie(nonce);
 
-    const result = await verifyWalletAndWorldID(formData);
-    if (result.status !== "success")
-      throw new Error("Final auth verification failed");
+      if (!result.isValid) {
+        setError(AUTH_ERRORS.NONCE_VERIFICATION_FAILED);
+        return {
+          success: false,
+          error: AUTH_ERRORS.NONCE_VERIFICATION_FAILED,
+        };
+      }
 
-    storeToken(result.data.token);
+      const res = await fetch("/auth/verifyWorldId", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ walletPayload, worldIdProof, nonce }),
+      });
+
+      if (!res.ok) {
+        setError(AUTH_ERRORS.SERVER_VERIFICATION_FAILED);
+        return {
+          success: false,
+          error: AUTH_ERRORS.SERVER_VERIFICATION_FAILED,
+        };
+      }
+
+      const data = await res.json();
+      storeToken(data.token);
+
+      return {
+        success: true,
+        data,
+      };
+    } catch (err) {
+      setError(AUTH_ERRORS.PAYLOAD_VERIFICATION_ERROR);
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : String(err),
+      };
+    }
   };
 
-  const handleLogin = useCallback(async () => {
+  const clearError = () => {
+    setError(null);
+  };
+
+  const handleLogin = useCallback(async (): Promise<AuthResult> => {
+    setError(null);
+
     if (!MiniKit.isInstalled()) {
-      console.warn("MiniKit not installed");
-      return;
+      setError(AUTH_ERRORS.MINIKIT_NOT_INSTALLED);
+      return { success: false, error: AUTH_ERRORS.MINIKIT_NOT_INSTALLED };
     }
 
     try {
       setIsLoggingIn(true);
 
-      // verification level: device
-      const worldIdProof = await startWorldIDVerification();
-      await verifyWorldIDProof(worldIdProof);
+      // Step 1: World ID verification (device level)
+      let worldIdProof;
+      try {
+        worldIdProof = await startWorldIDVerification();
+        await verifyWorldIDProof(worldIdProof);
+      } catch (err) {
+        return {
+          success: false,
+          error: AUTH_ERRORS.WORLD_ID_VERIFICATION_FAILED,
+        };
+      }
 
-      // siwe auth level
-      const nonce = await fetchNonce();
-      const walletPayload = await performWalletAuth(nonce);
+      // Step 2: SIWE auth level
+      let nonce;
+      let walletPayload;
+      try {
+        const nonceResult = await getNonce();
+        if (!nonceResult.success || !nonceResult.nonce) {
+          setError(AUTH_ERRORS.NONCE_ERROR);
+          return { success: false, error: AUTH_ERRORS.NONCE_ERROR };
+        }
+        nonce = nonceResult.nonce;
+        walletPayload = await performWalletAuth(nonce);
+      } catch (err) {
+        return {
+          success: false,
+          error: AUTH_ERRORS.WALLET_AUTH_ERROR,
+        };
+      }
 
-      await verifyPayload(walletPayload, worldIdProof, nonce);
+      // Step 3: Verify everything with the server
+      return await verifyPayload(walletPayload, worldIdProof, nonce);
     } catch (err) {
-      console.error("Login failed:", err);
+      setError(AUTH_ERRORS.LOGIN_FAILED);
+      return { success: false, error: AUTH_ERRORS.LOGIN_FAILED };
     } finally {
       setIsLoggingIn(false);
     }
   }, []);
 
-  return { handleLogin, isLoggingIn, isLoggedIn };
+  return {
+    handleLogin,
+    isLoggingIn,
+    isLoggedIn,
+    error,
+    clearError,
+  };
 };
