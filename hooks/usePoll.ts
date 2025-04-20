@@ -29,7 +29,12 @@ interface ICreatePollData {
 export const usePoll = () => {
   const queryClient = useQueryClient();
 
-  const getPolls = (filters: IUsePollParams = {}): UseQueryResult<IPoll[]> => {
+  const getPolls = (
+    filters: IUsePollParams = {}
+  ): UseQueryResult<{
+    polls: IPoll[];
+    total: number;
+  }> => {
     return useQuery({
       queryKey: ["polls", filters],
       queryFn: async () => {
