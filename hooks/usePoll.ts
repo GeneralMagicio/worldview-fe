@@ -1,5 +1,10 @@
-import { IPoll } from "@/types/poll";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { IPoll, IPollDetails } from "@/types/poll";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 interface IUsePollParams {
   page?: number;
@@ -24,7 +29,7 @@ interface ICreatePollData {
 export const usePoll = () => {
   const queryClient = useQueryClient();
 
-  const getPolls = (filters: IUsePollParams = {}) => {
+  const getPolls = (filters: IUsePollParams = {}): UseQueryResult<IPoll[]> => {
     return useQuery({
       queryKey: ["polls", filters],
       queryFn: async () => {
@@ -41,14 +46,12 @@ export const usePoll = () => {
         const res = await fetch(`/poll?${params.toString()}`);
         if (!res.ok) throw new Error("Failed to fetch polls");
 
-        const data = await res.json();
-        console.log(data);
-        return data;
+        return res.json();
       },
     });
   };
 
-  const getPollDetails = (id: number) => {
+  const getPollDetails = (id: number): UseQueryResult<IPollDetails> => {
     return useQuery({
       queryKey: ["poll", id],
       queryFn: async () => {

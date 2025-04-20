@@ -17,7 +17,13 @@ export const getRelativeTimeString = (
   let result = "";
 
   if (diff > 0) {
-    result = `${days}d ${hours % 24}h`;
+    if (days === 0) {
+      result = `${hours % 24}h`;
+    } else if (hours === 0) {
+      result = `${minutes % 60}m`;
+    } else {
+      result = `${days}d ${hours % 24}h`;
+    }
   } else if (years >= 1) {
     result = `${years}y`;
   } else if (months >= 1) {

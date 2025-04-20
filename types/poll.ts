@@ -13,6 +13,12 @@ export interface IPoll {
   voteResults: IVoteResult[];
 }
 
+export interface IPollDetails {
+  poll: IPoll & { author: IAuthor };
+  isActive: boolean;
+  optionsTotalVotes: Record<string, number>;
+}
+
 export interface IVoteResult {
   optionId: number;
   voteCount: number;
@@ -23,4 +29,13 @@ export interface IPollFilters {
   finishedPolls: boolean;
   pollsVoted: boolean;
   pollsCreated: boolean;
+}
+
+export interface IAuthor {
+  id: number;
+  name: string;
+  pollsCreatedCount: number;
+  pollsParticipatedCount: number;
+  profilePicture: string;
+  worldID: string;
 }
