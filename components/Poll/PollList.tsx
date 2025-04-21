@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getPolls } from "@/hooks/usePoll";
+import { useGetPolls } from "@/hooks/usePoll";
 import BlurredCard from "../Verify/BlurredCard";
 import PollCard from "./PollCard";
 import { IPollFilters, IPoll } from "@/types/poll";
@@ -38,7 +38,7 @@ export default function PollList({ filters }: PollListProps) {
     isLoading,
     error,
     refetch,
-  } = getPolls({
+  } = useGetPolls({
     limit: POLLS_PER_PAGE,
     sortBy: "creationDate",
     sortOrder: "desc",

@@ -22,10 +22,12 @@ const config: Config = {
         primary: "#161C1F",
         secondary: "#EBECEF",
         success: {
+          300: "#D6F6DE",
           900: "#18964F",
         },
         error: {
           700: "#FF5A76",
+          800: "#DC0025",
         },
       },
       keyframes: {

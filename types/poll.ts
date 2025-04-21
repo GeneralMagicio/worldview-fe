@@ -17,6 +17,7 @@ export interface IPollDetails {
   poll: IPoll & { author: IAuthor };
   isActive: boolean;
   optionsTotalVotes: Record<string, number>;
+  totalVotes: number;
 }
 
 export interface IVoteResult {

@@ -26,7 +26,7 @@ interface ICreatePollData {
   isAnonymous?: boolean;
 }
 
-export const getPolls = (
+export const useGetPolls = (
   filters: IUsePollParams = {}
 ): UseQueryResult<{
   polls: IPoll[];
@@ -53,7 +53,7 @@ export const getPolls = (
   });
 };
 
-export const getPollDetails = (id: number): UseQueryResult<IPollDetails> => {
+export const useGetPollDetails = (id: number): UseQueryResult<IPollDetails> => {
   return useQuery({
     queryKey: ["poll", id],
     queryFn: async () => {
@@ -65,7 +65,7 @@ export const getPollDetails = (id: number): UseQueryResult<IPollDetails> => {
   });
 };
 
-export const createPoll = () => {
+export const useCreatePoll = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -85,7 +85,7 @@ export const createPoll = () => {
   });
 };
 
-export const deletePoll = () => {
+export const useDeletePoll = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

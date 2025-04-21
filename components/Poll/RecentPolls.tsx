@@ -1,6 +1,6 @@
 "use client";
 
-import { getPolls } from "@/hooks/usePoll";
+import { useGetPolls } from "@/hooks/usePoll";
 import PollCard from "./PollCard";
 import BlurredCard from "../Verify/BlurredCard";
 import NoPollsView from "./NoPollsView";
@@ -19,7 +19,7 @@ export default function RecentPolls() {
     isLoading,
     error,
     refetch,
-  } = getPolls({
+  } = useGetPolls({
     limit: POLLS_LIMIT,
     sortBy: "creationDate",
     sortOrder: "desc",

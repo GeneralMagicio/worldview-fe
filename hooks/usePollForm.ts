@@ -3,7 +3,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatISO } from "date-fns";
-import { createPoll } from "@/hooks/usePoll";
+import { useCreatePoll } from "@/hooks/usePoll";
 import { pollSchema } from "@/validation/pollSchemas";
 import { combineDateTime, formatShortDate } from "@/utils/time";
 
@@ -22,7 +22,7 @@ export function usePollForm() {
     data: poll,
     isPending: isCreatingPoll,
     error: createPollError,
-  } = createPoll();
+  } = useCreatePoll();
 
   // Date initialization
   const currentYear = new Date().getFullYear();
