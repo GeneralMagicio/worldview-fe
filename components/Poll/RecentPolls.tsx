@@ -1,6 +1,6 @@
 "use client";
 
-import { usePoll } from "@/hooks/usePoll";
+import { useGetPolls } from "@/hooks/usePoll";
 import PollCard from "./PollCard";
 import BlurredCard from "../Verify/BlurredCard";
 import NoPollsView from "./NoPollsView";
@@ -12,7 +12,6 @@ import { IPoll } from "@/types/poll";
 const POLLS_LIMIT = 4;
 
 export default function RecentPolls() {
-  const { getPolls } = usePoll();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const {
@@ -20,7 +19,7 @@ export default function RecentPolls() {
     isLoading,
     error,
     refetch,
-  } = getPolls({
+  } = useGetPolls({
     limit: POLLS_LIMIT,
     sortBy: "creationDate",
     sortOrder: "desc",
@@ -63,9 +62,7 @@ export default function RecentPolls() {
           Recent Polls
         </h2>
 
-        {isRefreshing && (
-          <p className="text-gray-500 text-sm">Refreshing...</p>
-        )}
+        {isRefreshing && <p className="text-gray-500 text-sm">Refreshing...</p>}
       </div>
 
       {renderContent()}

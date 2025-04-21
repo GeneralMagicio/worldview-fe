@@ -1,6 +1,6 @@
 "use client";
 
-import PollVoteCard from "@/components/Poll/PollVoteCard";
+import PollResultsCard from "@/components/Poll/PollResultsCard";
 import Header from "@/components/Header";
 import { useParams } from "next/navigation";
 
@@ -16,7 +16,7 @@ export default function PollPage() {
   return (
     <main className="flex-1 bg-white rounded-t-3xl p-5">
       <Header backUrl="/polls" />
-      <PollVoteCard pollId={pollId} />
+      <PollResultsCard pollId={pollId} />
     </main>
   );
 }

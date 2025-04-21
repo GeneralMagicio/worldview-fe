@@ -17,7 +17,13 @@ export const getRelativeTimeString = (
   let result = "";
 
   if (diff > 0) {
-    result = `${days}d ${hours % 24}h`;
+    if (days === 0) {
+      result = `${hours % 24}h`;
+    } else if (hours === 0) {
+      result = `${minutes % 60}m`;
+    } else {
+      result = `${days}d ${hours % 24}h`;
+    }
   } else if (years >= 1) {
     result = `${years}y`;
   } else if (months >= 1) {
@@ -38,7 +44,24 @@ export const formatDate = (date: Date | null): string => {
   return `${MONTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
 };
 
-export const parseTime = (timeString: string): { hours: number; minutes: number } => {
+export const formatShortDate = (date: Date | null): string => {
+  if (!date) return "-";
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+};
+
+export const parseTime = (
+  timeString: string
+): { hours: number; minutes: number } => {
   const [hours, minutes] = timeString.split(":").map(Number);
   return { hours, minutes };
+};
+
+export const combineDateTime = (date: Date, timeString: string) => {
+  const [hours, minutes] = timeString.split(":").map(Number);
+  const newDate = new Date(date);
+  newDate.setHours(hours, minutes, 0, 0);
+  return newDate;
 };

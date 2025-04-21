@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePoll } from "@/hooks/usePoll";
+import { useGetPolls } from "@/hooks/usePoll";
 import BlurredCard from "../Verify/BlurredCard";
 import PollCard from "./PollCard";
 import { IPollFilters, IPoll } from "@/types/poll";
@@ -18,8 +18,6 @@ export default function PollList({ filters }: PollListProps) {
   const [totalPages, setTotalPages] = useState(1);
   const [displayedPolls, setDisplayedPolls] = useState<IPoll[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-
-  const { getPolls } = usePoll();
 
   // Reset to first page and clear displayed polls when filters change
   useEffect(() => {
@@ -40,7 +38,7 @@ export default function PollList({ filters }: PollListProps) {
     isLoading,
     error,
     refetch,
-  } = getPolls({
+  } = useGetPolls({
     limit: POLLS_PER_PAGE,
     sortBy: "creationDate",
     sortOrder: "desc",

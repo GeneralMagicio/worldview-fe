@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ShareIcon } from "../icon-components";
-import { handleShare } from "@/utils/share";
+import { handleSharePoll } from "@/utils/share";
 import { Modal } from "../ui/Modal";
 import { Button } from "../ui/Button";
 
@@ -9,7 +9,7 @@ interface IModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   pollTitle: string;
-  pollId: number;
+  pollId: number | undefined;
 }
 
 export default function PollCreatedModal({
@@ -48,7 +48,7 @@ export default function PollCreatedModal({
         <Button
           variant="primary"
           className="w-full flex items-center justify-center gap-2 font-medium"
-          onClick={() => handleShare(pollTitle, pollId)}
+          onClick={() => handleSharePoll(pollTitle, pollId!)}
         >
           <ShareIcon size={24} color="white" />
           Share this Poll

@@ -17,7 +17,7 @@ import ChevronLeftIcon from "./ChevronLeftIcon";
 import ChevronRightIcon from "./ChevronRightIcon";
 import CalendarIcon from "./CalendarIcon";
 import XOutlinedIcon from "./XOutlinedIcon";
-
+import TrashIcon from "./TrashIcon";
 export {
   CloseIcon,
   CheckIcon,
@@ -38,4 +38,5 @@ export {
   ChevronRightIcon,
   CalendarIcon,
   XOutlinedIcon,
+  TrashIcon,
 };

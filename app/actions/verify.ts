@@ -1,42 +1,43 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { nanoid } from "nanoid";
 
-export async function verifyWalletAndWorldID(formData: FormData) {
-  const walletPayload = JSON.parse(formData.get("walletPayload") as string);
-  const worldIdProof = JSON.parse(formData.get("worldIdProof") as string);
-  const nonce = formData.get("nonce") as string;
-
-  const siweCookie = cookies().get("siwe")?.value;
-
-  if (nonce !== siweCookie) {
-    return {
-      status: "error",
-      isValid: false,
-      message: "Invalid nonce",
-    };
-  }
-
+export async function getNonce() {
   try {
-    const res = await fetch(`${process.env.BACKEND_URL}/auth/verify-world-id`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ walletPayload, worldIdProof, nonce }),
+    const nonce = nanoid(32);
+
+    cookies().set("siwe_nonce", nonce, {
+      secure: true,
+      httpOnly: true,
+      sameSite: "strict",
+      maxAge: 600,
     });
 
-    const data = await res.json();
-
-    return {
-      status: "success",
-      data,
-    };
+    return { nonce, success: true };
   } catch (error) {
-    return {
-      status: "error",
-      message: "Server verification failed",
-      error,
-    };
+    console.error("Error generating nonce:", error);
+    return { error: "Failed to generate nonce", success: false };
+  }
+}
+
+export async function verifyNonceCookie(submittedNonce: string) {
+  try {
+    const storedNonce = cookies().get("siwe_nonce")?.value;
+
+    if (!storedNonce) {
+      return { isValid: false, error: "No nonce found in cookies" };
+    }
+
+    const isValid = storedNonce === submittedNonce;
+
+    if (isValid) {
+      cookies().delete("siwe_nonce");
+    }
+
+    return { isValid };
+  } catch (error) {
+    console.error("Error verifying nonce:", error);
+    return { isValid: false, error: "Nonce verification failed" };
   }
 }
