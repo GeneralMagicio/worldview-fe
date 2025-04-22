@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowLeft, PlusIcon, MoreVertical } from "./icon-components";
 
@@ -22,13 +24,6 @@ export default function Header({
       </Link>
       <h1 className="text-xl font-medium text-gray-900">{title}</h1>
       {isCreatePoll ? (
-        <Link
-          className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"
-          href="/poll/create"
-        >
-          <PlusIcon color="#3C424B" />
-        </Link>
-      ) : (
         <button
           className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"
           onClick={() => {
@@ -37,6 +32,13 @@ export default function Header({
         >
           <MoreVertical />
         </button>
+      ) : (
+        <Link
+          className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"
+          href="/poll/create"
+        >
+          <PlusIcon color="#3C424B" />
+        </Link>
       )}
     </div>
   );

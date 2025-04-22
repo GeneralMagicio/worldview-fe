@@ -9,7 +9,7 @@ export default function MainView() {
       <div className="flex justify-end mb-4">
         <Link
           className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center"
-          href="/profile/1"
+          href="/profile"
         >
           <UserIcon />
         </Link>
