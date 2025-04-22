@@ -5,6 +5,7 @@ import {
   ISuccessResult,
 } from "@worldcoin/minikit-js";
 import { getNonce, verifyNonceCookie } from "@/app/actions/verify";
+import { getUserDetails } from "@/app/actions/userInfo";
 import { useAuth } from "@/context/AuthContext";
 import { AUTH_ERRORS } from "@/lib/constants/authErrors";
 
@@ -52,10 +53,6 @@ export const useWorldAuth = () => {
       }
       return finalPayload;
     } catch (err) {
-      if (err && typeof err === "object" && "code" in err) {
-        throw err;
-      }
-
       setError(AUTH_ERRORS.WORLD_ID_VERIFICATION_ERROR);
       throw AUTH_ERRORS.WORLD_ID_VERIFICATION_ERROR;
     }
@@ -109,12 +106,19 @@ export const useWorldAuth = () => {
         };
       }
 
+      const userDetails = await getUserDetails(walletPayload.address);
+
       const res = await fetch("/auth/verifyWorldId", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ walletPayload, worldIdProof, nonce }),
+        body: JSON.stringify({
+          walletPayload,
+          worldIdProof,
+          userDetails,
+          nonce,
+        }),
       });
 
       if (!res.ok) {
