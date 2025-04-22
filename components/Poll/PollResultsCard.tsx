@@ -211,7 +211,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                   </div>
                   <div className="w-80 flex items-center justify-end gap-6">
                     <span className="text-gray-500 text-sm">
-                      {formatFloat(vote.count)} votes
+                      {formatFloat(vote.count)}{" "}
+                      {vote.count === 1 ? "Vote" : "Votes"}{" "}
                     </span>
                     <span className="text-gray-900 text-sm">
                       {formatFloat(vote.percentage)}%

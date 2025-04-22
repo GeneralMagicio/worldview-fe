@@ -21,6 +21,7 @@ import QVInfoModal from "@/components/Modals/QVInfoModal";
 import VotingSuccessModal from "@/components/Modals/VotingSuccessModal";
 import ConfirmDeleteModal from "@/components/Modals/ConfirmDeleteModal";
 import { useAuth } from "@/context/AuthContext";
+import { formatFloat } from "@/utils/number";
 type VoteState = {
   option: string;
   percentage: number;
@@ -66,6 +67,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   // Refs
   const sliderRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const [votesChanged, setVotesChanged] = useState(false);
 
   const handleDragStart = (index: number) => {
     if (!votes) return;
@@ -150,6 +153,15 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   // Add event listeners for mouse/touch events outside the component
   useEffect(() => {
     if (!votes?.length) return;
+
+    if (userVotes) {
+      setVotesChanged(
+        votes.some(
+          (vote) =>
+            vote.percentage !== userVotes.weightDistribution[vote.option]
+        )
+      );
+    }
 
     const handleMouseUp = () => handleDragEnd();
     const handleMouseMove = (e: MouseEvent) => {
@@ -405,7 +417,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                         vote.percentage > 0 ? "text-gray-900" : "text-gray-400"
                       }`}
                     >
-                      {vote.percentage}%
+                      {formatFloat(vote.percentage)}%
                     </span>
                     <button
                       onClick={() => increaseVote(index)}
@@ -419,7 +431,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                 </div>
 
                 <div className="text-right text-gray-500 text-sm w-full">
-                  {vote.count} {vote.count === 1 ? "Vote" : "Votes"}
+                  {formatFloat(vote.count)}{" "}
+                  {vote.count === 1 ? "Vote" : "Votes"}
                 </div>
               </div>
             ))
@@ -476,7 +489,12 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           className="w-full bg-gray-900 text-white h-14 rounded-xl mb-3 font-semibold font-sora disabled:bg-gray-200 disabled:text-gray-400"
           onClick={handleVote}
           disabled={
-            isLoading || voteButtonDisabled || editVotePending || setVotePending
+            isLoading ||
+            voteButtonDisabled ||
+            editVotePending ||
+            setVotePending ||
+            !isActive ||
+            !votesChanged
           }
         >
           {isLoading
