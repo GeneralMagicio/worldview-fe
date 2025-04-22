@@ -9,8 +9,6 @@ import { PlusIcon } from "../icon-components";
 import { useState, useEffect } from "react";
 import { IPoll } from "@/types/poll";
 
-const POLLS_LIMIT = 4;
-
 export default function RecentPolls() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -20,9 +18,8 @@ export default function RecentPolls() {
     error,
     refetch,
   } = useGetPolls({
-    limit: POLLS_LIMIT,
-    sortBy: "creationDate",
-    sortOrder: "desc",
+    isActive: true,
+    sortBy: "endDate",
   });
 
   const polls = pollsData?.polls || [];
@@ -122,7 +119,7 @@ export default function RecentPolls() {
 const LoadingPolls = () => {
   return (
     <div className="space-y-4" aria-label="Loading polls">
-      {Array.from({ length: POLLS_LIMIT }).map((_, index) => (
+      {Array.from({ length: 4 }).map((_, index) => (
         <BlurredCard key={index} />
       ))}
     </div>

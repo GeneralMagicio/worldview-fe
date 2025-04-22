@@ -1,5 +1,6 @@
 export interface IPoll {
   authorUserId: number;
+  author: IAuthor;
   creationDate: string;
   description: string;
   endDate: string;
@@ -39,4 +40,11 @@ export interface IAuthor {
   pollsParticipatedCount: number;
   profilePicture: string;
   worldID: string;
+}
+
+export enum FilterParams {
+  All = "all",
+  Trending = "trending",
+  Recent = "recent",
+  Voted = "voted",
 }

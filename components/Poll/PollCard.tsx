@@ -21,7 +21,7 @@ export default function PollCard({ poll }: { poll: IPoll }) {
             <UserIcon />
           </div>
           <span className="text-sm text-gray-900">
-            @{poll.authorUserId ?? "user"}{" "}
+            @{poll.author.name ?? "user"}{" "}
           </span>
         </div>
         <div className="flex items-center gap-1">

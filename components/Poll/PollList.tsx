@@ -2,22 +2,28 @@
 
 import { useState, useEffect } from "react";
 import { useGetPolls } from "@/hooks/usePoll";
+import { IPollFilters, IPoll, FilterParams } from "@/types/poll";
+import { Button } from "../ui/Button";
 import BlurredCard from "../Verify/BlurredCard";
 import PollCard from "./PollCard";
-import { IPollFilters, IPoll } from "@/types/poll";
-import { Button } from "../ui/Button";
+import NoPollsView from "./NoPollsView";
 
-const POLLS_PER_PAGE = 4;
+const POLLS_PER_PAGE = 10;
 
 interface PollListProps {
   filters: IPollFilters;
+  filterParam: FilterParams;
 }
 
-export default function PollList({ filters }: PollListProps) {
+export default function PollList({ filters, filterParam }: PollListProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [displayedPolls, setDisplayedPolls] = useState<IPoll[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [sortBy, setSortBy] = useState<
+    "creationDate" | "endDate" | "participantCount"
+  >();
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">();
 
   // Reset to first page and clear displayed polls when filters change
   useEffect(() => {
@@ -33,6 +39,18 @@ export default function PollList({ filters }: PollListProps) {
     return undefined;
   };
 
+  useEffect(() => {
+    if (filterParam === FilterParams.Recent) {
+      setSortBy("creationDate");
+      setSortOrder("desc");
+    }
+
+    if (filterParam === FilterParams.Trending) {
+      setSortBy("participantCount");
+      setSortOrder("desc");
+    }
+  }, [filterParam]);
+
   const {
     data: pollsData,
     isLoading,
@@ -40,8 +58,8 @@ export default function PollList({ filters }: PollListProps) {
     refetch,
   } = useGetPolls({
     limit: POLLS_PER_PAGE,
-    sortBy: "creationDate",
-    sortOrder: "desc",
+    sortBy,
+    sortOrder,
     isActive: checkIsActive(),
     userVoted: filters.pollsVoted,
     userCreated: filters.pollsCreated,
@@ -53,7 +71,6 @@ export default function PollList({ filters }: PollListProps) {
 
   // Update displayed polls when data changes
   useEffect(() => {
-    console.log(polls, totalItems);
     if (polls && polls.length > 0) {
       setDisplayedPolls((prev) => [...prev, ...polls]);
     }
@@ -73,7 +90,6 @@ export default function PollList({ filters }: PollListProps) {
     if (currentPage < totalPages) {
       setIsLoadingMore(true);
       setCurrentPage((prev) => prev + 1);
-      // The useEffect will handle adding the new polls to displayedPolls
       setIsLoadingMore(false);
     }
   };
@@ -111,22 +127,7 @@ export default function PollList({ filters }: PollListProps) {
     }
 
     if (!displayedPolls || displayedPolls.length === 0) {
-      return (
-        <div className="p-8 text-center bg-gray-50 rounded-lg border border-gray-200">
-          <h3 className="text-lg font-medium text-gray-800 mb-2">
-            No polls found
-          </h3>
-          <p className="text-gray-500">
-            {filters.livePolls
-              ? "There are no active polls at the moment."
-              : filters.pollsVoted
-              ? "You haven't voted in any polls yet."
-              : filters.pollsCreated
-              ? "You haven't created any polls yet."
-              : "No polls match your current filters."}
-          </p>
-        </div>
-      );
+      return <NoPollsView />;
     }
 
     return (

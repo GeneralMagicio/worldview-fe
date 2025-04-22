@@ -1,9 +1,18 @@
 import PollCard from "../Poll/PollCard";
 import Image from "next/image";
+import { IPoll } from "@/types/poll";
 
-const mockPolls = [
+const mockPolls: IPoll[] = [
   {
     authorUserId: 1,
+    author: {
+      id: 1,
+      name: "John Doe",
+      profilePicture: "https://via.placeholder.com/150",
+      pollsCreatedCount: 10,
+      pollsParticipatedCount: 10,
+      worldID: "1",
+    },
     creationDate: "2021-01-01",
     description: "This is a description of the poll",
     endDate: "2021-01-01",
@@ -27,6 +36,14 @@ const mockPolls = [
   },
   {
     authorUserId: 2,
+    author: {
+      id: 2,
+      name: "Jane Doe",
+      profilePicture: "https://via.placeholder.com/150",
+      pollsCreatedCount: 10,
+      pollsParticipatedCount: 10,
+      worldID: "2",
+    },
     creationDate: "2021-01-01",
     description: "This is a description of the poll",
     endDate: "2021-01-01",
