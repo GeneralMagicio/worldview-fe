@@ -137,19 +137,19 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   };
 
   const handleDeletePoll = () => {
-    deletePoll({ id: pollId });
+    deletePoll(
+      { id: pollId },
+      {
+        onSuccess: () => {
+          router.push("/");
+          setShowConfirmDeleteModal(false);
+        },
+        onError: (error) => {
+          setShowConfirmDeleteModal(false);
+        },
+      }
+    );
   };
-
-  useEffect(() => {
-    if (!deletePollPending) {
-      setShowConfirmDeleteModal(false);
-    }
-
-    if (deletePollSuccess) {
-      router.push("/polls");
-    }
-  }, [deletePollPending]);
-
   // Add event listeners for mouse/touch events outside the component
   useEffect(() => {
     if (!votes?.length) return;

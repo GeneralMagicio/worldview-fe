@@ -29,11 +29,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
 
   const { data: pollData, isLoading } = useGetPollDetails(pollId);
   const { data: userVotes } = useGetUserVotes(pollId);
-  const {
-    mutate: deletePoll,
-    isPending: deletePollPending,
-    isSuccess: deletePollSuccess,
-  } = useDeletePoll();
+  const { mutate: deletePoll, isPending: deletePollPending } = useDeletePoll();
 
   const pollDetails = pollData?.poll;
   const isActive = pollData?.isActive;
@@ -65,23 +61,24 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
     setVotes(mappedVotes);
   }, [pollResults]);
 
-  useEffect(() => {
-    if (!deletePollPending) {
-      setShowConfirmDeleteModal(false);
-    }
-
-    if (deletePollSuccess) {
-      router.push("/polls");
-    }
-  }, [deletePollPending]);
-
   const handleVote = () => {
     if (!isActive) return;
     router.push(`/poll/${pollId}`);
   };
 
   const handleDeletePoll = () => {
-    deletePoll({ id: pollId });
+    deletePoll(
+      { id: pollId },
+      {
+        onSuccess: () => {
+          router.push("/");
+          setShowConfirmDeleteModal(false);
+        },
+        onError: (error) => {
+          setShowConfirmDeleteModal(false);
+        },
+      }
+    );
   };
 
   if (!pollId) return null;
