@@ -17,7 +17,7 @@ export default function NoPollsView() {
         />
       </div>
 
-      <h2 className="text-gray-900 font-medium mb-2">Quiet in here...</h2>
+      <h2 className="text-xl text-gray-900 font-medium mb-2">Quiet in here...</h2>
       <p className="text-gray-900 mb-8">Want to get things rolling?</p>
 
       <Button

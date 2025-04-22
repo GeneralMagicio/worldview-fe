@@ -12,7 +12,7 @@ interface IUsePollParams {
   isActive?: boolean;
   userVoted?: boolean;
   userCreated?: boolean;
-  sortBy?: string;
+  sortBy?: "creationDate" | "endDate" | "participantCount";
   sortOrder?: "asc" | "desc";
 }
 
@@ -35,17 +35,22 @@ export const useGetPolls = (
   return useQuery({
     queryKey: ["polls", filters],
     queryFn: async () => {
-      const params = new URLSearchParams({
-        page: String(filters.page || 1),
-        limit: String(filters.limit || 10),
-        sortBy: filters.sortBy || "endDate",
-        sortOrder: filters.sortOrder || "asc",
-        isActive: String(filters.isActive ?? undefined),
-        userVoted: String(filters.userVoted ?? undefined),
-        userCreated: String(filters.userCreated ?? undefined),
-      });
+      const params: IUsePollParams = {
+        page: filters.page || 1,
+        limit: filters.limit || 10,
+        isActive: filters.isActive ?? undefined,
+        userVoted: filters.userVoted ?? undefined,
+        userCreated: filters.userCreated ?? undefined,
+        sortBy: filters.sortBy || undefined,
+        sortOrder: filters.sortOrder || undefined,
+      };
 
-      const res = await fetch(`/poll?${params.toString()}`);
+      const paramsString = Object.entries(params)
+        .filter(([_, value]) => value !== undefined)
+        .map(([key, value]) => `${key}=${value}`)
+        .join("&");
+
+      const res = await fetch(`/poll?${paramsString}`);
       if (!res.ok) throw new Error("Failed to fetch polls");
 
       return res.json();

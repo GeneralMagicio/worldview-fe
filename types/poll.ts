@@ -40,3 +40,10 @@ export interface IAuthor {
   profilePicture: string;
   worldID: string;
 }
+
+export enum FilterParams {
+  All = "all",
+  Trending = "trending",
+  Recent = "recent",
+  Voted = "voted",
+}
