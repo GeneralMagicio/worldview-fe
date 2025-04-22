@@ -6,6 +6,8 @@ import {
   UseQueryResult,
 } from "@tanstack/react-query";
 
+export const POLLS_LIMIT = 10;
+
 interface IUsePollParams {
   page?: number;
   limit?: number;
@@ -37,7 +39,7 @@ export const useGetPolls = (
     queryFn: async () => {
       const params: IUsePollParams = {
         page: filters.page || 1,
-        limit: filters.limit || 10,
+        limit: filters.limit || POLLS_LIMIT,
         isActive: filters.isActive ?? undefined,
         userVoted: filters.userVoted ?? undefined,
         userCreated: filters.userCreated ?? undefined,

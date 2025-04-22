@@ -1,5 +1,6 @@
 export interface IPoll {
   authorUserId: number;
+  author: IAuthor;
   creationDate: string;
   description: string;
   endDate: string;
