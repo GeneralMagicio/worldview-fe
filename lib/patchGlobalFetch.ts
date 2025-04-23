@@ -25,6 +25,16 @@ export const patchGlobalFetch = () => {
       "Content-Type": "application/json",
     };
 
-    return originalFetch(url, { ...init, headers });
+    // check if the response is unauthorized
+    const response = await originalFetch(url, { ...init, headers });
+
+    if (response.status === 401) {
+      console.error("Unauthorized request detected (401)");
+      localStorage.removeItem("authToken");
+
+      window.location.href = "/login";
+    }
+
+    return response.clone();
   };
 };
