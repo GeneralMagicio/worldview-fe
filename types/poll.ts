@@ -1,6 +1,7 @@
 export interface IPoll {
   authorUserId: number;
   author: IAuthor;
+  hasVoted: boolean;
   creationDate: string;
   description: string;
   endDate: string;

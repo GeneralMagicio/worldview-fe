@@ -36,11 +36,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   const { data: pollData, isLoading: pollLoading } = useGetPollDetails(pollId);
   const { mutate: editVote, isPending: editVotePending } = useEditVote();
   const { mutate: setVote, isPending: setVotePending } = useSetVote();
-  const {
-    mutate: deletePoll,
-    isPending: deletePollPending,
-    isSuccess: deletePollSuccess,
-  } = useDeletePoll();
+  const { mutate: deletePoll, isPending: deletePollPending } = useDeletePoll();
   const {
     data: userVotes,
     isFetched: userVotesFetched,
@@ -98,6 +94,13 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
     let percentage = Math.round(((clientX - rect.left) / rect.width) * 100);
     percentage = Math.max(0, Math.min(100, percentage));
 
+    const totalVotes = votes.reduce((acc, vote) => acc + vote.percentage, 0);
+    const currentElementPercentage = votes[index].percentage;
+
+    if (totalVotes - currentElementPercentage + percentage > 100) {
+      percentage = 100 - (totalVotes - currentElementPercentage);
+    }
+
     const newVotes = [...votes];
     newVotes[index].percentage = percentage;
     newVotes[index].count = Math.sqrt(percentage);
@@ -154,13 +157,20 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   useEffect(() => {
     if (!votes?.length) return;
 
-    if (userVotes) {
-      setVotesChanged(
+    const totalVotes = votes.reduce((acc, vote) => acc + vote.percentage, 0);
+
+    if (totalVotes === 0) {
+      setVotesChanged(false);
+    } else if (totalVotes > 100) {
+      setVotesChanged(false);
+    } else {
+      const votesChanged =
         votes.some(
           (vote) =>
-            vote.percentage !== userVotes.weightDistribution[vote.option]
-        )
-      );
+            vote.percentage !== userVotes?.weightDistribution[vote.option]
+        ) ?? true;
+
+      setVotesChanged(votesChanged);
     }
 
     const handleMouseUp = () => handleDragEnd();
@@ -250,11 +260,9 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
     }
   };
 
-  const voteButtonDisabled =
-    !votes ||
-    votes?.length === 0 ||
-    votes?.every((vote) => vote.percentage === 0) ||
-    votes?.reduce((acc, vote) => acc + vote.percentage, 0) > 100;
+  const isOverVoted = votes
+    ? votes.reduce((acc, vote) => acc + vote.percentage, 0) >= 100
+    : false;
 
   if (!pollId) return null;
 
@@ -421,10 +429,14 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                     </span>
                     <button
                       onClick={() => increaseVote(index)}
-                      disabled={vote.percentage === 100}
+                      disabled={vote.percentage === 100 || isOverVoted}
                     >
                       <PlusRoundIcon
-                        color={vote.percentage === 100 ? "#9BA3AE" : "#191C20"}
+                        color={
+                          vote.percentage === 100 || isOverVoted
+                            ? "#9BA3AE"
+                            : "#191C20"
+                        }
                       />
                     </button>
                   </div>
@@ -490,7 +502,6 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           onClick={handleVote}
           disabled={
             isLoading ||
-            voteButtonDisabled ||
             editVotePending ||
             setVotePending ||
             !isActive ||
