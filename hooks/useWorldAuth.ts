@@ -1,13 +1,12 @@
-import { useCallback, useState } from "react";
-import {
-  MiniKit,
-  VerificationLevel,
-  ISuccessResult,
-} from "@worldcoin/minikit-js";
 import { getNonce, verifyNonceCookie } from "@/app/actions/verify";
-import { getUserDetails } from "@/app/actions/userInfo";
 import { useAuth } from "@/context/AuthContext";
 import { AUTH_ERRORS } from "@/lib/constants/authErrors";
+import {
+  ISuccessResult,
+  MiniKit,
+  VerificationLevel,
+} from "@worldcoin/minikit-js";
+import { useCallback, useState } from "react";
 
 const verifyCommand = {
   action: "verify",
@@ -106,7 +105,7 @@ export const useWorldAuth = () => {
         };
       }
 
-      const userDetails = await getUserDetails(walletPayload.address);
+      const userDetails = await MiniKit.getUserByAddress(walletPayload.address);
 
       const res = await fetch("/auth/verifyWorldId", {
         method: "POST",
