@@ -105,7 +105,7 @@ export default function RecentPolls() {
 
           <Link
             className="py-3 bg-primary text-white text-lg font-medium rounded-lg flex items-center justify-center gap-2"
-            href="/polls/create"
+            href="/poll/create"
           >
             <PlusIcon />
             Create a New Poll

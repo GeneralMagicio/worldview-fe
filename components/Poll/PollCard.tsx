@@ -1,16 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { getRelativeTimeString } from "@/utils/time";
 import { IPoll } from "@/types/poll";
-import { UserIcon } from "@/components/icon-components";
+import { CheckIcon, UserIcon } from "@/components/icon-components";
 
 export default function PollCard({ poll }: { poll: IPoll }) {
   const router = useRouter();
-
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const { timeLeft, isEnded } = getRelativeTimeString(new Date(poll.endDate));
 
@@ -55,45 +51,44 @@ export default function PollCard({ poll }: { poll: IPoll }) {
 
       {poll.description && (
         <>
-          <p
-            className={`text-gray-900 text-sm mb-1 ${
-              isExpanded ? "" : "line-clamp-2"
-            }`}
-          >
+          <p className="text-gray-900 text-sm mb-1 line-clamp-2">
             {poll.description}
           </p>
           {poll.description.length > 100 && (
-            <button
-              className="text-gray-700 font-medium text-xs mb-4"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsExpanded(!isExpanded);
-              }}
-            >
-              {isExpanded ? "Read less" : "Read more"}
+            <button className="text-gray-700 font-medium text-xs mb-4">
+              Read more
             </button>
           )}
         </>
       )}
 
-      <div className="flex justify-between items-center mb-3">
+      <div className="flex justify-between items-center mt-4">
         <div className="flex items-center gap-1">
           <span className="font-medium text-gray-900">
             {poll.participantCount}
           </span>
           <span className="text-sm text-gray-600">voters participated</span>
         </div>
+
+        {poll.hasVoted && (
+          <div className="bg-success-300 text-success-900 px-2 py-1 rounded-full flex items-center gap-1 text-xs">
+            <span>You voted</span>
+            <CheckIcon size={12} color="#18964F" />
+          </div>
+        )}
       </div>
 
-      <button
-        className="w-full py-2.5 bg-gray-200 text-gray-900 font-medium rounded-lg"
-        onClick={(e) => {
-          e.stopPropagation();
-          navigateToPoll();
-        }}
-      >
-        Vote
-      </button>
+      {!poll.hasVoted && (
+        <button
+          className="w-full py-2.5 bg-gray-200 text-gray-900 font-medium rounded-lg mt-3"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigateToPoll();
+          }}
+        >
+          Vote
+        </button>
+      )}
     </div>
   );
 }
