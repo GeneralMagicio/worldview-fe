@@ -1,5 +1,3 @@
-"use client";
-
 import { useGetPolls } from "@/hooks/usePoll";
 import PollCard from "./PollCard";
 import BlurredCard from "../Verify/BlurredCard";

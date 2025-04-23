@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { UserIcon } from "@/components/icon-components";
 import CategoryCard from "@/components/Category/CategoryCard";
