@@ -36,11 +36,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   const { data: pollData, isLoading: pollLoading } = useGetPollDetails(pollId);
   const { mutate: editVote, isPending: editVotePending } = useEditVote();
   const { mutate: setVote, isPending: setVotePending } = useSetVote();
-  const {
-    mutate: deletePoll,
-    isPending: deletePollPending,
-    isSuccess: deletePollSuccess,
-  } = useDeletePoll();
+  const { mutate: deletePoll, isPending: deletePollPending } = useDeletePoll();
   const {
     data: userVotes,
     isFetched: userVotesFetched,
@@ -154,13 +150,20 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   useEffect(() => {
     if (!votes?.length) return;
 
-    if (userVotes) {
-      setVotesChanged(
+    const totalVotes = votes.reduce((acc, vote) => acc + vote.percentage, 0);
+
+    if (totalVotes === 0) {
+      setVotesChanged(false);
+    } else if (totalVotes >= 100) {
+      setVotesChanged(false);
+    } else {
+      const votesChanged =
         votes.some(
           (vote) =>
-            vote.percentage !== userVotes.weightDistribution[vote.option]
-        )
-      );
+            vote.percentage !== userVotes?.weightDistribution[vote.option]
+        ) ?? true;
+
+      setVotesChanged(votesChanged);
     }
 
     const handleMouseUp = () => handleDragEnd();
@@ -249,12 +252,6 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
       setVotes(newVotes);
     }
   };
-
-  const voteButtonDisabled =
-    !votes ||
-    votes?.length === 0 ||
-    votes?.every((vote) => vote.percentage === 0) ||
-    votes?.reduce((acc, vote) => acc + vote.percentage, 0) > 100;
 
   if (!pollId) return null;
 
@@ -490,7 +487,6 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           onClick={handleVote}
           disabled={
             isLoading ||
-            voteButtonDisabled ||
             editVotePending ||
             setVotePending ||
             !isActive ||
