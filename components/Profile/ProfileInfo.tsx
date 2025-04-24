@@ -12,17 +12,22 @@ interface UserData {
   name?: string;
 }
 
-export default function ProfileInfo() {
-  const { worldID } = useAuth();
+interface ProfileInfoProps {
+  worldId?: string;
+}
+
+export default function ProfileInfo({ worldId }: ProfileInfoProps) {
+  const { worldID: authWorldId } = useAuth();
+  const effectiveWorldId = worldId || authWorldId;
   
   const { data: userData, isLoading, error } = useQuery({
-    queryKey: ["user", "profile", worldID],
+    queryKey: ["user", "profile", effectiveWorldId],
     queryFn: async () => {
-      const res = await fetch(`/user/getUserData?worldID=${worldID}`);
+      const res = await fetch(`/user/getUserData?worldID=${effectiveWorldId}`);
       if (!res.ok) throw new Error("Failed to fetch user data");
       return await res.json() as UserData;
     },
-    enabled: !!worldID,
+    enabled: !!effectiveWorldId,
   });
 
   return (
