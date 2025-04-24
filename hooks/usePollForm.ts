@@ -55,6 +55,8 @@ export function usePollForm() {
     formState: { errors },
     getValues,
     trigger,
+    setError,
+    clearErrors,
   } = form;
 
   // Watch for changes to form values
@@ -229,6 +231,20 @@ export function usePollForm() {
       }
     });
   };
+
+  useEffect(() => {
+    if (tagInput.length > 20) {
+      setError("tags", {
+        message: `${tagInput.length}/20 Max tag character limit reached`,
+      });
+    } else if (tagInput.length < 3 && tagInput.length > 0) {
+      setError("tags", {
+        message: "Must be at least 3 characters",
+      });
+    } else {
+      clearErrors("tags");
+    }
+  }, [tagInput]);
 
   return {
     form,

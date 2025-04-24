@@ -131,7 +131,8 @@ export default function PollForm() {
       <button
         type="button"
         onClick={addOption}
-        className="flex items-center gap-2 bg-gray-200 text-gray-900 px-4 py-2 text-sm rounded-lg"
+        disabled={watchedOptions.length >= 20}
+        className="flex items-center gap-2 bg-gray-200 text-gray-900 px-4 py-2 text-sm rounded-lg disabled:opacity-25 disabled:cursor-not-allowed"
       >
         <PlusIcon size={16} color="#191C20" />
         Add option
@@ -140,6 +141,11 @@ export default function PollForm() {
       {errors.options &&
         !Array.isArray(errors.options) &&
         renderErrorMessage(errors.options.message as string)}
+      {watchedOptions.length >= 20 && (
+        <p className="flex items-center justify-end text-gray-500 text-sm mt-1">
+          Maximum of 20 options reached
+        </p>
+      )}
     </div>
   );
 
