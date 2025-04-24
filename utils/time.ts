@@ -1,12 +1,29 @@
 import { MONTHS } from "@/lib/constants";
 
 export const getRelativeTimeString = (
-  targetDate: string | Date
+  startDate: string,
+  endDate: string
 ): { timeLeft: string; isEnded: boolean } => {
+  if (!startDate || !endDate) {
+    return {
+      timeLeft: "Ended",
+      isEnded: true,
+    };
+  }
+
   const now = new Date();
-  const date = new Date(targetDate);
-  const diff = date.getTime() - now.getTime(); // in ms
-  const isPast = diff < 0;
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const isOutOfRange = start > now || end < now;
+
+  if (isOutOfRange) {
+    return {
+      timeLeft: "Ended",
+      isEnded: true,
+    };
+  }
+
+  const diff = end.getTime() - now.getTime();
   const absDiff = Math.abs(diff);
 
   const minutes = Math.floor(absDiff / (1000 * 60));
@@ -17,27 +34,24 @@ export const getRelativeTimeString = (
 
   let timeLeft: string = "";
 
-  if (!isPast) {
-    if (days >= 60) {
-      const remainingDays = days % 30;
-      timeLeft =
-        remainingDays > 0 ? `${months}m ${remainingDays}d` : `${months}m`;
-    } else if (days >= 1) {
-      const remainingHours = hours % 24;
-      timeLeft =
-        remainingHours > 0 ? `${days}d ${remainingHours}h` : `${days}d`;
-    } else if (hours >= 1) {
-      const remainingMinutes = minutes % 60;
-      timeLeft =
-        remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
-    } else {
-      timeLeft = `${minutes}m`;
-    }
+  if (days >= 60) {
+    const remainingDays = days % 30;
+    timeLeft =
+      remainingDays > 0 ? `${months}m ${remainingDays}d` : `${months}m`;
+  } else if (days >= 1) {
+    const remainingHours = hours % 24;
+    timeLeft = remainingHours > 0 ? `${days}d ${remainingHours}h` : `${days}d`;
+  } else if (hours >= 1) {
+    const remainingMinutes = minutes % 60;
+    timeLeft =
+      remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
+  } else {
+    timeLeft = `${minutes}m`;
   }
 
   return {
     timeLeft,
-    isEnded: isPast,
+    isEnded: isOutOfRange,
   };
 };
 

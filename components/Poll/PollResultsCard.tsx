@@ -40,7 +40,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   const isAuthor = worldID === pollDetails?.author?.worldID;
 
   const { timeLeft } = getRelativeTimeString(
-    new Date(pollDetails?.endDate ?? "")
+    pollDetails?.startDate ?? "",
+    pollDetails?.endDate ?? ""
   );
 
   const [votes, setVotes] = useState<VoteState[]>();

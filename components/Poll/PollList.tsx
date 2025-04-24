@@ -10,7 +10,7 @@ import NoPollsView from "./NoPollsView";
 import { Toaster } from "../Toaster";
 import { useToast } from "@/hooks/useToast";
 
-const POLLS_PER_PAGE = 10;
+const POLLS_PER_PAGE = 20;
 
 interface PollListProps {
   filters: IPollFilters;
