@@ -7,6 +7,8 @@ import { Button } from "../ui/Button";
 import BlurredCard from "../Verify/BlurredCard";
 import PollCard from "./PollCard";
 import NoPollsView from "./NoPollsView";
+import { Toaster } from "../Toaster";
+import { useToast } from "@/hooks/useToast";
 
 const POLLS_PER_PAGE = 10;
 
@@ -16,6 +18,8 @@ interface PollListProps {
 }
 
 export default function PollList({ filters, filterParam }: PollListProps) {
+  const { toast } = useToast();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [displayedPolls, setDisplayedPolls] = useState<IPoll[]>([]);
@@ -55,7 +59,6 @@ export default function PollList({ filters, filterParam }: PollListProps) {
     data: pollsData,
     isLoading,
     error,
-    refetch,
   } = useGetPolls({
     limit: POLLS_PER_PAGE,
     sortBy,
@@ -94,36 +97,28 @@ export default function PollList({ filters, filterParam }: PollListProps) {
     }
   };
 
-  // Handle retry when error occurs
-  const handleRetry = () => {
-    refetch();
+  const showErrorToast = () => {
+    toast({
+      description: "Error loading polls. Please try again!",
+      duration: 5 * 60 * 1000,
+    });
   };
+
+  useEffect(() => {
+    if (error) showErrorToast();
+  }, [error]);
 
   return (
     <section aria-label="Poll list" className="mb-6">
       {renderContent()}
       {renderPagination()}
+      <Toaster />
     </section>
   );
 
   function renderContent() {
-    if (isLoading && currentPage === 1) {
+    if ((isLoading && currentPage === 1) || error) {
       return <LoadingPolls />;
-    }
-
-    if (error) {
-      return (
-        <div className="rounded-lg bg-red-50 p-4 border border-red-200">
-          <p className="text-center text-red-600">Error loading polls</p>
-          <Button
-            onClick={handleRetry}
-            className="mt-4 w-full"
-            variant="outline"
-          >
-            Retry
-          </Button>
-        </div>
-      );
     }
 
     if (!displayedPolls || displayedPolls.length === 0) {
