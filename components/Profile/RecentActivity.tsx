@@ -1,14 +1,18 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
+import { ActionType, UserActionDto } from "@/types/poll";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState } from "react";
 import PollCard from "../Poll/PollCard";
-import { ActionType, UserActionDto } from "@/types/poll";
 
 interface UserActivitiesResponseDto {
   userActions: UserActionDto[];
+}
+
+interface RecentActivityProps {
+  worldId?: string;
 }
 
 // Transform UserActionDto to match IPoll structure for PollCard
@@ -38,18 +42,19 @@ const transformActionToPoll = (action: UserActionDto) => {
   };
 };
 
-export default function RecentActivity() {
-  const { worldID } = useAuth();
+export default function RecentActivity({ worldId }: RecentActivityProps) {
+  const { worldID: authWorldId } = useAuth();
+  const effectiveWorldId = worldId || authWorldId;
   const [viewAll, setViewAll] = useState(false);
   
   const { data, isLoading, error } = useQuery<UserActivitiesResponseDto>({
-    queryKey: ["userActivities", worldID],
+    queryKey: ["userActivities", effectiveWorldId],
     queryFn: async () => {
-      const res = await fetch(`/user/getUserActivities?worldID=${worldID}`);
+      const res = await fetch(`/user/getUserActivities?worldID=${effectiveWorldId}`);
       if (!res.ok) throw new Error("Failed to fetch user activities");
       return res.json();
     },
-    enabled: !!worldID,
+    enabled: !!effectiveWorldId,
   });
 
   const activities = data?.userActions || [];
@@ -81,7 +86,7 @@ export default function RecentActivity() {
     <div className="mb-4">
       <h3 className="text-lg font-medium mb-4 text-primary">Recent Activity</h3>
       {activities.length === 0 ? (
-        <NoActivitiesView />
+        <NoActivitiesView isMyProfile={!worldId} />
       ) : (
         <div className="space-y-4">
           {displayActivities.map((action) => (
@@ -102,7 +107,7 @@ export default function RecentActivity() {
   );
 }
 
-function NoActivitiesView() {
+function NoActivitiesView({ isMyProfile }: { isMyProfile: boolean }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-lg mt-16">
       <Image
@@ -112,7 +117,7 @@ function NoActivitiesView() {
         height={150}
       />
       <p className="text-gray-900 font-medium mt-4">
-        This user has no activities yet
+        {isMyProfile ? "No activities yet. Start exploring and engage!" : "No voting activity from this user yet. Perhaps soon!"}
       </p>
     </div>
   );
