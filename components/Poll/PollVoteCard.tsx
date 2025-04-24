@@ -1,27 +1,28 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useGetUserVotes, useSetVote, useEditVote } from "@/hooks/useUser";
-import { useGetPollDetails, useDeletePoll } from "@/hooks/usePoll";
-import { getRelativeTimeString } from "@/utils/time";
-import { handleSharePoll } from "@/utils/share";
 import {
-  ShareIcon,
-  SlidingIcon,
-  StatisticBarsIcon,
+  CheckIcon,
   InfoIcon,
   MinusRoundIcon,
   PlusRoundIcon,
-  UserIcon,
-  CheckIcon,
+  ShareIcon,
+  SlidingIcon,
+  StatisticBarsIcon,
   TrashIcon,
+  UserIcon,
 } from "@/components/icon-components";
-import { Button } from "../ui/Button";
+import ConfirmDeleteModal from "@/components/Modals/ConfirmDeleteModal";
 import QVInfoModal from "@/components/Modals/QVInfoModal";
 import VotingSuccessModal from "@/components/Modals/VotingSuccessModal";
-import ConfirmDeleteModal from "@/components/Modals/ConfirmDeleteModal";
 import { useAuth } from "@/context/AuthContext";
+import { useDeletePoll, useGetPollDetails } from "@/hooks/usePoll";
+import { useEditVote, useGetUserVotes, useSetVote } from "@/hooks/useUser";
 import { formatFloat } from "@/utils/number";
+import { handleSharePoll } from "@/utils/share";
+import { getRelativeTimeString } from "@/utils/time";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
+import { Button } from "../ui/Button";
+
 type VoteState = {
   option: string;
   percentage: number;
@@ -51,6 +52,12 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   const { timeLeft } = getRelativeTimeString(
     new Date(pollDetails?.endDate ?? "")
   );
+
+  const navigateToUserProfile = () => {
+    if (pollDetails?.author?.worldID) {
+      router.push(`/user/${pollDetails.author.worldID}`);
+    }
+  };
 
   // Modals
   const [showQVInfoModal, setShowQVInfoModal] = useState(false);
@@ -272,7 +279,10 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
     <div className="bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029]">
       {/* Poll Voting Card Header */}
       <div className="flex justify-between items-center mb-3">
-        <div className="flex items-center gap-2">
+        <div 
+          className="flex items-center gap-2 cursor-pointer hover:opacity-80"
+          onClick={navigateToUserProfile}
+        >
           <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
             {isLoading ? (
               <div className="w-5 h-5 rounded-full bg-gray-300 animate-pulse" />

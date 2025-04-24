@@ -49,3 +49,23 @@ export enum FilterParams {
   Recent = "recent",
   Voted = "voted",
 }
+
+export enum ActionType {
+  CREATED = "CREATED",
+  VOTED = "VOTED"
+}
+
+export interface UserActionDto {
+  id: number;
+  type: ActionType;
+  pollId: number;
+  pollTitle: string;
+  pollDescription: string;
+  endDate: string;
+  isActive: boolean;
+  votersParticipated: number;
+  authorWorldId: string;
+  authorName: string;
+  authorProfilePicture: string;
+  createdAt: string;
+}
