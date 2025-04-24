@@ -32,8 +32,6 @@ export default function FilterModal({
 
   const resetFilters = () => {
     setTempFilters(DEFAULT_FILTERS);
-    setFilters(DEFAULT_FILTERS);
-    setFiltersOpen(false);
   };
 
   return (
@@ -79,7 +77,7 @@ export default function FilterModal({
         className="w-full bg-gray-900 text-white rounded-lg py-4 mt-8 text-sm font-medium font-sora disabled:bg-gray-200 disabled:text-gray-500"
         onClick={applyFilters}
         disabled={
-          tempFilters.livePolls === filters.livePolls && 
+          tempFilters.livePolls === filters.livePolls &&
           tempFilters.finishedPolls === filters.finishedPolls &&
           tempFilters.pollsVoted === filters.pollsVoted &&
           tempFilters.pollsCreated === filters.pollsCreated

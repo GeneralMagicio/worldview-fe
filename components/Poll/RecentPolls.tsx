@@ -6,8 +6,12 @@ import Link from "next/link";
 import { PlusIcon } from "../icon-components";
 import { useState, useEffect } from "react";
 import { IPoll } from "@/types/poll";
+import { Toaster } from "../Toaster";
+import { useToast } from "@/hooks/useToast";
 
 export default function RecentPolls() {
+  const { toast } = useToast();
+
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const {
@@ -36,16 +40,25 @@ export default function RecentPolls() {
     await refetch();
     setIsRefreshing(false);
   };
+  //   if (!error) return null;
 
-  const getErrorMessage = () => {
-    if (!error) return null;
+  //   if ("message" in error) {
+  //     return error.message;
+  //   }
 
-    if ("message" in error) {
-      return error.message;
-    }
+  //   return "Error loading polls. Please try again later.";
+  // };
 
-    return "Error loading polls. Please try again later.";
+  const showErrorToast = () => {
+    toast({
+      description: "Error loading polls. Please try again!",
+      duration: 5 * 60 * 1000,
+    });
   };
+
+  useEffect(() => {
+    if (error) showErrorToast();
+  }, [error]);
 
   return (
     <section className="mb-6" aria-labelledby="recent-polls-heading">
@@ -61,27 +74,13 @@ export default function RecentPolls() {
       </div>
 
       {renderContent()}
+
+      <Toaster />
     </section>
   );
 
   function renderContent() {
-    if (isLoading) return <LoadingPolls />;
-
-    if (error) {
-      return (
-        <div className="rounded-lg bg-red-50 p-4 border border-red-200">
-          <p className="text-center text-red-600 font-medium">
-            {getErrorMessage()}
-          </p>
-          <button
-            onClick={handleRefresh}
-            className="mt-3 w-full py-2 bg-white text-red-600 font-medium rounded-lg border border-red-300 hover:bg-red-50 transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      );
-    }
+    if (isLoading || error) return <LoadingPolls />;
 
     if (!polls || polls.length === 0) return <NoPollsView />;
 
