@@ -37,5 +37,6 @@ export type CalendarDayProps = {
   isRangeEnd: boolean;
   isFirstInWeek: boolean;
   isLastInWeek: boolean;
+  isDisabled: boolean;
   onClick: (day: number, month: number, year: number) => void;
 };

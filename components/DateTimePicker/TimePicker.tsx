@@ -37,6 +37,7 @@ export const TimePicker = ({
   return (
     <div className={cn("flex-1 relative", className)} ref={timePickerRef}>
       <button
+        type="button"
         className={cn(
           "w-full border rounded-lg p-4 bg-transparent flex items-center gap-2",
           isOpen ? "border-gray-500" : "border-gray-300"
@@ -58,6 +59,7 @@ export const TimePicker = ({
               <div className="h-48 overflow-y-auto flex flex-col items-center">
                 {HOURS.map((hour) => (
                   <button
+                    type="button"
                     key={hour}
                     className={cn(
                       "w-full py-2 text-center rounded-md",
@@ -84,6 +86,7 @@ export const TimePicker = ({
               <div className="h-48 overflow-y-auto flex flex-col items-center">
                 {MINUTES.map((minute) => (
                   <button
+                    type="button"
                     key={minute}
                     className={cn(
                       "w-full py-2 text-center rounded-md",

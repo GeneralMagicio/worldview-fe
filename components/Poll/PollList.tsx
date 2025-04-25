@@ -36,10 +36,10 @@ export default function PollList({ filters, filterParam }: PollListProps) {
   }, [filters]);
 
   const checkIsActive = () => {
-    if (filters.livePolls && filters.finishedPolls) return undefined;
+    if (filters.livePolls && filters.finishedPolls) return "none";
+    if (!filters.livePolls && !filters.finishedPolls) return undefined;
     if (filters.livePolls && !filters.finishedPolls) return true;
     if (!filters.livePolls && filters.finishedPolls) return false;
-    if (!filters.livePolls && !filters.finishedPolls) return undefined;
     return undefined;
   };
 
