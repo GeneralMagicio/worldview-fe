@@ -27,12 +27,12 @@ export default function RootLayout({
       <body>
         <ErudaProvider>
           <MiniKitProvider>
-            <ReactQueryClientProvider>
-              <AuthProvider>
+            <AuthProvider>
+              <ReactQueryClientProvider>
                 <FetchPatchProvider />
                 {children}
-              </AuthProvider>
-            </ReactQueryClientProvider>
+              </ReactQueryClientProvider>
+            </AuthProvider>
           </MiniKitProvider>
         </ErudaProvider>
       </body>

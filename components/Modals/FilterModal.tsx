@@ -1,7 +1,7 @@
+import { useEffect, useState } from "react";
+import { IPollFilters } from "@/types/poll";
 import CustomCheckbox from "../ui/CustomCheckbox";
 import BottomModal from "../ui/BottomModal";
-import { IPollFilters } from "@/types/poll";
-import { useState } from "react";
 
 interface FilterModalProps {
   filters: IPollFilters;
@@ -33,6 +33,10 @@ export default function FilterModal({
   const resetFilters = () => {
     setTempFilters(DEFAULT_FILTERS);
   };
+
+  useEffect(() => {
+    setTempFilters(filters);
+  }, [filters]);
 
   return (
     <BottomModal modalOpen={filtersOpen} setModalOpen={setFiltersOpen}>

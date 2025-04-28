@@ -8,7 +8,10 @@ import { useRouter } from "next/navigation";
 export default function PollCard({ poll }: { poll: IPoll }) {
   const router = useRouter();
 
-  const { timeLeft, isEnded } = getRelativeTimeString(new Date(poll.endDate));
+  const { timeLeft, isEnded } = getRelativeTimeString(
+    poll.startDate ?? "",
+    poll.endDate ?? ""
+  );
 
   const navigateToPoll = () => {
     router.push(`/poll/${poll.pollId}`);

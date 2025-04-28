@@ -32,7 +32,7 @@ export const pollSchema = z.object({
         )
         .refine(
           (val) => val.length >= 3,
-          (val) => ({ message: "Must be at least 3 characters" })
+          () => ({ message: "Must be at least 3 characters" })
         )
     )
     .refine(

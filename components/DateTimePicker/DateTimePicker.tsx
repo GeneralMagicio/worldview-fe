@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "../icon-components";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ClockIcon,
+} from "../icon-components";
 import { Button } from "../ui/Button";
 import { Modal } from "../ui/Modal";
 import {
@@ -21,6 +25,7 @@ export default function DateTimePicker({
   initialStartTime = "13:00",
   initialEndTime = "18:00",
 }: DateTimePickerProps) {
+  const today = new Date();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   // Selected date range
@@ -31,15 +36,8 @@ export default function DateTimePicker({
     endTime: initialEndTime,
   });
 
-  // Selection mode (start or end date)
-  const [selectionMode, setSelectionMode] = useState<"start" | "end" | null>(
-    null
-  );
-
   // Time picker state
-  const [timePickerOpen, setTimePickerOpen] = useState<"start" | "end" | null>(
-    null
-  );
+  const [timePickerOpen, setTimePickerOpen] = useState<"end" | null>(null);
 
   // Navigate to previous month
   const previousMonth = () => {
@@ -63,50 +61,25 @@ export default function DateTimePicker({
   const handleDateClick = (day: number, month: number, year: number) => {
     const clickedDate = new Date(year, month, day);
 
-    if (
-      !dateRange.startDate ||
-      selectionMode === "start" ||
-      (dateRange.startDate && dateRange.endDate)
-    ) {
-      // Start new selection
-      setDateRange({
-        ...dateRange,
-        startDate: clickedDate,
-        endDate: null,
-      });
-      setSelectionMode("end");
-    } else {
-      // Complete selection
-      if (clickedDate < dateRange.startDate) {
-        // If clicked date is before start date, swap them
-        setDateRange({
-          ...dateRange,
-          startDate: clickedDate,
-          endDate: dateRange.startDate,
-        });
-      } else {
-        setDateRange({
-          ...dateRange,
-          endDate: clickedDate,
-        });
-      }
-      setSelectionMode(null);
+    if (clickedDate <= today) {
+      return;
     }
+
+    setDateRange({
+      ...dateRange,
+      endDate: clickedDate,
+    });
   };
 
   // Handle time selection
-  const handleTimeChange = (
-    type: "start" | "end",
-    hours: number,
-    minutes: number
-  ) => {
+  const handleTimeChange = (hours: number, minutes: number) => {
     const formattedHours = hours.toString().padStart(2, "0");
     const formattedMinutes = minutes.toString().padStart(2, "0");
     const timeString = `${formattedHours}:${formattedMinutes}`;
 
     setDateRange((prev) => ({
       ...prev,
-      [type === "start" ? "startTime" : "endTime"]: timeString,
+      endTime: timeString,
     }));
   };
 
@@ -192,6 +165,17 @@ export default function DateTimePicker({
     return date.getTime() === compareDate.getTime();
   };
 
+  // Check if a date should be disabled (current date or past dates)
+  const isDateDisabled = (
+    day: number,
+    month: number,
+    year: number
+  ): boolean => {
+    const date = new Date(year, month, day);
+    date.setHours(0, 0, 0, 0);
+    return date <= today;
+  };
+
   // Get current month and year for display
   const currentMonthName = new Intl.DateTimeFormat("en-US", {
     month: "long",
@@ -208,8 +192,10 @@ export default function DateTimePicker({
         {/* Month navigation */}
         <div className="flex items-center justify-between mb-6">
           <button
+            type="button"
             onClick={previousMonth}
-            className="p-2 rounded-full"
+            className="p-2 rounded-full disabled:opacity-25"
+            disabled={currentDate.getMonth() === today.getMonth()}
             aria-label="Previous month"
           >
             <ChevronLeftIcon />
@@ -218,6 +204,7 @@ export default function DateTimePicker({
             {currentMonthName} {currentYear}
           </h2>
           <button
+            type="button"
             onClick={nextMonth}
             className="p-2 rounded-full"
             aria-label="Next month"
@@ -229,24 +216,23 @@ export default function DateTimePicker({
         {/* Date range inputs */}
         <div className="flex items-center mb-6">
           <div className="flex-1">
-            <button
-              className="w-full border border-gray-300 rounded-lg p-4 bg-transparent text-left"
-              onClick={() => setSelectionMode("start")}
-            >
-              <div className="text-gray-900 text-sm">
-                {dateRange.startDate ? formatDate(dateRange.startDate) : ""}
+            <div className="w-full border border-gray-300 rounded-lg p-4 bg-gray-100 text-left cursor-not-allowed">
+              <div className="text-gray-500 text-sm">
+                {formatDate(dateRange.startDate)}
               </div>
-            </button>
+            </div>
           </div>
           <div className="mx-2 text-gray-400">—</div>
           <div className="flex-1">
             <button
+              type="button"
               className="w-full border border-gray-300 rounded-lg p-4 bg-transparent text-left"
-              onClick={() => dateRange.startDate && setSelectionMode("end")}
               disabled={!dateRange.startDate}
             >
               <div className="text-gray-900 text-sm">
-                {dateRange.endDate ? formatDate(dateRange.endDate) : ""}
+                {dateRange.endDate
+                  ? formatDate(dateRange.endDate)
+                  : "Select end date"}
               </div>
             </button>
           </div>
@@ -254,25 +240,19 @@ export default function DateTimePicker({
 
         {/* Time range inputs */}
         <div className="flex items-center mb-8">
-          <TimePicker
-            time={dateRange.startTime}
-            isOpen={timePickerOpen === "start"}
-            onTimeChange={(hours, minutes) =>
-              handleTimeChange("start", hours, minutes)
-            }
-            onToggle={() =>
-              setTimePickerOpen((prev) => (prev === "start" ? null : "start"))
-            }
-          />
+          <div className="flex-1">
+            <div className="w-full border border-gray-300 rounded-lg p-4 bg-gray-100 text-left cursor-not-allowed flex items-center gap-2">
+              <ClockIcon />
+              <div className="text-gray-500 text-sm">{dateRange.startTime}</div>
+            </div>
+          </div>
 
           <div className="mx-2 text-gray-400">—</div>
 
           <TimePicker
             time={dateRange.endTime}
             isOpen={timePickerOpen === "end"}
-            onTimeChange={(hours, minutes) =>
-              handleTimeChange("end", hours, minutes)
-            }
+            onTimeChange={(hours, minutes) => handleTimeChange(hours, minutes)}
             onToggle={() =>
               setTimePickerOpen((prev) => (prev === "end" ? null : "end"))
             }
@@ -320,6 +300,11 @@ export default function DateTimePicker({
                   )}
                   isFirstInWeek={dayIndex === 0}
                   isLastInWeek={dayIndex === 6}
+                  isDisabled={isDateDisabled(
+                    dateObj.day,
+                    dateObj.month,
+                    dateObj.year
+                  )}
                   onClick={handleDateClick}
                 />
               ))}
@@ -331,6 +316,7 @@ export default function DateTimePicker({
       {/* Footer */}
       <div className="flex border-t border-gray-300 justify-evenly items-center py-4">
         <Button
+          type="button"
           variant="outline"
           className="w-5/12"
           onClick={() => onOpenChange(false)}
@@ -338,9 +324,10 @@ export default function DateTimePicker({
           Cancel
         </Button>
         <Button
-          className="w-5/12"
+          type="button"
+          className="w-5/12 disabled:opacity-50"
           onClick={handleApply}
-          disabled={!dateRange.startDate || !dateRange.endDate}
+          disabled={!dateRange.endDate}
         >
           Apply
         </Button>
