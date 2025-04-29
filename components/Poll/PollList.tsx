@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useGetPolls } from "@/hooks/usePoll";
-import { IPollFilters, IPoll, FilterParams } from "@/types/poll";
+import { FilterParams, IPoll, IPollFilters } from "@/types/poll";
+import { useEffect, useState } from "react";
+import FilterBar from "../FilterBar";
 import { Button } from "../ui/Button";
 import BlurredCard from "../Verify/BlurredCard";
-import PollCard from "./PollCard";
 import NoPollsView from "./NoPollsView";
+import PollCard from "./PollCard";
 
 const POLLS_PER_PAGE = 10;
 
@@ -15,21 +16,30 @@ interface PollListProps {
   filterParam: FilterParams;
 }
 
-export default function PollList({ filters, filterParam }: PollListProps) {
+export default function PollList({ 
+  filters, 
+  filterParam,
+}: PollListProps) {
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [displayedPolls, setDisplayedPolls] = useState<IPoll[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [sortBy, setSortBy] = useState<
     "creationDate" | "endDate" | "participantCount"
   >();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">();
 
-  // Reset to first page and clear displayed polls when filters change
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+  };
+
+  // Reset to first page and clear displayed polls when filters or search change
   useEffect(() => {
     setCurrentPage(1);
     setDisplayedPolls([]);
-  }, [filters]);
+  }, [filters, searchTerm]);
 
   const checkIsActive = () => {
     if (filters.livePolls && filters.finishedPolls) return undefined;
@@ -63,6 +73,7 @@ export default function PollList({ filters, filterParam }: PollListProps) {
     isActive: checkIsActive(),
     userVoted: filters.pollsVoted,
     userCreated: filters.pollsCreated,
+    search: searchTerm || undefined,
   });
 
   // Extract polls and metadata
@@ -101,6 +112,11 @@ export default function PollList({ filters, filterParam }: PollListProps) {
 
   return (
     <section aria-label="Poll list" className="mb-6">
+        <FilterBar 
+          setFiltersOpen={setFiltersOpen} 
+          onSearch={handleSearch}
+          initialSearchTerm={searchTerm}
+        />
       {renderContent()}
       {renderPagination()}
     </section>
@@ -127,7 +143,16 @@ export default function PollList({ filters, filterParam }: PollListProps) {
     }
 
     if (!displayedPolls || displayedPolls.length === 0) {
-      return <NoPollsView />;
+      return searchTerm ? (
+        <div className="flex flex-col items-center justify-center py-8">
+          <h3 className="text-lg font-medium mb-2">No polls found</h3>
+          <p className="text-gray-500 text-center">
+            No polls matching "{searchTerm}" were found. Try a different search term.
+          </p>
+        </div>
+      ) : (
+        <NoPollsView />
+      );
     }
 
     return (

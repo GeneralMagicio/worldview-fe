@@ -1,7 +1,7 @@
 import { IPoll, IPollDetails } from "@/types/poll";
 import {
-  useQuery,
   useMutation,
+  useQuery,
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ interface IUsePollParams {
   userCreated?: boolean;
   sortBy?: "creationDate" | "endDate" | "participantCount";
   sortOrder?: "asc" | "desc";
+  search?: string;
 }
 
 interface ICreatePollData {
@@ -45,11 +46,12 @@ export const useGetPolls = (
         userCreated: filters.userCreated ?? undefined,
         sortBy: filters.sortBy || undefined,
         sortOrder: filters.sortOrder || undefined,
+        search: filters.search || undefined,
       };
 
       const paramsString = Object.entries(params)
         .filter(([_, value]) => value !== undefined)
-        .map(([key, value]) => `${key}=${value}`)
+        .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
         .join("&");
 
       const res = await fetch(`/poll?${paramsString}`);
