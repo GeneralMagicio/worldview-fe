@@ -34,7 +34,8 @@ export default function PollsPage() {
       />
       <PollList 
         filters={filters} 
-        filterParam={filter} 
+        filterParam={filter}
+        setFiltersOpen={setFiltersOpen}
       />
     </main>
   );

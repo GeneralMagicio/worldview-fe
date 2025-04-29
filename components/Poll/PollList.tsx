@@ -1,14 +1,14 @@
 "use client";
 
 import { useGetPolls } from "@/hooks/usePoll";
+import { useToast } from "@/hooks/useToast";
 import { FilterParams, IPoll, IPollFilters } from "@/types/poll";
 import { useEffect, useState } from "react";
 import FilterBar from "../FilterBar";
+import { Toaster } from "../Toaster";
 import { Button } from "../ui/Button";
 import BlurredCard from "../Verify/BlurredCard";
 import NoPollsView from "./NoPollsView";
-import { Toaster } from "../Toaster";
-import { useToast } from "@/hooks/useToast";
 import PollCard from "./PollCard";
 
 const POLLS_PER_PAGE = 20;
@@ -16,12 +16,14 @@ const POLLS_PER_PAGE = 20;
 interface PollListProps {
   filters: IPollFilters;
   filterParam: FilterParams;
+  setFiltersOpen: (open: boolean) => void;
 }
 
 
 export default function PollList({ 
   filters, 
   filterParam,
+  setFiltersOpen
 }: PollListProps) {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,7 +31,6 @@ export default function PollList({
   const [totalPages, setTotalPages] = useState(1);
   const [displayedPolls, setDisplayedPolls] = useState<IPoll[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [filtersOpen, setFiltersOpen] = useState(false);
   const [sortBy, setSortBy] = useState<
     "creationDate" | "endDate" | "participantCount"
   >();
@@ -70,6 +71,7 @@ export default function PollList({
     isLoading,
     error,
   } = useGetPolls({
+    page: currentPage,
     limit: POLLS_PER_PAGE,
     sortBy,
     sortOrder,

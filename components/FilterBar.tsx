@@ -9,6 +9,8 @@ interface FilterBarProps {
   initialSearchTerm?: string;
 }
 
+const DEBOUNCE_TIME = 800;
+
 export default function FilterBar({
   setFiltersOpen,
   onSearch,
@@ -22,14 +24,10 @@ export default function FilterBar({
     setSearchTerm(e.target.value);
   };
   
-  const handleClearSearch = () => {
-    setSearchTerm("");
-  };
-  
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchTerm);
-    }, 500);
+    }, DEBOUNCE_TIME);
     return () => clearTimeout(timer);
   }, [searchTerm]);
   
