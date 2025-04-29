@@ -30,7 +30,7 @@ export function usePollForm() {
   const currentDay = new Date().getDate();
 
   const today = new Date(currentYear, currentMonth, currentDay);
-  const nextWeek = new Date(currentYear, currentMonth, currentDay + 7);
+  const nextWeek = new Date(currentYear, currentMonth, currentDay + 6);
 
   // Form setup
   const form = useForm<PollFormData>({

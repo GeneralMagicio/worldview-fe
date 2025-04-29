@@ -216,8 +216,8 @@ export default function DateTimePicker({
         {/* Date range inputs */}
         <div className="flex items-center mb-6">
           <div className="flex-1">
-            <div className="w-full border border-gray-300 rounded-lg p-4 bg-gray-100 text-left cursor-not-allowed">
-              <div className="text-gray-500 text-sm">
+            <div className="w-full border border-gray-300 rounded-lg p-4 text-left cursor-not-allowed">
+              <div className="text-gray-400 text-sm">
                 {formatDate(dateRange.startDate)}
               </div>
             </div>
@@ -241,9 +241,9 @@ export default function DateTimePicker({
         {/* Time range inputs */}
         <div className="flex items-center mb-8">
           <div className="flex-1">
-            <div className="w-full border border-gray-300 rounded-lg p-4 bg-gray-100 text-left cursor-not-allowed flex items-center gap-2">
+            <div className="w-full border border-gray-300 rounded-lg p-4 text-left cursor-not-allowed flex items-center gap-2">
               <ClockIcon />
-              <div className="text-gray-500 text-sm">{dateRange.startTime}</div>
+              <div className="text-gray-400 text-sm">Now</div>
             </div>
           </div>
 
