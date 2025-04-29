@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { UserIcon } from "@/components/icon-components";
 import CategoryCard from "@/components/Category/CategoryCard";
+import { UserIcon } from "@/components/icon-components";
 import RecentPolls from "@/components/Poll/RecentPolls";
 import { FilterParams } from "@/types/poll";
+import Link from "next/link";
 
 const categories = [
   {
