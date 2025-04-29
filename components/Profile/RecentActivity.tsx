@@ -15,6 +15,8 @@ interface RecentActivityProps {
   worldId?: string;
 }
 
+const POLLS_PER_PAGE = 5;
+
 // Transform UserActionDto to match IPoll structure for PollCard
 const transformActionToPoll = (action: UserActionDto) => {
   return {
@@ -58,7 +60,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
   });
 
   const activities = data?.userActions || [];
-  const displayActivities = viewAll ? activities : activities.slice(0, 2);
+  const displayActivities = viewAll ? activities : activities.slice(0, POLLS_PER_PAGE);
 
   if (isLoading) {
     return (
