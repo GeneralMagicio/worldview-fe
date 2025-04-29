@@ -19,7 +19,6 @@ interface PollListProps {
   setFiltersOpen: (open: boolean) => void;
 }
 
-
 export default function PollList({ 
   filters, 
   filterParam,
@@ -200,7 +199,7 @@ export default function PollList({
   }
 }
 
-const LoadingPolls = () => {
+export const LoadingPolls = () => {
   return (
     <div className="space-y-4" aria-label="Loading polls">
       {Array.from({ length: 3 }).map((_, index) => (
