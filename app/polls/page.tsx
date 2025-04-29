@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import FilterBar from "@/components/FilterBar";
-import FilterModal from "@/components/Modals/FilterModal";
 import Header from "@/components/Header";
+import FilterModal, { DEFAULT_FILTERS } from "@/components/Modals/FilterModal";
 import PollList from "@/components/Poll/PollList";
-import { IPollFilters, FilterParams } from "@/types/poll";
-import { DEFAULT_FILTERS } from "@/components/Modals/FilterModal";
+import { FilterParams, IPollFilters } from "@/types/poll";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function PollsPage() {
   const searchParams = useSearchParams();
@@ -28,14 +26,17 @@ export default function PollsPage() {
   return (
     <main className="flex-1 bg-white rounded-t-3xl p-5">
       <Header backUrl="/" />
-      <FilterBar setFiltersOpen={setFiltersOpen} />
       <FilterModal
         filters={filters}
         setFilters={setFilters}
         filtersOpen={filtersOpen}
         setFiltersOpen={setFiltersOpen}
       />
-      <PollList filters={filters} filterParam={filter} />
+      <PollList 
+        filters={filters} 
+        filterParam={filter}
+        setFiltersOpen={setFiltersOpen}
+      />
     </main>
   );
 }

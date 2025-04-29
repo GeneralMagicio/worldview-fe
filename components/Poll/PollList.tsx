@@ -1,25 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useGetPolls } from "@/hooks/usePoll";
-import { IPollFilters, IPoll, FilterParams } from "@/types/poll";
+import { useToast } from "@/hooks/useToast";
+import { FilterParams, IPoll, IPollFilters } from "@/types/poll";
+import { useEffect, useState } from "react";
+import FilterBar from "../FilterBar";
+import { Toaster } from "../Toaster";
 import { Button } from "../ui/Button";
 import BlurredCard from "../Verify/BlurredCard";
-import PollCard from "./PollCard";
 import NoPollsView from "./NoPollsView";
-import { Toaster } from "../Toaster";
-import { useToast } from "@/hooks/useToast";
+import PollCard from "./PollCard";
 
 const POLLS_PER_PAGE = 20;
 
 interface PollListProps {
   filters: IPollFilters;
   filterParam: FilterParams;
+  setFiltersOpen: (open: boolean) => void;
 }
 
-export default function PollList({ filters, filterParam }: PollListProps) {
-  const { toast } = useToast();
 
+export default function PollList({ 
+  filters, 
+  filterParam,
+  setFiltersOpen
+}: PollListProps) {
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [displayedPolls, setDisplayedPolls] = useState<IPoll[]>([]);
@@ -29,11 +36,15 @@ export default function PollList({ filters, filterParam }: PollListProps) {
   >();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">();
 
-  // Reset to first page and clear displayed polls when filters change
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+  };
+
+  // Reset to first page and clear displayed polls when filters or search change
   useEffect(() => {
     setCurrentPage(1);
     setDisplayedPolls([]);
-  }, [filters]);
+  }, [filters, searchTerm]);
 
   const checkIsActive = () => {
     if (filters.livePolls && filters.finishedPolls) return "none";
@@ -60,12 +71,14 @@ export default function PollList({ filters, filterParam }: PollListProps) {
     isLoading,
     error,
   } = useGetPolls({
+    page: currentPage,
     limit: POLLS_PER_PAGE,
     sortBy,
     sortOrder,
     isActive: checkIsActive(),
     userVoted: filters.pollsVoted,
     userCreated: filters.pollsCreated,
+    search: searchTerm || undefined,
   });
 
   // Extract polls and metadata
@@ -110,6 +123,11 @@ export default function PollList({ filters, filterParam }: PollListProps) {
 
   return (
     <section aria-label="Poll list" className="mb-6">
+        <FilterBar 
+          setFiltersOpen={setFiltersOpen} 
+          onSearch={handleSearch}
+          initialSearchTerm={searchTerm}
+        />
       {renderContent()}
       {renderPagination()}
       <Toaster />
@@ -122,7 +140,16 @@ export default function PollList({ filters, filterParam }: PollListProps) {
     }
 
     if (!displayedPolls || displayedPolls.length === 0) {
-      return <NoPollsView />;
+      return searchTerm ? (
+        <div className="flex flex-col items-center justify-center py-8">
+          <h3 className="text-lg font-medium mb-2">No polls found</h3>
+          <p className="text-gray-500 text-center">
+            No polls matching "{searchTerm}" were found. Try a different search term.
+          </p>
+        </div>
+      ) : (
+        <NoPollsView />
+      );
     }
 
     return (
