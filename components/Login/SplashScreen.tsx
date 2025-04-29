@@ -34,7 +34,7 @@ export function SplashScreen() {
         </div>
       )}
       {(isLoggingIn || isLoggedIn) && (
-        <div className="flex flex-col items-center justify-center mt-8">
+        <div className="flex flex-col items-center justify-center my-12 mx-4">
           <BlurredCard />
           <BlurredCard />
           <BlurredCard />
