@@ -11,7 +11,7 @@ export const POLLS_LIMIT = 10;
 interface IUsePollParams {
   page?: number;
   limit?: number;
-  isActive?: boolean;
+  isActive?: boolean | "none";
   userVoted?: boolean;
   userCreated?: boolean;
   sortBy?: "creationDate" | "endDate" | "participantCount";
@@ -38,6 +38,13 @@ export const useGetPolls = (
   return useQuery({
     queryKey: ["polls", filters],
     queryFn: async () => {
+      if (filters.isActive === "none") {
+        return {
+          polls: [],
+          total: 0,
+        };
+      }
+
       const params: IUsePollParams = {
         page: filters.page || 1,
         limit: filters.limit || POLLS_LIMIT,

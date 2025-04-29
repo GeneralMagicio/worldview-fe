@@ -29,7 +29,7 @@ export function usePollForm() {
   const currentMonth = new Date().getMonth();
   const currentDay = new Date().getDate();
 
-  const tomorrow = new Date(currentYear, currentMonth, currentDay + 1);
+  const today = new Date(currentYear, currentMonth, currentDay);
   const nextWeek = new Date(currentYear, currentMonth, currentDay + 7);
 
   // Form setup
@@ -39,7 +39,7 @@ export function usePollForm() {
       title: "",
       description: "",
       options: ["", ""],
-      startDate: tomorrow.toISOString(),
+      startDate: today.toISOString(),
       endDate: nextWeek.toISOString(),
       tags: [],
       isAnonymous: false,
@@ -55,6 +55,8 @@ export function usePollForm() {
     formState: { errors },
     getValues,
     trigger,
+    setError,
+    clearErrors,
   } = form;
 
   // Watch for changes to form values
@@ -68,13 +70,19 @@ export function usePollForm() {
   const [draftModalOpen, setDraftModalOpen] = useState(false);
   const [pollCreatedModalOpen, setPollCreatedModalOpen] = useState(false);
 
+  const initialStartTime = new Date().toLocaleTimeString("en-EU", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
   // Date time state
   const [duration, setDuration] = useState<24 | 48 | "custom">(24);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState<DateTimeValues>({
-    startDate: tomorrow,
+    startDate: today,
     endDate: nextWeek,
-    startTime: "13:00",
+    startTime: initialStartTime,
     endTime: "18:00",
   });
   const [customDateRange, setCustomDateRange] = useState<string | null>(null);
@@ -160,31 +168,18 @@ export function usePollForm() {
     let end: Date;
     let start: Date;
 
+    start = now;
+
     if (duration === 24) {
-      start = now;
       end = new Date(now.getTime() + 24 * 60 * 60 * 1000);
     } else if (duration === 48) {
-      start = now;
       end = new Date(now.getTime() + 48 * 60 * 60 * 1000);
     } else {
-      if (startDate < now) {
-        setGeneralError("Start date cannot be in the past");
-        return { formattedStartDate: "", formattedEndDate: "" };
-      }
-      if (endDate < startDate) {
-        setGeneralError("End date cannot be before start date");
-        return { formattedStartDate: "", formattedEndDate: "" };
-      }
       if (startDate === endDate) {
         setGeneralError("Start date and end date cannot be the same");
         return { formattedStartDate: "", formattedEndDate: "" };
       }
 
-      if (startDate === now) {
-        start = now;
-      } else {
-        start = startDate;
-      }
       end = endDate;
     }
 
@@ -229,6 +224,20 @@ export function usePollForm() {
       }
     });
   };
+
+  useEffect(() => {
+    if (tagInput.length > 20) {
+      setError("tags", {
+        message: `${tagInput.length}/20 Max tag character limit reached`,
+      });
+    } else if (tagInput.length < 3 && tagInput.length > 0) {
+      setError("tags", {
+        message: "Must be at least 3 characters",
+      });
+    } else {
+      clearErrors("tags");
+    }
+  }, [tagInput]);
 
   return {
     form,

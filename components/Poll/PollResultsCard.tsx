@@ -40,7 +40,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   const isAuthor = worldID === pollDetails?.author?.worldID;
 
   const { timeLeft } = getRelativeTimeString(
-    new Date(pollDetails?.endDate ?? "")
+    pollDetails?.startDate ?? "",
+    pollDetails?.endDate ?? ""
   );
 
   const [votes, setVotes] = useState<VoteState[]>();
@@ -134,7 +135,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             <div className="h-4 bg-gray-200 rounded-md w-5/6 animate-pulse"></div>
           </div>
         ) : (
-          <>
+          <div className="space-y-2 mb-4">
             <h2 className="text-gray-900 text-xl font-medium leading-tight mb-2">
               {pollDetails?.title}
             </h2>
@@ -158,21 +159,21 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                 )}
               </>
             )}
-          </>
+          </div>
         )}
 
         {/* Tags */}
         {isLoading ? (
-          <div className="flex gap-2 mb-6">
+          <div className="flex gap-2 mb-4">
             <div className="h-6 w-16 bg-gray-200 rounded-full animate-pulse"></div>
             <div className="h-6 w-20 bg-gray-200 rounded-full animate-pulse"></div>
           </div>
         ) : (
-          <div className="flex gap-2 mb-6">
+          <div className="flex gap-2 mb-4">
             {pollDetails?.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-3 py-1 bg-gray-300 border border-gray-300 text-gray-900 rounded-full font-medium text-sm"
+                className="px-3 py-0.5 bg-gray-300 border border-gray-300 text-gray-900 rounded-full font-medium text-xs"
               >
                 {tag}
               </span>

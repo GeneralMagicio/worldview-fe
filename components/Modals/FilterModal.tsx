@@ -1,7 +1,7 @@
+import { useEffect, useState } from "react";
+import { IPollFilters } from "@/types/poll";
 import CustomCheckbox from "../ui/CustomCheckbox";
 import BottomModal from "../ui/BottomModal";
-import { IPollFilters } from "@/types/poll";
-import { useState } from "react";
 
 interface FilterModalProps {
   filters: IPollFilters;
@@ -32,9 +32,11 @@ export default function FilterModal({
 
   const resetFilters = () => {
     setTempFilters(DEFAULT_FILTERS);
-    setFilters(DEFAULT_FILTERS);
-    setFiltersOpen(false);
   };
+
+  useEffect(() => {
+    setTempFilters(filters);
+  }, [filters]);
 
   return (
     <BottomModal modalOpen={filtersOpen} setModalOpen={setFiltersOpen}>
@@ -79,7 +81,7 @@ export default function FilterModal({
         className="w-full bg-gray-900 text-white rounded-lg py-4 mt-8 text-sm font-medium font-sora disabled:bg-gray-200 disabled:text-gray-500"
         onClick={applyFilters}
         disabled={
-          tempFilters.livePolls === filters.livePolls && 
+          tempFilters.livePolls === filters.livePolls &&
           tempFilters.finishedPolls === filters.finishedPolls &&
           tempFilters.pollsVoted === filters.pollsVoted &&
           tempFilters.pollsCreated === filters.pollsCreated

@@ -25,7 +25,7 @@ export function SplashScreen() {
           </div>
           <div className="w-full max-w-md px-6 mt-auto">
             <button
-              className="w-full bg-[#161c1f] text-white py-4 rounded-xl text-lg font-semibold"
+              className="w-full bg-gray-900 text-white py-4 rounded-xl text-lg font-semibold"
               onClick={handleLogin}
             >
               Login with World
