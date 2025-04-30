@@ -14,7 +14,7 @@ export default function NoUserActivityView() {
           height={150}
         />
       </div>
-      <h2 className="text-xl text-gray-900 font-medium mb-2">No corresponding activities to show for this user</h2>
+      <h2 className="text-xl text-gray-900 font-medium mb-2 text-center">No corresponding activities to show for this user</h2>
     </div>
   );
 }
