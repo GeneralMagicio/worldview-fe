@@ -247,7 +247,10 @@ export default function PollForm() {
               placeholder="Enter description"
               className={cn(
                 BASE_INPUT_CLASSES,
-                "min-h-[120px] p-4 text-gray-900"
+                "min-h-[120px] p-4 text-gray-900",
+                errors.description
+                  ? "border-error-700 focus:ring-error-700 focus:border-error-700"
+                  : ""
               )}
             />
             {errors.description
