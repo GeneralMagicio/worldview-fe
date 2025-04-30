@@ -139,16 +139,7 @@ export default function PollList({
     }
 
     if (!displayedPolls || displayedPolls.length === 0) {
-      return searchTerm ? (
-        <div className="flex flex-col items-center justify-center py-8">
-          <h3 className="text-lg font-medium mb-2">No polls found</h3>
-          <p className="text-gray-500 text-center">
-            No polls matching "{searchTerm}" were found. Try a different search term.
-          </p>
-        </div>
-      ) : (
-        <NoPollsView />
-      );
+      return <NoPollsView />
     }
 
     return (
