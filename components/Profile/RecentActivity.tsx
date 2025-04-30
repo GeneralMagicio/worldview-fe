@@ -68,7 +68,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
       {activities.length > 0 && (
         <button 
           className="w-full bg-primary text-white font-medium text-lg py-3 rounded-lg mt-4"
-          onClick={() => router.push(`/userActivities/${effectiveWorldId}`)}
+          onClick={() => router.push(`/${worldId ? "user" : "profile"}Activities/${effectiveWorldId}`)}
         >
           View all Activities
         </button>
@@ -86,7 +86,7 @@ function NoActivitiesView({ isMyProfile }: { isMyProfile: boolean }) {
         width={221}
         height={150}
       />
-      <p className="text-gray-900 font-medium mt-4">
+      <p className="text-gray-900 font-medium mt-4 text-center">
         {isMyProfile ? "No activities yet. Start exploring and engage!" : "No voting activity from this user yet. Perhaps soon!"}
       </p>
     </div>
