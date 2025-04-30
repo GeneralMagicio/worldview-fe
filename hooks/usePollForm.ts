@@ -117,17 +117,28 @@ export function usePollForm() {
   // Tags handlers
   const addTag = (tag: string) => {
     // Handle case where multiple tags are entered with commas, spaces, or new lines
-    const tagsToAdd = tag
+    const allTags = tag
       .split(/[,\s\n]/) // Split on commas, whitespace, or newlines
       .map(t => t.trim().toLowerCase())
-      .filter(t => t.length >= 3); // Filter out empty strings and tags shorter than 3 chars
+      .filter(t => t !== ''); // Filter out empty strings, but keep all potential tags
     
-    if (tagsToAdd.length === 0) return;
+    if (allTags.length === 0) return;
     
-    // Process multiple tags (in case user pastes a comma-separated list or enters multiple words)
+    // Check if any of the tags are too short
+    const shortTags = allTags.filter(t => t.length > 0 && t.length < 3);
+    if (shortTags.length > 0) {
+      setError("tags", {
+        message: `Tag${shortTags.length > 1 ? 's' : ''} "${shortTags.join(', ')}" must be at least 3 characters`,
+      });
+      setTagInput(""); // Clear input after showing error
+      return;
+    }
+    
+    // All tags are valid, proceed to add them
+    const validTags = allTags.filter(t => t.length >= 3);
     const newTags = [...watchedTags];
     
-    for (const tagToAdd of tagsToAdd) {
+    for (const tagToAdd of validTags) {
       if (
         tagToAdd &&
         !newTags.includes(tagToAdd) &&
@@ -145,6 +156,8 @@ export function usePollForm() {
       setValue("tags", newTags);
       setTagInput("");
       trigger("tags");
+    } else {
+      setTagInput(""); // Clear the input even if no tags were added
     }
   };
 
