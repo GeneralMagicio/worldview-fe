@@ -6,7 +6,7 @@ import { useGetUserVotes } from "@/hooks/useUser";
 import { getRelativeTimeString } from "@/utils/time";
 import { formatFloat } from "@/utils/number";
 import {
-  ShareIcon,
+  // ShareIcon,
   InfoIcon,
   UserIcon,
   CheckIcon,
@@ -202,17 +202,17 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                         position: "relative",
                       }}
                     >
-                      <span className="text-gray-900 whitespace-nowrap">
+                      <span className="text-gray-900 block text-ellipsis whitespace-nowrap">
                         {vote.option}
                       </span>
                     </div>
                   </div>
-                  <div className="w-80 flex items-center justify-end gap-6">
-                    <span className="text-gray-500 text-sm">
+                  <div className="flex items-center justify-end ml-4 shrink-0">
+                    <span className="text-gray-500 text-sm justify-end mr-4 whitespace-nowrap">
                       {formatFloat(vote.count)}{" "}
                       {vote.count === 1 ? "Vote" : "Votes"}{" "}
                     </span>
-                    <span className="text-gray-900 text-sm">
+                    <span className="text-gray-900 text-sm w-12 text-right">
                       {formatFloat(vote.percentage)}%
                     </span>
                   </div>
