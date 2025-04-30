@@ -55,9 +55,9 @@ export default function PollForm() {
 
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    
+
     // If the user typed a space or comma, we should process the tag
-    if (value.endsWith(' ') || value.endsWith(',')) {
+    if (value.endsWith(" ") || value.endsWith(",")) {
       // Process everything before the last character as a potential tag
       const tagValue = value.slice(0, -1);
       if (tagValue.trim()) {
@@ -65,21 +65,20 @@ export default function PollForm() {
       }
       return;
     }
-    
+
     // Otherwise, just update the input value
     setTagInput(value);
   };
 
-  const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {  
+  const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || e.key === " " || e.key === ",") {
       e.preventDefault();
       // Process tag when Enter, space, or comma is pressed
       if (tagInput.trim()) {
         addTag(tagInput);
       }
-    } 
-    else if (
-      (e.key === "Backspace") &&
+    } else if (
+      e.key === "Backspace" &&
       tagInput === "" &&
       watchedTags.length > 0
     ) {
@@ -90,7 +89,7 @@ export default function PollForm() {
 
   // Handle paste event to immediately process tags
   const handleTagPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    const pastedText = e.clipboardData.getData('text');
+    const pastedText = e.clipboardData.getData("text");
     // Handle paste regardless of content - the addTag function will handle validation
     e.preventDefault();
     addTag(tagInput + pastedText);
@@ -251,14 +250,13 @@ export default function PollForm() {
                 "min-h-[120px] p-4 text-gray-900"
               )}
             />
-            {watchedDescription.length <= 1400 ? (
-              <p className="flex items-center justify-end gap-1 text-gray-500 text-sm mt-1">
-                {watchedDescription.length}/1400
-              </p>
-            ) : (
-              errors.description &&
-              renderErrorMessage(errors.description.message as string)
-            )}
+            {errors.description
+              ? renderErrorMessage(errors.description.message as string)
+              : watchedDescription.length <= 1400 && (
+                  <p className="flex items-center justify-end gap-1 text-gray-500 text-sm mt-1">
+                    {watchedDescription.length}/1400
+                  </p>
+                )}
           </div>
 
           <div>
