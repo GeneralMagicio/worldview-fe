@@ -16,7 +16,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useDeletePoll, useGetPollDetails } from "@/hooks/usePoll";
 import { useEditVote, useGetUserVotes, useSetVote } from "@/hooks/useUser";
 import { formatFloat } from "@/utils/number";
-import { handleSharePoll } from "@/utils/share";
+// import { handleSharePoll } from "@/utils/share";
 import { getRelativeTimeString } from "@/utils/time";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -497,13 +497,13 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             >
               <InfoIcon />
             </button>
-            <button
+            {/* <button
               className="rounded-full h-8 w-8 disabled:opacity-50"
               onClick={() => handleSharePoll(pollDetails?.title ?? "", pollId)}
               disabled={isLoading || editVotePending || setVotePending}
             >
               <ShareIcon />
-            </button>
+            </button> */}
           </div>
         </div>
 

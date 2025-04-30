@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ShareIcon } from "../icon-components";
-import { handleSharePoll } from "@/utils/share";
+// import { handleSharePoll } from "@/utils/share";
 import { Modal } from "../ui/Modal";
 import { Button } from "../ui/Button";
 
@@ -45,14 +45,14 @@ export default function PollCreatedModal({
           Spread the word to gather votes.
         </p>
 
-        <Button
+        {/* <Button
           variant="primary"
           className="w-full flex items-center justify-center gap-2 font-medium"
           onClick={() => handleSharePoll(pollTitle, pollId!)}
         >
           <ShareIcon size={24} color="white" />
           Share this Poll
-        </Button>
+        </Button> */}
 
         <Button
           variant="outline"
