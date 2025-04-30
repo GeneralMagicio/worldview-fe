@@ -2,11 +2,17 @@
 
 import { MiniKit } from "@worldcoin/minikit-js";
 import { ReactNode, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function MiniKitProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
+
   useEffect(() => {
     MiniKit.install();
-    console.log(MiniKit.isInstalled());
+
+    if (!MiniKit.isInstalled()) {
+      router.push("/error");
+    }
   }, []);
 
   return <>{children}</>;

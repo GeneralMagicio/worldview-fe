@@ -1,0 +1,120 @@
+import { IPoll, IPollDetails } from "@/types/poll";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  UseQueryResult,
+} from "@tanstack/react-query";
+
+export const POLLS_LIMIT = 10;
+
+interface IUsePollParams {
+  page?: number;
+  limit?: number;
+  isActive?: boolean | "none";
+  userVoted?: boolean;
+  userCreated?: boolean;
+  sortBy?: "creationDate" | "endDate" | "participantCount";
+  sortOrder?: "asc" | "desc";
+  search?: string;
+}
+
+interface ICreatePollData {
+  title: string;
+  description: string;
+  options: string[];
+  startDate: string;
+  endDate: string;
+  tags: string[];
+  isAnonymous?: boolean;
+}
+
+export const useGetPolls = (
+  filters: IUsePollParams = {}
+): UseQueryResult<{
+  polls: IPoll[];
+  total: number;
+}> => {
+  return useQuery({
+    queryKey: ["polls", filters],
+    queryFn: async () => {
+      if (filters.isActive === "none") {
+        return {
+          polls: [],
+          total: 0,
+        };
+      }
+
+      const params: IUsePollParams = {
+        page: filters.page || 1,
+        limit: filters.limit || POLLS_LIMIT,
+        isActive: filters.isActive ?? undefined,
+        userVoted: filters.userVoted ?? undefined,
+        userCreated: filters.userCreated ?? undefined,
+        sortBy: filters.sortBy || undefined,
+        sortOrder: filters.sortOrder || undefined,
+        search: filters.search || undefined,
+      };
+
+      const paramsString = Object.entries(params)
+        .filter(([_, value]) => value !== undefined)
+        .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+        .join("&");
+
+      const res = await fetch(`/poll?${paramsString}`);
+      if (!res.ok) throw new Error("Failed to fetch polls");
+
+      return res.json();
+    },
+  });
+};
+
+export const useGetPollDetails = (id: number): UseQueryResult<IPollDetails> => {
+  return useQuery({
+    queryKey: ["poll", id],
+    queryFn: async () => {
+      const res = await fetch(`/poll/${id}`);
+      if (!res.ok) throw new Error("Failed to fetch poll details");
+      return res.json();
+    },
+    enabled: !!id,
+  });
+};
+
+export const useCreatePoll = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: ICreatePollData): Promise<IPoll> => {
+      const res = await fetch("/poll", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Failed to create poll");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["polls"] });
+    },
+    retry: false,
+  });
+};
+
+export const useDeletePoll = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id }: { id: number }) => {
+      const res = await fetch(`/poll/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!res.ok) throw new Error("Failed to delete poll");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["polls"] });
+    },
+  });
+};

@@ -1,0 +1,124 @@
+import { useGetPolls } from "@/hooks/usePoll";
+import PollCard from "./PollCard";
+import BlurredCard from "../Verify/BlurredCard";
+import NoPollsView from "./NoPollsView";
+import Link from "next/link";
+import { PlusIcon } from "../icon-components";
+import { useState, useEffect } from "react";
+import { IPoll } from "@/types/poll";
+import { Toaster } from "../Toaster";
+import { useToast } from "@/hooks/useToast";
+
+export default function RecentPolls() {
+  const { toast } = useToast();
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const {
+    data: pollsData,
+    isLoading,
+    error,
+    refetch,
+  } = useGetPolls({
+    isActive: true,
+    sortBy: "endDate",
+  });
+
+  const polls = pollsData?.polls || [];
+
+  // Auto-refresh polls every 5 minutes
+  useEffect(() => {
+    const refreshInterval = setInterval(() => {
+      handleRefresh();
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(refreshInterval);
+  }, []);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setIsRefreshing(false);
+  };
+  //   if (!error) return null;
+
+  //   if ("message" in error) {
+  //     return error.message;
+  //   }
+
+  //   return "Error loading polls. Please try again later.";
+  // };
+
+  const showErrorToast = () => {
+    toast({
+      description: "Error loading polls. Please try again!",
+      duration: 5 * 60 * 1000,
+    });
+  };
+
+  useEffect(() => {
+    if (error) showErrorToast();
+  }, [error]);
+
+  return (
+    <section className="mb-6" aria-labelledby="recent-polls-heading">
+      <div className="flex justify-between items-center mb-6">
+        <h2
+          id="recent-polls-heading"
+          className="text-gray-900 text-lg font-medium"
+        >
+          Recent Polls
+        </h2>
+
+        {isRefreshing && <p className="text-gray-500 text-sm">Refreshing...</p>}
+      </div>
+
+      {renderContent()}
+
+      <Toaster />
+    </section>
+  );
+
+  function renderContent() {
+    if (isLoading || error) return <LoadingPolls />;
+
+    if (!polls || polls.length === 0) return <NoPollsView />;
+
+    return (
+      <>
+        <div className="space-y-4 mb-6" aria-label="Poll list">
+          {polls.map((poll: IPoll) => (
+            <PollCard key={poll.pollId} poll={poll} />
+          ))}
+        </div>
+
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+          <Link
+            className="py-3 bg-gray-300 text-primary font-medium rounded-lg flex items-center justify-center"
+            href="/polls"
+          >
+            Explore all
+          </Link>
+
+          <Link
+            className="py-3 bg-primary text-white text-lg font-medium rounded-lg flex items-center justify-center gap-2"
+            href="/poll/create"
+          >
+            <PlusIcon />
+            Create a New Poll
+          </Link>
+        </div>
+      </>
+    );
+  }
+}
+
+const LoadingPolls = () => {
+  return (
+    <div className="space-y-4" aria-label="Loading polls">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <BlurredCard key={index} />
+      ))}
+    </div>
+  );
+};
