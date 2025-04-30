@@ -7,10 +7,10 @@ import { transformActionToPoll } from "@/utils/helpers";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import FilterBar from "../FilterBar";
-import NoPollsView from "../Poll/NoPollsView";
 import PollCard from "../Poll/PollCard";
 import { LoadingPolls } from "../Poll/PollList";
 import { Toaster } from "../Toaster";
+import NoUserActivityView from "./NoUserActivityView";
 
 interface UserActivityListProps {
   filters: IPollFilters;
@@ -75,7 +75,7 @@ export default function UserActivityList({
     }
 
     if (!userActions || userActions.length === 0) {
-      return <NoPollsView />
+      return <NoUserActivityView />
     }
 
     return (
