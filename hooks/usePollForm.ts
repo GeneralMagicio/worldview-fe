@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useCreatePoll } from "@/hooks/usePoll";
+import { combineDateTime, formatShortDate } from "@/utils/time";
+import { pollSchema } from "@/validation/pollSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatISO } from "date-fns";
-import { useCreatePoll } from "@/hooks/usePoll";
-import { pollSchema } from "@/validation/pollSchemas";
-import { combineDateTime, formatShortDate } from "@/utils/time";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 type DateTimeValues = {
   startDate: Date | null;
@@ -116,13 +116,32 @@ export function usePollForm() {
 
   // Tags handlers
   const addTag = (tag: string) => {
-    const trimmedTag = tag.trim().toLowerCase();
-    if (
-      trimmedTag &&
-      !watchedTags.includes(trimmedTag) &&
-      watchedTags.length < 5
-    ) {
-      const newTags = [...watchedTags, trimmedTag];
+    // Handle case where multiple tags are entered with commas, spaces, or new lines
+    const tagsToAdd = tag
+      .split(/[,\s\n]/) // Split on commas, whitespace, or newlines
+      .map(t => t.trim().toLowerCase())
+      .filter(t => t.length >= 3); // Filter out empty strings and tags shorter than 3 chars
+    
+    if (tagsToAdd.length === 0) return;
+    
+    // Process multiple tags (in case user pastes a comma-separated list or enters multiple words)
+    const newTags = [...watchedTags];
+    
+    for (const tagToAdd of tagsToAdd) {
+      if (
+        tagToAdd &&
+        !newTags.includes(tagToAdd) &&
+        newTags.length < 5 &&
+        tagToAdd.length <= 20 // Only add tags that don't exceed max length
+      ) {
+        newTags.push(tagToAdd);
+      }
+      
+      // Stop adding tags once we reach the limit
+      if (newTags.length >= 5) break;
+    }
+    
+    if (newTags.length !== watchedTags.length) {
       setValue("tags", newTags);
       setTagInput("");
       trigger("tags");

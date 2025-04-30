@@ -1,20 +1,20 @@
 "use client";
 
-import { type KeyboardEvent } from "react";
+import { usePollForm } from "@/hooks/usePollForm";
 import { cn } from "@/utils";
+import { type KeyboardEvent } from "react";
+import DateTimePicker from "../DateTimePicker/DateTimePicker";
 import {
   CalendarIcon,
-  PlusIcon,
   CheckIcon,
-  CloseIcon,
-  XOutlinedIcon,
   ClockIcon2,
+  CloseIcon,
+  PlusIcon,
+  XOutlinedIcon,
 } from "../icon-components";
-import { Button } from "../ui/Button";
-import DateTimePicker from "../DateTimePicker/DateTimePicker";
-import PollCreatedModal from "../Modals/PollCreatedModal";
 import DraftPollModal from "../Modals/DraftPollModal";
-import { usePollForm } from "@/hooks/usePollForm";
+import PollCreatedModal from "../Modals/PollCreatedModal";
+import { Button } from "../ui/Button";
 
 export default function PollForm() {
   const {
@@ -54,10 +54,16 @@ export default function PollForm() {
     "flex h-12 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:ring-1 focus-visible:ring-gray-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
 
   const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === " ") {
+    if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       if (errors.tags) return;
-      addTag(tagInput);
+      if (tagInput.trim()) {
+        addTag(tagInput);
+      }
+    } else if (e.key === " ") {
+      if (tagInput.trim() && !errors.tags) {
+        addTag(tagInput);
+      }
     } else if (
       e.key === "Backspace" &&
       tagInput === "" &&
@@ -65,6 +71,12 @@ export default function PollForm() {
     ) {
       const lastTag = watchedTags[watchedTags.length - 1];
       removeTag(lastTag);
+    }
+  };
+
+  const handleTagBlur = () => {
+    if (tagInput.trim() && !errors.tags) {
+      addTag(tagInput);
     }
   };
 
@@ -95,6 +107,7 @@ export default function PollForm() {
         value={tagInput}
         onChange={(e) => setTagInput(e.target.value)}
         onKeyDown={handleTagKeyDown}
+        onBlur={handleTagBlur}
         placeholder={watchedTags.length === 0 ? "Add tags" : ""}
         className="border-none flex-1 min-w-[100px] p-2 text-gray-900 focus:outline-none"
         disabled={watchedTags.length >= 5}
