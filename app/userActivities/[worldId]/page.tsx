@@ -2,39 +2,27 @@
 
 import Header from "@/components/Header";
 import FilterModal, { DEFAULT_FILTERS } from "@/components/Modals/FilterModal";
-import PollList from "@/components/Poll/PollList";
-import { FilterParams, IPollFilters } from "@/types/poll";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import UserActivityList from "@/components/userActivity/UserActivityList";
+import { IPollFilters } from "@/types/poll";
+import { useParams } from "next/navigation";
+import { useState } from "react";
 
-export default function PollsPage() {
-  const searchParams = useSearchParams();
-  const filter = searchParams.get("filter") as FilterParams;
-
+export default function UserActivitiesPage() {
+  const { worldId } = useParams();
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filters, setFilters] = useState<IPollFilters>(DEFAULT_FILTERS);
 
-  useEffect(() => {
-    if (filter === FilterParams.Voted) {
-      setFilters({
-        ...DEFAULT_FILTERS,
-        pollsVoted: true,
-      });
-    }
-  }, [filter]);
-
   return (
     <main className="flex-1 bg-white rounded-t-3xl p-5">
-      <Header backUrl="/" />
+      <Header title="All Activities" backUrl={`/user/${worldId}`} />
       <FilterModal
         filters={filters}
         setFilters={setFilters}
         filtersOpen={filtersOpen}
         setFiltersOpen={setFiltersOpen}
       />
-      <PollList 
+      <UserActivityList 
         filters={filters} 
-        filterParam={filter}
         setFiltersOpen={setFiltersOpen}
       />
     </main>
