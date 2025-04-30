@@ -7,14 +7,12 @@ import { Button } from "../ui/Button";
 
 interface IModalProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
   pollTitle: string;
   pollId: number | undefined;
 }
 
 export default function PollCreatedModal({
   open,
-  onOpenChange,
   pollTitle,
   pollId,
 }: IModalProps) {
@@ -23,7 +21,6 @@ export default function PollCreatedModal({
   return (
     <Modal
       open={open}
-      onClose={() => onOpenChange(false)}
       className="p-0 rounded-xl max-w-md"
     >
       <div className="p-6">
@@ -58,7 +55,6 @@ export default function PollCreatedModal({
           variant="outline"
           className="w-full text-gray-500 font-medium mt-4 py-3"
           onClick={() => {
-            onOpenChange(false);
             router.push(`/poll/${pollId}`);
           }}
         >
