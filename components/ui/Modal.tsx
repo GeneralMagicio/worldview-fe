@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 
 interface ModalProps {
   open: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   children: React.ReactNode;
   className?: string;
 }
@@ -27,6 +27,8 @@ export function Modal({ open, onClose, children, className = "" }: ModalProps) {
   }, [open]);
 
   useEffect(() => {
+    if (!onClose) return;
+
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
@@ -62,7 +64,7 @@ export function Modal({ open, onClose, children, className = "" }: ModalProps) {
         aria-modal="true"
         className={`bg-white rounded-xl max-w-sm w-full max-h-[90vh] overflow-auto ${className}`}
       >
-          {children}
+        {children}
       </div>
     </div>
   );

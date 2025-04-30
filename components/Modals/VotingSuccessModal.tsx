@@ -19,7 +19,7 @@ export default function VotingSuccessModal({
         <div className="p-6">
           <div className="rounded-xl overflow-hidden mb-6">
             <Image
-              src="/illustrations/voting-success.svg"
+              src="/illustrations/voting-success.gif"
               alt="Voting Success Illustration"
               width={313}
               height={210}
@@ -31,7 +31,7 @@ export default function VotingSuccessModal({
             Success!
           </h2>
 
-          <p className="text-gray-500 text-center mb-6">
+          <p className="text-gray-500 text-center mb-10">
             Your vote is in. Spread the word!
           </p>
 

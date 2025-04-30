@@ -1,20 +1,20 @@
 "use client";
 
-import { type KeyboardEvent } from "react";
+import { usePollForm } from "@/hooks/usePollForm";
 import { cn } from "@/utils";
+import { type KeyboardEvent } from "react";
+import DateTimePicker from "../DateTimePicker/DateTimePicker";
 import {
   CalendarIcon,
-  PlusIcon,
   CheckIcon,
-  CloseIcon,
-  XOutlinedIcon,
   ClockIcon2,
+  CloseIcon,
+  PlusIcon,
+  XOutlinedIcon,
 } from "../icon-components";
-import { Button } from "../ui/Button";
-import DateTimePicker from "../DateTimePicker/DateTimePicker";
-import PollCreatedModal from "../Modals/PollCreatedModal";
 import DraftPollModal from "../Modals/DraftPollModal";
-import { usePollForm } from "@/hooks/usePollForm";
+import PollCreatedModal from "../Modals/PollCreatedModal";
+import { Button } from "../ui/Button";
 
 export default function PollForm() {
   const {
@@ -53,19 +53,47 @@ export default function PollForm() {
   const BASE_INPUT_CLASSES =
     "flex h-12 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:ring-1 focus-visible:ring-gray-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
 
-  const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === " ") {
+  const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // If the user typed a space or comma, we should process the tag
+    if (value.endsWith(' ') || value.endsWith(',')) {
+      // Process everything before the last character as a potential tag
+      const tagValue = value.slice(0, -1);
+      if (tagValue.trim()) {
+        addTag(tagValue);
+      }
+      return;
+    }
+    
+    // Otherwise, just update the input value
+    setTagInput(value);
+  };
+
+  const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {  
+    if (e.key === "Enter" || e.key === " " || e.key === ",") {
       e.preventDefault();
-      if (errors.tags) return;
-      addTag(tagInput);
-    } else if (
-      e.key === "Backspace" &&
+      // Process tag when Enter, space, or comma is pressed
+      if (tagInput.trim()) {
+        addTag(tagInput);
+      }
+    } 
+    else if (
+      (e.key === "Backspace") &&
       tagInput === "" &&
       watchedTags.length > 0
     ) {
       const lastTag = watchedTags[watchedTags.length - 1];
       removeTag(lastTag);
     }
+  };
+
+  // Handle paste event to immediately process tags
+  const handleTagPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedText = e.clipboardData.getData('text');
+    // Handle paste regardless of content - the addTag function will handle validation
+    e.preventDefault();
+    addTag(tagInput + pastedText);
   };
 
   const renderErrorMessage = (message: string) => (
@@ -93,8 +121,9 @@ export default function PollForm() {
       ))}
       <input
         value={tagInput}
-        onChange={(e) => setTagInput(e.target.value)}
+        onChange={handleTagChange}
         onKeyDown={handleTagKeyDown}
+        onPaste={handleTagPaste}
         placeholder={watchedTags.length === 0 ? "Add tags" : ""}
         className="border-none flex-1 min-w-[100px] p-2 text-gray-900 focus:outline-none"
         disabled={watchedTags.length >= 5}
@@ -287,7 +316,6 @@ export default function PollForm() {
 
       <PollCreatedModal
         open={pollCreatedModalOpen}
-        onOpenChange={setPollCreatedModalOpen}
         pollTitle={getValues("title")}
         pollId={poll?.pollId}
       />
