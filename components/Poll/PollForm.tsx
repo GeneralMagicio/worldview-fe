@@ -287,7 +287,9 @@ export default function PollForm() {
 
       <PollCreatedModal
         open={pollCreatedModalOpen}
-        onOpenChange={setPollCreatedModalOpen}
+        onOpenChange={() => {
+          setPollCreatedModalOpen(true);
+        }}
         pollTitle={getValues("title")}
         pollId={poll?.pollId}
       />
