@@ -7,7 +7,7 @@ export const Eruda = (props: { children: ReactNode }) => {
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
-      process.env.NODE_ENV !== "production"
+      process.env.NEXT_PUBLIC_APP_ENV !== "production"
     ) {
       try {
         eruda.init();
