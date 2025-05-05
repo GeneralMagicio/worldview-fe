@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, PlusIcon, MoreVertical } from "./icon-components";
 
 interface IHeaderProps {
@@ -14,14 +15,24 @@ export default function Header({
   title = "All Polls",
   isCreatePoll = false,
 }: IHeaderProps) {
+  const router = useRouter();
+
+  const goBack = () => {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push(backUrl);
+    }
+  };
+
   return (
     <div className="flex items-center justify-between mt-2 mb-8">
-      <Link
+      <button
         className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"
-        href={backUrl}
+        onClick={goBack}
       >
         <ArrowLeft />
-      </Link>
+      </button>
       <h1 className="text-xl font-medium text-gray-900">{title}</h1>
       {isCreatePoll ? (
         <button

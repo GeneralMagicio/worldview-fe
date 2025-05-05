@@ -25,7 +25,7 @@ export default function PollsPage() {
 
   return (
     <main className="flex-1 bg-white rounded-t-3xl p-5">
-      <Header backUrl="/" />
+      <Header />
       <FilterModal
         filters={filters}
         setFilters={setFilters}
