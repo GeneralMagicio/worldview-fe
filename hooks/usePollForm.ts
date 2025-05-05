@@ -1,9 +1,10 @@
-import { useCreatePoll } from "@/hooks/usePoll";
+import { useCreateOrUpdateDraftPoll, useCreatePoll, useDeletePoll, useGetDraftPoll } from "@/hooks/usePoll";
 import { combineDateTime, formatShortDate } from "@/utils/time";
 import { pollSchema } from "@/validation/pollSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatISO } from "date-fns";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -17,6 +18,7 @@ type DateTimeValues = {
 export type PollFormData = z.infer<typeof pollSchema>;
 
 export function usePollForm() {
+  const router = useRouter();
   const {
     mutate: createPollMutation,
     data: poll,
@@ -24,6 +26,24 @@ export function usePollForm() {
     error: createPollError,
   } = useCreatePoll();
 
+  const { 
+    data: draftPoll,
+    isLoading: isLoadingDraft,
+  } = useGetDraftPoll();
+
+  const {
+    mutate: createOrUpdateDraftPoll,
+    isPending: isSavingDraft,
+  } = useCreateOrUpdateDraftPoll();
+
+  const { 
+    mutate: deletePoll,
+    isPending: isDeletingPoll,
+  } = useDeletePoll();
+  
+  // Has form data been changed
+  const [hasFormChanged, setHasFormChanged] = useState(false);
+  
   // Date initialization
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth();
@@ -52,23 +72,27 @@ export function usePollForm() {
     setValue,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
     getValues,
     trigger,
     setError,
     clearErrors,
+    reset,
   } = form;
 
   // Watch for changes to form values
   const watchedOptions = watch("options");
   const watchedTags = watch("tags");
   const watchedDescription = watch("description");
+  const watchedValues = watch();
 
   // Form state
   const [tagInput, setTagInput] = useState("");
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [draftModalOpen, setDraftModalOpen] = useState(false);
   const [pollCreatedModalOpen, setPollCreatedModalOpen] = useState(false);
+  const [hasDraftPoll, setHasDraftPoll] = useState(false);
+  const [draftPollId, setDraftPollId] = useState<number | undefined>(undefined);
 
   const initialStartTime = new Date().toLocaleTimeString("en-EU", {
     hour: "2-digit",
@@ -87,6 +111,127 @@ export function usePollForm() {
   });
   const [customDateRange, setCustomDateRange] = useState<string | null>(null);
   const [customTimeRange, setCustomTimeRange] = useState<string | null>(null);
+  
+  // Timer ref for auto-saving
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Load draft poll when the component mounts
+  useEffect(() => {
+    if (draftPoll && !isLoadingDraft) {
+      setHasDraftPoll(true);
+      setDraftPollId(draftPoll.pollId);
+
+      // Set form values from the draft poll
+      if (draftPoll.title) setValue("title", draftPoll.title);
+      if (draftPoll.description) setValue("description", draftPoll.description);
+      if (draftPoll.options && draftPoll.options.length >= 2) {
+        setValue("options", draftPoll.options);
+      }
+      if (draftPoll.tags && Array.isArray(draftPoll.tags)) {
+        setValue("tags", draftPoll.tags);
+      }
+      if (draftPoll.isAnonymous !== undefined) {
+        setValue("isAnonymous", draftPoll.isAnonymous);
+      }
+      
+      // Reset form change state after loading draft
+      setHasFormChanged(false);
+    }
+  }, [draftPoll, isLoadingDraft, setValue]);
+
+  // Check for form changes that would trigger draft saving
+  useEffect(() => {
+    if (isDirty) {
+      setHasFormChanged(true);
+    }
+  }, [watchedValues, isDirty]);
+
+  // Autosave form changes after 20 seconds of inactivity
+  useEffect(() => {
+    if (hasFormChanged) {
+      // Clear any existing timer
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current);
+      }
+
+      // Set a new timer
+      autoSaveTimerRef.current = setTimeout(() => {
+        saveDraftPoll();
+      }, 20000); // 20 seconds
+    }
+
+    // Cleanup timer on unmount
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current);
+      }
+    };
+  }, [watchedValues, hasFormChanged]);
+
+  // Add event listener for beforeunload
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasFormChanged) {
+        // Auto-save before unloading
+        saveDraftPoll();
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [hasFormChanged]);
+
+  // Function to intercept the back navigation
+  const handleBackNavigation = () => {
+    if (hasFormChanged) {
+      // Show the draft modal
+      setDraftModalOpen(true);
+      return;
+    }
+    
+    // Just navigate back if no changes
+    router.back();
+  };
+
+  // Function to save the draft poll
+  const saveDraftPoll = () => {
+    const currentValues = getValues();
+    
+    const draftData = {
+      ...(draftPollId ? { pollId: draftPollId } : {}),
+      title: currentValues.title || undefined,
+      description: currentValues.description || undefined,
+      options: currentValues.options.filter(opt => opt.trim() !== "") || undefined,
+      tags: currentValues.tags || undefined,
+      isAnonymous: currentValues.isAnonymous,
+    };
+    
+    // Don't save if there's no meaningful data
+    const hasData = draftData.title || 
+                    draftData.description || 
+                    (draftData.options && draftData.options.length > 0) ||
+                    (draftData.tags && draftData.tags.length > 0);
+    
+    if (hasData) {
+      createOrUpdateDraftPoll(draftData);
+    }
+  };
+
+  // Function to delete the draft poll
+  const deleteDraftPoll = () => {
+    if (draftPollId) {
+      deletePoll({ id: draftPollId });
+      setHasDraftPoll(false);
+      setDraftPollId(undefined);
+      reset(); // Reset the form
+    }
+    
+    // Navigate back
+    router.back();
+  };
 
   // Check for API errors
   useEffect(() => {
@@ -99,6 +244,13 @@ export function usePollForm() {
   useEffect(() => {
     if (poll && !isCreatingPoll) {
       setPollCreatedModalOpen(true);
+      
+      // If we had a draft, it's now published so we can clear it
+      if (hasDraftPoll && draftPollId) {
+        deletePoll({ id: draftPollId });
+        setHasDraftPoll(false);
+        setDraftPollId(undefined);
+      }
     }
   }, [poll, isCreatingPoll]);
 
@@ -302,5 +454,10 @@ export function usePollForm() {
     removeTag,
     handleDateTimeApply,
     handlePublish,
+    handleBackNavigation,
+    saveDraftPoll,
+    deleteDraftPoll,
+    hasFormChanged,
+    isLoadingDraft,
   };
 }

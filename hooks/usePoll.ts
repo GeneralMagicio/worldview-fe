@@ -29,6 +29,15 @@ interface ICreatePollData {
   isAnonymous?: boolean;
 }
 
+interface IDraftPollData {
+  title?: string;
+  description?: string;
+  options?: string[];
+  tags?: string[];
+  isAnonymous?: boolean;
+  pollId?: number;
+}
+
 export const useGetPolls = (
   filters: IUsePollParams = {}
 ): UseQueryResult<{
@@ -115,6 +124,45 @@ export const useDeletePoll = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["polls"] });
+    },
+  });
+};
+
+export const useGetDraftPoll = () => {
+  return useQuery({
+    queryKey: ["draftPoll"],
+    queryFn: async () => {
+      const res = await fetch("/poll/draft", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      
+      if (res.status === 404) {
+        return null; // No draft poll exists
+      }
+      
+      if (!res.ok) throw new Error("Failed to fetch draft poll");
+      return res.json();
+    },
+  });
+};
+
+export const useCreateOrUpdateDraftPoll = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: IDraftPollData): Promise<any> => {
+      const res = await fetch("/poll/draft", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      
+      if (!res.ok) throw new Error("Failed to save draft poll");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["draftPoll"] });
     },
   });
 };
