@@ -1,9 +1,10 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ShareIcon } from "../icon-components";
+// import { ShareIcon } from "../icon-components";
 // import { handleSharePoll } from "@/utils/share";
 import { Modal } from "../ui/Modal";
 import { Button } from "../ui/Button";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 
 interface IModalProps {
   open: boolean;
@@ -19,10 +20,7 @@ export default function PollCreatedModal({
   const router = useRouter();
 
   return (
-    <Modal
-      open={open}
-      className="p-0 rounded-xl max-w-md"
-    >
+    <Modal open={open} className="p-0 rounded-xl max-w-md">
       <div className="p-6">
         <div className="rounded-xl overflow-hidden my-6">
           <Image
@@ -57,6 +55,7 @@ export default function PollCreatedModal({
           onClick={() => {
             router.push(`/poll/${pollId}`);
           }}
+          onTouchStart={() => sendHapticFeedbackCommand()}
         >
           View Poll
         </Button>

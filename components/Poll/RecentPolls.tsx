@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { IPoll } from "@/types/poll";
 import { Toaster } from "../Toaster";
 import { useToast } from "@/hooks/useToast";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 
 export default function RecentPolls() {
   const { toast } = useToast();
@@ -40,14 +41,6 @@ export default function RecentPolls() {
     await refetch();
     setIsRefreshing(false);
   };
-  //   if (!error) return null;
-
-  //   if ("message" in error) {
-  //     return error.message;
-  //   }
-
-  //   return "Error loading polls. Please try again later.";
-  // };
 
   const showErrorToast = () => {
     toast({
@@ -94,15 +87,17 @@ export default function RecentPolls() {
 
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
           <Link
-            className="py-3 bg-gray-300 text-primary font-medium rounded-lg flex items-center justify-center"
+            className="py-3 bg-gray-300 text-primary font-medium rounded-lg flex items-center justify-center active:scale-95 active:bg-gray-300/90 active:shadow-inner transition-none active:transition-transform active:duration-100"
             href="/polls"
+            onClick={() => sendHapticFeedbackCommand()}
           >
             Explore all
           </Link>
 
           <Link
-            className="py-3 bg-primary text-white text-lg font-medium rounded-lg flex items-center justify-center gap-2"
+            className="py-3 bg-primary text-white text-lg font-medium rounded-lg flex items-center justify-center gap-2 active:scale-95 active:bg-primary/90 active:shadow-inner transition-none active:transition-transform active:duration-100"
             href="/poll/create"
+            onClick={() => sendHapticFeedbackCommand()}
           >
             <PlusIcon />
             Create a New Poll

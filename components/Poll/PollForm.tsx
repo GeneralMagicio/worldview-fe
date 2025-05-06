@@ -15,6 +15,7 @@ import {
 import DraftPollModal from "../Modals/DraftPollModal";
 import PollCreatedModal from "../Modals/PollCreatedModal";
 import { Button } from "../ui/Button";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 
 export default function PollForm() {
   const {
@@ -196,7 +197,10 @@ export default function PollForm() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => setDatePickerOpen(true)}
+            onClick={() => {
+              sendHapticFeedbackCommand();
+              setDatePickerOpen(true);
+            }}
             className="flex items-center gap-2 px-3 py-2"
           >
             <div>
@@ -212,7 +216,10 @@ export default function PollForm() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => setDatePickerOpen(true)}
+            onClick={() => {
+              sendHapticFeedbackCommand();
+              setDatePickerOpen(true);
+            }}
             className="flex items-center gap-2 p-2 px-3 font-normal text-sm"
           >
             <CalendarIcon />
@@ -297,7 +304,7 @@ export default function PollForm() {
 
         <Button
           type="button"
-          className="w-full mt-auto py-4"
+          className="w-full mt-auto py-4 active:scale-95 active:transition-transform active:duration-100"
           onClick={handlePublish}
           disabled={isCreatingPoll}
         >
@@ -349,6 +356,7 @@ function DurationOption({
           selected ? "bg-gray-900" : "border border-gray-300"
         }`}
         onClick={onClick}
+        onTouchStart={() => sendHapticFeedbackCommand()}
       >
         {selected && <CheckIcon />}
       </div>

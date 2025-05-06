@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { ShareIcon } from "../icon-components";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
+// import { ShareIcon } from "../icon-components";
 // import { handleSharePoll } from "@/utils/share";
 
 interface IModalProps {
@@ -37,7 +38,10 @@ export default function VotingSuccessModal({
 
           <button
             className="w-full bg-gray-900 text-white py-4 rounded-xl font-semibold font-sora"
-            onClick={() => setShowModal(false)}
+            onClick={() => {
+              sendHapticFeedbackCommand();
+              setShowModal(false);
+            }}
           >
             Done
           </button>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, PlusIcon, MoreVertical } from "./icon-components";
-
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 interface IHeaderProps {
   backUrl?: string;
   title?: string;
@@ -18,6 +18,7 @@ export default function Header({
   const router = useRouter();
 
   const goBack = () => {
+    sendHapticFeedbackCommand();
     if (window.history.length > 1) {
       router.back();
     } else {
@@ -28,25 +29,21 @@ export default function Header({
   return (
     <div className="flex items-center justify-between mt-2 mb-8">
       <button
-        className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"
+        className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300/90 active:scale-95 active:bg-gray-300/90 active:shadow-inner transition-none active:transition-transform active:duration-100"
         onClick={goBack}
       >
         <ArrowLeft />
       </button>
       <h1 className="text-xl font-medium text-gray-900">{title}</h1>
       {isCreatePoll ? (
-        <button
-          className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"
-          onClick={() => {
-            console.log("More");
-          }}
-        >
+        <button className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300/90 active:scale-95 active:bg-gray-300/90 active:shadow-inner transition-none active:transition-transform active:duration-100">
           <MoreVertical />
         </button>
       ) : (
         <Link
-          className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"
+          className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300/90 active:scale-95 active:bg-gray-300/90 active:shadow-inner transition-none active:transition-transform active:duration-100"
           href="/poll/create"
+          onClick={() => sendHapticFeedbackCommand()}
         >
           <PlusIcon color="#3C424B" />
         </Link>

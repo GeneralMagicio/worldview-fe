@@ -22,7 +22,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/Button";
-
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 type VoteState = {
   option: string;
   percentage: number;
@@ -55,6 +55,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   );
 
   const navigateToUserProfile = () => {
+    sendHapticFeedbackCommand();
     if (pollDetails?.author?.worldID) {
       router.push(`/user/${pollDetails.author.worldID}`);
     }
@@ -117,6 +118,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   };
 
   const handleVote = () => {
+    sendHapticFeedbackCommand();
     let weightDistribution: Record<string, number> = {};
 
     if (votes) {
@@ -148,6 +150,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   };
 
   const handleDeletePoll = () => {
+    sendHapticFeedbackCommand();
     deletePoll(
       { id: pollId },
       {
@@ -233,6 +236,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   }, [userVotesFetched]);
 
   const decreaseVote = (index: number) => {
+    sendHapticFeedbackCommand();
     const vote = votes?.[index];
 
     if (!vote) return;
@@ -251,6 +255,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   };
 
   const increaseVote = (index: number) => {
+    sendHapticFeedbackCommand();
     const vote = votes?.[index];
 
     if (!vote) return;
@@ -280,8 +285,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
     <div className="bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029]">
       {/* Poll Voting Card Header */}
       <div className="flex justify-between items-center mb-3">
-        <div 
-          className="flex items-center gap-2 cursor-pointer hover:opacity-80"
+        <div
+          className="flex items-center gap-2 cursor-pointer hover:opacity-80 active:scale-95 active:transition-transform active:duration-100"
           onClick={navigateToUserProfile}
         >
           <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
@@ -491,8 +496,11 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           </div>
           <div className="flex gap-3">
             <button
-              className="rounded-full h-8 w-8 disabled:opacity-50"
-              onClick={() => setShowQVInfoModal(true)}
+              className="rounded-full h-8 w-8 disabled:opacity-50 active:scale-95 active:transition-transform active:duration-100"
+              onClick={() => {
+                sendHapticFeedbackCommand();
+                setShowQVInfoModal(true);
+              }}
               disabled={isLoading || editVotePending || setVotePending}
             >
               <InfoIcon />
@@ -509,7 +517,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
 
         {/* Vote button */}
         <button
-          className="w-full bg-gray-900 text-white h-14 rounded-xl mb-3 font-semibold font-sora disabled:bg-gray-200 disabled:text-gray-400"
+          className="w-full bg-gray-900 text-white h-14 rounded-xl mb-3 font-semibold font-sora disabled:bg-gray-200 disabled:text-gray-400 active:scale-95 active:transition-transform active:duration-100"
           onClick={handleVote}
           disabled={
             isLoading ||
@@ -532,8 +540,9 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
 
         {/* View Results */}
         <Link
-          className="w-full flex items-center justify-center bg-gray-50 gap-2 py-3 text-gray-700 font-semibold rounded-xl font-sora mb-3"
+          className="w-full flex items-center justify-center bg-gray-50 gap-2 py-3 text-gray-700 font-semibold rounded-xl font-sora mb-3 active:scale-95 active:transition-transform active:duration-100"
           href={`/poll/${pollId}/results`}
+          onClick={() => sendHapticFeedbackCommand()}
         >
           <StatisticBarsIcon />
           View Poll Results
@@ -542,8 +551,11 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         {isAuthor && (
           <Button
             variant="ghost"
-            className="w-full flex items-center justify-center gap-3 text-error-800 text-sm font-semibold font-sora"
-            onClick={() => setShowConfirmDeleteModal(true)}
+            className="w-full flex items-center justify-center gap-3 text-error-800 text-sm font-semibold font-sora active:scale-95 active:transition-transform active:duration-100"
+            onClick={() => {
+              sendHapticFeedbackCommand();
+              setShowConfirmDeleteModal(true);
+            }}
           >
             <TrashIcon />
             Delete Poll

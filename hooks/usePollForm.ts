@@ -1,4 +1,5 @@
 import { useCreatePoll } from "@/hooks/usePoll";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 import { combineDateTime, formatShortDate } from "@/utils/time";
 import { pollSchema } from "@/validation/pollSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -104,10 +105,12 @@ export function usePollForm() {
 
   // Options handlers
   const addOption = () => {
+    sendHapticFeedbackCommand();
     setValue("options", [...watchedOptions, ""]);
   };
 
   const removeOption = (index: number) => {
+    sendHapticFeedbackCommand();
     if (watchedOptions.length > 2) {
       const newOptions = watchedOptions.filter((_, i) => i !== index);
       setValue("options", newOptions);
@@ -119,25 +122,27 @@ export function usePollForm() {
     // Handle case where multiple tags are entered with commas, spaces, or new lines
     const allTags = tag
       .split(/[,\s\n]/) // Split on commas, whitespace, or newlines
-      .map(t => t.trim().toLowerCase())
-      .filter(t => t !== ''); // Filter out empty strings, but keep all potential tags
-    
+      .map((t) => t.trim().toLowerCase())
+      .filter((t) => t !== ""); // Filter out empty strings, but keep all potential tags
+
     if (allTags.length === 0) return;
-    
+
     // Check if any of the tags are too short
-    const shortTags = allTags.filter(t => t.length > 0 && t.length < 3);
+    const shortTags = allTags.filter((t) => t.length > 0 && t.length < 3);
     if (shortTags.length > 0) {
       setError("tags", {
-        message: `Tag${shortTags.length > 1 ? 's' : ''} "${shortTags.join(', ')}" must be at least 3 characters`,
+        message: `Tag${shortTags.length > 1 ? "s" : ""} "${shortTags.join(
+          ", "
+        )}" must be at least 3 characters`,
       });
       setTagInput(""); // Clear input after showing error
       return;
     }
-    
+
     // All tags are valid, proceed to add them
-    const validTags = allTags.filter(t => t.length >= 3);
+    const validTags = allTags.filter((t) => t.length >= 3);
     const newTags = [...watchedTags];
-    
+
     for (const tagToAdd of validTags) {
       if (
         tagToAdd &&
@@ -147,11 +152,11 @@ export function usePollForm() {
       ) {
         newTags.push(tagToAdd);
       }
-      
+
       // Stop adding tags once we reach the limit
       if (newTags.length >= 5) break;
     }
-    
+
     if (newTags.length !== watchedTags.length) {
       setValue("tags", newTags);
       setTagInput("");
@@ -250,6 +255,7 @@ export function usePollForm() {
   };
 
   const handlePublish = () => {
+    sendHapticFeedbackCommand();
     trigger().then((isValid) => {
       if (isValid) {
         handleSubmit(onSubmit)();
