@@ -48,7 +48,7 @@ export default function FilterModal({
           label="Live Polls"
           checked={tempFilters.livePolls}
           onChange={(checked) => {
-            sendHapticFeedbackCommand();
+            sendHapticFeedbackCommand({ type: "selectionChanged" });
             setTempFilters({ ...tempFilters, livePolls: checked });
           }}
         />
@@ -57,7 +57,7 @@ export default function FilterModal({
           label="Finished Polls"
           checked={tempFilters.finishedPolls}
           onChange={(checked) => {
-            sendHapticFeedbackCommand();
+            sendHapticFeedbackCommand({ type: "selectionChanged" });
             setTempFilters({ ...tempFilters, finishedPolls: checked });
           }}
         />
@@ -66,7 +66,7 @@ export default function FilterModal({
           label="Polls Voted"
           checked={tempFilters.pollsVoted}
           onChange={(checked) => {
-            sendHapticFeedbackCommand();
+            sendHapticFeedbackCommand({ type: "selectionChanged" });
             setTempFilters({ ...tempFilters, pollsVoted: checked });
           }}
         />
@@ -75,7 +75,7 @@ export default function FilterModal({
           label="Polls Created"
           checked={tempFilters.pollsCreated}
           onChange={(checked) => {
-            sendHapticFeedbackCommand();
+            sendHapticFeedbackCommand({ type: "selectionChanged" });
             setTempFilters({ ...tempFilters, pollsCreated: checked });
           }}
         />

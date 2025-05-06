@@ -356,7 +356,9 @@ function DurationOption({
           selected ? "bg-gray-900" : "border border-gray-300"
         }`}
         onClick={onClick}
-        onTouchStart={() => sendHapticFeedbackCommand()}
+        onTouchStart={() =>
+          sendHapticFeedbackCommand({ type: "selectionChanged" })
+        }
       >
         {selected && <CheckIcon />}
       </div>
