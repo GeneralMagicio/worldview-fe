@@ -98,7 +98,7 @@ export default function PollCard({ poll }: { poll: IPoll }) {
         </div>
       </div>
 
-      {!poll.hasVoted && (
+      {!poll.hasVoted && !isEnded && (
         <button
           className="w-full py-2.5 bg-gray-200 text-gray-900 font-medium rounded-lg mt-3 active:scale-95 active:shadow-inner transition-none active:transition-transform active:duration-100"
           onClick={(e) => {
