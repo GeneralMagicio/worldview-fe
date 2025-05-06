@@ -16,7 +16,7 @@ import DraftPollModal from "../Modals/DraftPollModal";
 import PollCreatedModal from "../Modals/PollCreatedModal";
 import { Button } from "../ui/Button";
 
-export default function PollForm() {
+export default function PollForm({ usePollFormData }: { usePollFormData: ReturnType<typeof usePollForm> }) {
   const {
     register,
     errors,
@@ -50,7 +50,7 @@ export default function PollForm() {
     saveDraftPoll,
     deleteDraftPoll,
     isLoadingDraft,
-  } = usePollForm();
+  } = usePollFormData;
 
   // Auto-save on unmount
   useEffect(() => {
@@ -77,6 +77,13 @@ export default function PollForm() {
 
     // Otherwise, just update the input value
     setTagInput(value);
+  };
+
+  // Handle blur event to apply tag when focus changes
+  const handleTagBlur = () => {
+    if (tagInput.trim()) {
+      addTag(tagInput);
+    }
   };
 
   const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -132,6 +139,7 @@ export default function PollForm() {
         onChange={handleTagChange}
         onKeyDown={handleTagKeyDown}
         onPaste={handleTagPaste}
+        onBlur={handleTagBlur}
         placeholder={watchedTags.length === 0 ? "Add tags" : ""}
         className="border-none flex-1 min-w-[100px] p-2 text-gray-900 focus:outline-none"
         disabled={watchedTags.length >= 5}

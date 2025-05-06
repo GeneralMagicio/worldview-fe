@@ -9,16 +9,16 @@ export default function CreatePollPage() {
 }
 
 function CreatePollPageContent() {
-  const { handleBackNavigation } = usePollForm();
+  const usePollFormData = usePollForm();
 
   return (
     <main className="flex-1 bg-white rounded-t-3xl p-5">
       <Header 
         title="Create a Poll" 
         isCreatePoll={true} 
-        onBackClick={handleBackNavigation}
+        onBackClick={usePollFormData.handleBackNavigation}
       />
-      <PollForm />
+      <PollForm usePollFormData={usePollFormData} />
     </main>
   );
 }

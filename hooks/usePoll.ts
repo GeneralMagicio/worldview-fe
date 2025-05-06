@@ -36,6 +36,8 @@ interface IDraftPollData {
   tags?: string[];
   isAnonymous?: boolean;
   pollId?: number;
+  startDate?: string;
+  endDate?: string;
 }
 
 export const useGetPolls = (

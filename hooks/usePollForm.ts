@@ -49,8 +49,8 @@ export function usePollForm() {
   const currentMonth = new Date().getMonth();
   const currentDay = new Date().getDate();
 
-  const today = new Date(currentYear, currentMonth, currentDay);
-  const nextWeek = new Date(currentYear, currentMonth, currentDay + 6);
+  const today = new Date();
+  const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000); // 24 hours later
 
   // Form setup
   const form = useForm<PollFormData>({
@@ -60,7 +60,7 @@ export function usePollForm() {
       description: "",
       options: ["", ""],
       startDate: today.toISOString(),
-      endDate: nextWeek.toISOString(),
+      endDate: tomorrow.toISOString(), // Set to 24 hours after start
       tags: [],
       isAnonymous: false,
     },
@@ -105,7 +105,7 @@ export function usePollForm() {
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState<DateTimeValues>({
     startDate: today,
-    endDate: nextWeek,
+    endDate: tomorrow,
     startTime: initialStartTime,
     endTime: "18:00",
   });
@@ -124,14 +124,69 @@ export function usePollForm() {
       // Set form values from the draft poll
       if (draftPoll.title) setValue("title", draftPoll.title);
       if (draftPoll.description) setValue("description", draftPoll.description);
-      if (draftPoll.options && draftPoll.options.length >= 2) {
-        setValue("options", draftPoll.options);
+      if (draftPoll.options && draftPoll.options.length > 0) {
+        // Always ensure there are at least 2 options shown
+        let options = [...draftPoll.options];
+        
+        // Add empty options if needed to meet the minimum of 2
+        while (options.length < 2) {
+          options.push("");
+        }
+        
+        setValue("options", options);
       }
       if (draftPoll.tags && Array.isArray(draftPoll.tags)) {
         setValue("tags", draftPoll.tags);
       }
       if (draftPoll.isAnonymous !== undefined) {
         setValue("isAnonymous", draftPoll.isAnonymous);
+      }
+      
+      // Handle startDate and endDate for duration display
+      if (draftPoll.startDate && draftPoll.endDate) {
+        setValue("startDate", draftPoll.startDate);
+        setValue("endDate", draftPoll.endDate);
+        
+        const startDate = new Date(draftPoll.startDate);
+        const endDate = new Date(draftPoll.endDate);
+        
+        // Calculate the difference in hours
+        const diffInHours = Math.abs(endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60);
+        
+        // Set duration based on the difference
+        if (Math.abs(diffInHours - 24) < 1) {
+          setDuration(24);
+        } else if (Math.abs(diffInHours - 48) < 1) {
+          setDuration(48);
+        } else {
+          setDuration("custom");
+          
+          // Format and set the custom date range
+          const startDateStr = formatShortDate(startDate);
+          const endDateStr = formatShortDate(endDate);
+          setCustomDateRange(`${startDateStr} to ${endDateStr}`);
+          
+          // Format and set the custom time range
+          const startTimeStr = startDate.toLocaleTimeString('en-EU', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          });
+          const endTimeStr = endDate.toLocaleTimeString('en-EU', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          });
+          setCustomTimeRange(`${startTimeStr} to ${endTimeStr}`);
+          
+          // Update the selectedDateTime state
+          setSelectedDateTime({
+            startDate,
+            endDate,
+            startTime: startTimeStr,
+            endTime: endTimeStr
+          });
+        }
       }
       
       // Reset form change state after loading draft
@@ -184,6 +239,28 @@ export function usePollForm() {
     };
   }, [hasFormChanged]);
 
+  // Add event listener for browser back button
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      // Show the draft modal if there are unsaved changes
+      if (hasFormChanged) {
+        setDraftModalOpen(true);
+        // Push a new state to prevent immediate navigation
+        window.history.pushState(null, '', window.location.pathname);
+      }
+    };
+
+    // Push a state when the component mounts to ensure popstate will fire
+    window.history.pushState(null, '', window.location.pathname);
+    
+    // Add the event listener
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [hasFormChanged, setDraftModalOpen]);
+
   // Function to intercept the back navigation
   const handleBackNavigation = () => {
     if (hasFormChanged) {
@@ -191,9 +268,8 @@ export function usePollForm() {
       setDraftModalOpen(true);
       return;
     }
-    
     // Just navigate back if no changes
-    router.back();
+    router.push("/");
   };
 
   // Function to save the draft poll
@@ -207,6 +283,8 @@ export function usePollForm() {
       options: currentValues.options.filter(opt => opt.trim() !== "") || undefined,
       tags: currentValues.tags || undefined,
       isAnonymous: currentValues.isAnonymous,
+      startDate: currentValues.startDate || undefined,
+      endDate: currentValues.endDate || undefined,
     };
     
     // Don't save if there's no meaningful data
@@ -217,6 +295,10 @@ export function usePollForm() {
     
     if (hasData) {
       createOrUpdateDraftPoll(draftData);
+    }
+    // Navigate back after saving
+    if (draftModalOpen) {
+      router.push("/");
     }
   };
 
@@ -230,7 +312,7 @@ export function usePollForm() {
     }
     
     // Navigate back
-    router.back();
+    router.push("/");
   };
 
   // Check for API errors
@@ -262,7 +344,9 @@ export function usePollForm() {
   const removeOption = (index: number) => {
     if (watchedOptions.length > 2) {
       const newOptions = watchedOptions.filter((_, i) => i !== index);
-      setValue("options", newOptions);
+      setValue("options", newOptions, { shouldDirty: true });
+      // Ensure form is marked as changed
+      setHasFormChanged(true);
     }
   };
 
@@ -305,9 +389,11 @@ export function usePollForm() {
     }
     
     if (newTags.length !== watchedTags.length) {
-      setValue("tags", newTags);
+      setValue("tags", newTags, { shouldDirty: true });
       setTagInput("");
       trigger("tags");
+      // Ensure form is marked as changed
+      setHasFormChanged(true);
     } else {
       setTagInput(""); // Clear the input even if no tags were added
     }
@@ -315,7 +401,9 @@ export function usePollForm() {
 
   const removeTag = (tag: string) => {
     const newTags = watchedTags.filter((t) => t !== tag);
-    setValue("tags", newTags);
+    setValue("tags", newTags, { shouldDirty: true });
+    // Ensure form is marked as changed
+    setHasFormChanged(true);
     trigger("tags");
   };
 
@@ -334,13 +422,20 @@ export function usePollForm() {
     // Format dates for API
     if (values.startDate && values.startTime) {
       const startDateTime = combineDateTime(values.startDate, values.startTime);
-      setValue("startDate", startDateTime.toISOString());
+      setValue("startDate", startDateTime.toISOString(), { 
+        shouldDirty: true 
+      });
     }
 
     if (values.endDate && values.endTime) {
       const endDateTime = combineDateTime(values.endDate, values.endTime);
-      setValue("endDate", endDateTime.toISOString());
+      setValue("endDate", endDateTime.toISOString(), { 
+        shouldDirty: true 
+      });
     }
+    
+    // Set form as changed explicitly
+    setHasFormChanged(true);
   };
 
   const setDateRange = (
@@ -423,6 +518,23 @@ export function usePollForm() {
     }
   }, [tagInput]);
 
+  // Function to update duration and form values
+  const updateDuration = (newDuration: 24 | 48 | "custom") => {
+    setDuration(newDuration);
+    
+    // Only update dates for preset durations
+    if (newDuration === 24 || newDuration === 48) {
+      const now = new Date();
+      const end = new Date(now.getTime() + newDuration * 60 * 60 * 1000);
+      
+      setValue("startDate", now.toISOString(), { shouldDirty: true });
+      setValue("endDate", end.toISOString(), { shouldDirty: true });
+      
+      // Set form as changed explicitly
+      setHasFormChanged(true);
+    }
+  };
+
   return {
     form,
     register,
@@ -440,7 +552,7 @@ export function usePollForm() {
     datePickerOpen,
     setDatePickerOpen,
     duration,
-    setDuration,
+    setDuration: updateDuration,
     selectedDateTime,
     customDateRange,
     customTimeRange,

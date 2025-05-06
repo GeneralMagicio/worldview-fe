@@ -26,20 +26,14 @@ export default function DraftPollModal({
       <div className="flex flex-col gap-4 justify-center">
         <Button 
           className="text-sm font-semibold font-sora"
-          onClick={() => {
-            onSaveAsDraft();
-            setModalOpen(false);
-          }}
+          onClick={onSaveAsDraft}
         >
           Save as Draft
         </Button>
         <Button
           variant="ghost"
           className="text-sm font-semibold font-sora text-gray-500"
-          onClick={() => {
-            onDelete();
-            setModalOpen(false);
-          }}
+          onClick={onDelete}
         >
           Delete
         </Button>
