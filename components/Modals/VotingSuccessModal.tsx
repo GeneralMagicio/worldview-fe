@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { sendHapticFeedbackCommand } from "@/utils/animation";
-// import { ShareIcon } from "../icon-components";
-// import { handleSharePoll } from "@/utils/share";
+import { ShareIcon } from "../icon-components";
+import { handleSharePoll } from "@/utils/share";
 
 interface IModalProps {
   setShowModal: (showModal: boolean) => void;
@@ -46,13 +46,16 @@ export default function VotingSuccessModal({
             Done
           </button>
 
-          {/* <button
-            className="w-full flex items-center justify-center gap-2 text-gray-500 py-4 rounded-xl font-semibold font-sora"
-            onClick={() => handleSharePoll(pollTitle, pollId)}
+          <button
+            className="w-full flex items-center justify-center gap-2 text-gray-500 py-4 rounded-xl font-semibold font-sora active:scale-95 active:transition-transform active:duration-100"
+            onClick={() => {
+              sendHapticFeedbackCommand();
+              handleSharePoll(pollTitle, pollId);
+            }}
           >
             <ShareIcon size={24} />
             Share
-          </button> */}
+          </button>
         </div>
       </div>
     </div>

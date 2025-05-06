@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-// import { ShareIcon } from "../icon-components";
-// import { handleSharePoll } from "@/utils/share";
+import { ShareIcon } from "../icon-components";
+import { handleSharePoll } from "@/utils/share";
 import { Modal } from "../ui/Modal";
 import { Button } from "../ui/Button";
 import { sendHapticFeedbackCommand } from "@/utils/animation";
@@ -40,18 +40,21 @@ export default function PollCreatedModal({
           Spread the word to gather votes.
         </p>
 
-        {/* <Button
+        <Button
           variant="primary"
-          className="w-full flex items-center justify-center gap-2 font-medium"
-          onClick={() => handleSharePoll(pollTitle, pollId!)}
+          className="w-full flex items-center justify-center gap-2 font-medium active:scale-95 active:transition-transform active:duration-100"
+          onClick={() => {
+            sendHapticFeedbackCommand();
+            handleSharePoll(pollTitle, pollId!);
+          }}
         >
           <ShareIcon size={24} color="white" />
           Share this Poll
-        </Button> */}
+        </Button>
 
         <Button
           variant="outline"
-          className="w-full text-gray-500 font-medium mt-4 py-3"
+          className="w-full text-gray-500 font-medium mt-4 py-3 active:scale-95 active:transition-transform active:duration-100"
           onClick={() => {
             router.push(`/poll/${pollId}`);
           }}

@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGetPollDetails, useDeletePoll } from "@/hooks/usePoll";
 import { useGetUserVotes } from "@/hooks/useUser";
-// import { handleShareResults } from "@/utils/share";
+import { handleShareResults } from "@/utils/share";
 import { getRelativeTimeString } from "@/utils/time";
 import { formatFloat } from "@/utils/number";
 import {
-  // ShareIcon,
+  ShareIcon,
   InfoIcon,
   UserIcon,
   CheckIcon,
@@ -263,15 +263,16 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             >
               <InfoIcon />
             </button>
-            {/* <button
-              className="rounded-full h-8 w-8 disabled:opacity-50"
-              onClick={() =>
-                handleShareResults(pollDetails?.title ?? "", pollId)
-              }
+            <button
+              className="rounded-full h-8 w-8 disabled:opacity-50 active:scale-95 active:transition-transform active:duration-100"
+              onClick={() => {
+                sendHapticFeedbackCommand();
+                handleShareResults(pollDetails?.title ?? "", pollId);
+              }}
               disabled={isLoading}
             >
               <ShareIcon />
-            </button> */}
+            </button>
           </div>
         </div>
 
