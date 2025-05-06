@@ -39,7 +39,7 @@ export default function PollCard({ poll }: { poll: IPoll }) {
             <UserIcon />
           </div>
           <span className="text-sm text-gray-900">
-            @{poll.author.name || "unknown"}{" "}
+            {poll.author.name ? `@${poll.author.name}` : "Anon"}
           </span>
         </div>
         <div className="flex items-center gap-1">
