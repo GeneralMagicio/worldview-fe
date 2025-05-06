@@ -100,9 +100,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             <div className="w-24 h-4 rounded-full bg-gray-200 animate-pulse"></div>
           ) : (
             <span className="text-sm text-gray-900">
-              {pollDetails?.author?.name
-                ? `@${pollDetails?.author?.name}`
-                : "Anon"}
+              {pollDetails?.author?.name}
             </span>
           )}
         </div>
