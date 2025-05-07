@@ -280,7 +280,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
     <div className="bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029]">
       {/* Poll Voting Card Header */}
       <div className="flex justify-between items-center mb-3">
-        <div 
+        <div
           className="flex items-center gap-2 cursor-pointer hover:opacity-80"
           onClick={navigateToUserProfile}
         >
@@ -295,7 +295,9 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             <div className="w-24 h-4 rounded-full bg-gray-200 animate-pulse"></div>
           ) : (
             <span className="text-sm text-gray-900">
-              {pollDetails?.author?.name}
+              {pollDetails?.author?.name
+                ? `@${pollDetails?.author?.name}`
+                : "Anon"}
             </span>
           )}
         </div>
