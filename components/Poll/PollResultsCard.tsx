@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGetPollDetails, useDeletePoll } from "@/hooks/usePoll";
 import { useGetUserVotes } from "@/hooks/useUser";
-// import { handleShareResults } from "@/utils/share";
+import { handleShareResults } from "@/utils/share";
 import { getRelativeTimeString } from "@/utils/time";
 import { formatFloat } from "@/utils/number";
 import {
-  // ShareIcon,
+  ShareIcon,
   InfoIcon,
   UserIcon,
   CheckIcon,
@@ -16,6 +16,7 @@ import { Button } from "../ui/Button";
 import QVInfoModal from "@/components/Modals/QVInfoModal";
 import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import { useAuth } from "@/context/AuthContext";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 
 type VoteState = {
   option: string;
@@ -63,11 +64,13 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   }, [pollResults]);
 
   const handleVote = () => {
+    sendHapticFeedbackCommand();
     if (!isActive) return;
     router.push(`/poll/${pollId}`);
   };
 
   const handleDeletePoll = () => {
+    sendHapticFeedbackCommand();
     deletePoll(
       { id: pollId },
       {
@@ -194,7 +197,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                 <div className="flex items-center justify-between">
                   <div className="relative w-full h-10 bg-white rounded-lg overflow-hidden">
                     <div
-                      className="absolute left-0 top-0 bottom-0 flex items-center gap-3 py-2 rounded-lg bg-gray-200 px-2 w-auto"
+                      className="absolute left-0 top-0 bottom-0 flex items-center gap-3 py-2 rounded-lg bg-gray-200 px-2"
                       style={{
                         width: `${vote.percentage}%`,
                         minWidth: vote.percentage > 0 ? "60px" : "0",
@@ -254,26 +257,30 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           <div className="flex gap-3">
             <button
               className="rounded-full h-8 w-8 disabled:opacity-50"
-              onClick={() => setShowQVInfoModal(true)}
+              onClick={() => {
+                sendHapticFeedbackCommand();
+                setShowQVInfoModal(true);
+              }}
               disabled={isLoading}
             >
               <InfoIcon />
             </button>
-            {/* <button
-              className="rounded-full h-8 w-8 disabled:opacity-50"
-              onClick={() =>
-                handleShareResults(pollDetails?.title ?? "", pollId)
-              }
+            <button
+              className="rounded-full h-8 w-8 disabled:opacity-50 active:scale-95 active:transition-transform active:duration-100"
+              onClick={() => {
+                sendHapticFeedbackCommand();
+                handleShareResults(pollDetails?.title ?? "", pollId);
+              }}
               disabled={isLoading}
             >
               <ShareIcon />
-            </button> */}
+            </button>
           </div>
         </div>
 
         {/* Vote button */}
         <button
-          className="w-full bg-gray-900 text-white h-14 rounded-xl mb-3 font-semibold font-sora disabled:text-gray-400 disabled:bg-gray-200"
+          className="w-full bg-gray-900 text-white h-14 rounded-xl mb-3 font-semibold font-sora disabled:text-gray-400 disabled:bg-gray-200 active:scale-95 active:transition-transform active:duration-100"
           onClick={handleVote}
           disabled={!isActive}
         >
@@ -283,8 +290,11 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         {isAuthor && (
           <Button
             variant="ghost"
-            className="w-full flex items-center justify-center gap-3 text-error-800 text-sm font-semibold font-sora"
-            onClick={() => setShowConfirmDeleteModal(true)}
+            className="w-full flex items-center justify-center gap-3 text-error-800 text-sm font-semibold font-sora active:scale-95 active:transition-transform active:duration-100"
+            onClick={() => {
+              sendHapticFeedbackCommand();
+              setShowConfirmDeleteModal(true);
+            }}
           >
             <TrashIcon />
             Delete Poll

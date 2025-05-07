@@ -7,6 +7,7 @@ import { transformActionToPoll } from "@/utils/helpers";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import PollCard from "../Poll/PollCard";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 
 interface UserActivitiesResponseDto {
   userActions: UserActionDto[];
@@ -67,8 +68,9 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
 
       {activities.length > 0 && (
         <button 
-          className="w-full bg-primary text-white font-medium text-lg py-3 rounded-lg mt-4"
+          className="w-full bg-primary text-white font-medium text-lg py-3 rounded-lg mt-4 active:scale-95 active:transition-transform active:duration-100"
           onClick={() => router.push(`/${worldId ? "user" : "profile"}Activities/${effectiveWorldId}`)}
+          onTouchStart={() => sendHapticFeedbackCommand()}
         >
           View all Activities
         </button>

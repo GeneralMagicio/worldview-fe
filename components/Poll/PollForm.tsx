@@ -2,7 +2,7 @@
 
 import { usePollForm } from "@/hooks/usePollForm";
 import { cn } from "@/utils";
-import { type KeyboardEvent } from "react";
+import { useEffect, type KeyboardEvent } from "react";
 import DateTimePicker from "../DateTimePicker/DateTimePicker";
 import {
   CalendarIcon,
@@ -15,8 +15,9 @@ import {
 import DraftPollModal from "../Modals/DraftPollModal";
 import PollCreatedModal from "../Modals/PollCreatedModal";
 import { Button } from "../ui/Button";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 
-export default function PollForm() {
+export default function PollForm({ usePollFormData }: { usePollFormData: ReturnType<typeof usePollForm> }) {
   const {
     register,
     errors,
@@ -29,7 +30,6 @@ export default function PollForm() {
     draftModalOpen,
     setDraftModalOpen,
     pollCreatedModalOpen,
-    setPollCreatedModalOpen,
     datePickerOpen,
     setDatePickerOpen,
     selectedDateTime,
@@ -48,10 +48,20 @@ export default function PollForm() {
     setDuration,
     handleDateTimeApply,
     handlePublish,
-  } = usePollForm();
+    saveDraftPoll,
+    deleteDraftPoll,
+    isLoadingDraft,
+  } = usePollFormData;
+
+  // Auto-save on unmount
+  useEffect(() => {
+    return () => {
+      saveDraftPoll();
+    };
+  }, []);
 
   const BASE_INPUT_CLASSES =
-    "flex h-12 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:ring-1 focus-visible:ring-gray-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+    "flex h-12 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:border-gray-500 disabled:cursor-not-allowed disabled:opacity-50";
 
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -68,6 +78,13 @@ export default function PollForm() {
 
     // Otherwise, just update the input value
     setTagInput(value);
+  };
+
+  // Handle blur event to apply tag when focus changes
+  const handleTagBlur = () => {
+    if (tagInput.trim()) {
+      addTag(tagInput);
+    }
   };
 
   const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -123,6 +140,7 @@ export default function PollForm() {
         onChange={handleTagChange}
         onKeyDown={handleTagKeyDown}
         onPaste={handleTagPaste}
+        onBlur={handleTagBlur}
         placeholder={watchedTags.length === 0 ? "Add tags" : ""}
         className="border-none flex-1 min-w-[100px] p-2 text-gray-900 focus:outline-none"
         disabled={watchedTags.length >= 5}
@@ -196,7 +214,10 @@ export default function PollForm() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => setDatePickerOpen(true)}
+            onClick={() => {
+              sendHapticFeedbackCommand();
+              setDatePickerOpen(true);
+            }}
             className="flex items-center gap-2 px-3 py-2"
           >
             <div>
@@ -212,7 +233,10 @@ export default function PollForm() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => setDatePickerOpen(true)}
+            onClick={() => {
+              sendHapticFeedbackCommand();
+              setDatePickerOpen(true);
+            }}
             className="flex items-center gap-2 p-2 px-3 font-normal text-sm"
           >
             <CalendarIcon />
@@ -222,6 +246,10 @@ export default function PollForm() {
       </div>
     </div>
   );
+
+  if (isLoadingDraft) {
+    return <div className="flex-1 flex items-center justify-center">Loading...</div>;
+  }
 
   return (
     <form onSubmit={form.handleSubmit((data) => {})}>
@@ -247,7 +275,10 @@ export default function PollForm() {
               placeholder="Enter description"
               className={cn(
                 BASE_INPUT_CLASSES,
-                "min-h-[120px] p-4 text-gray-900"
+                "min-h-[120px] p-4 text-gray-900",
+                errors.description
+                  ? "border-error-700 focus:ring-error-700 focus:border-error-700"
+                  : ""
               )}
             />
             {errors.description
@@ -294,7 +325,7 @@ export default function PollForm() {
 
         <Button
           type="button"
-          className="w-full mt-auto py-4"
+          className="w-full mt-auto py-4 active:scale-95 active:transition-transform active:duration-100"
           onClick={handlePublish}
           disabled={isCreatingPoll}
         >
@@ -321,6 +352,8 @@ export default function PollForm() {
       <DraftPollModal
         modalOpen={draftModalOpen}
         setModalOpen={setDraftModalOpen}
+        onSaveAsDraft={saveDraftPoll}
+        onDelete={deleteDraftPoll}
       />
     </form>
   );
@@ -346,6 +379,9 @@ function DurationOption({
           selected ? "bg-gray-900" : "border border-gray-300"
         }`}
         onClick={onClick}
+        onTouchStart={() =>
+          sendHapticFeedbackCommand({ type: "selectionChanged" })
+        }
       >
         {selected && <CheckIcon />}
       </div>

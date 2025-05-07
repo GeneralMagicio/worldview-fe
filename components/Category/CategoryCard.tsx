@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 
 interface CategoryCardProps {
   title: string;
@@ -10,8 +11,9 @@ interface CategoryCardProps {
 export default function CategoryCard({ title, icon, href }: CategoryCardProps) {
   return (
     <Link
-      className="relative flex justify-between items-center rounded-2xl p-1 h-24 overflow-hidden bg-category-noise bg-no-repeat bg-cover"
+      className="relative flex justify-between items-center rounded-2xl p-1 h-24 overflow-hidden bg-category-noise bg-no-repeat bg-cover active:scale-95 transition-none active:transition-transform active:duration-100"
       href={href}
+      onClick={() => sendHapticFeedbackCommand()}
     >
       <h3 className="absolute text-white font-sora text-sm font-semibold z-10 px-1 leading-10">
         {title}

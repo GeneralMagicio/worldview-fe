@@ -1,4 +1,11 @@
-import { useState } from "react";
+import { DAYS_OF_WEEK } from "@/lib/constants";
+import {
+  DateObj,
+  DateRange,
+  DateTimePickerProps,
+} from "@/types/dateTimePicker";
+import { formatDate } from "@/utils/time";
+import { useEffect, useState } from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -6,15 +13,9 @@ import {
 } from "../icon-components";
 import { Button } from "../ui/Button";
 import { Modal } from "../ui/Modal";
-import {
-  DateObj,
-  DateRange,
-  DateTimePickerProps,
-} from "@/types/dateTimePicker";
-import { DAYS_OF_WEEK } from "@/lib/constants";
-import { formatDate } from "@/utils/time";
 import { CalendarDay } from "./CalendarDay";
 import { TimePicker } from "./TimePicker";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 
 export default function DateTimePicker({
   open,
@@ -36,11 +37,27 @@ export default function DateTimePicker({
     endTime: initialEndTime,
   });
 
+  // Update dateRange when props change
+  useEffect(() => {
+    setDateRange({
+      startDate: initialStartDate,
+      endDate: initialEndDate,
+      startTime: initialStartTime,
+      endTime: initialEndTime,
+    });
+    
+    // If an end date is provided, ensure the calendar navigates to show that month
+    if (initialEndDate) {
+      setCurrentDate(new Date(initialEndDate));
+    }
+  }, [initialStartDate, initialEndDate, initialStartTime, initialEndTime, open]);
+
   // Time picker state
   const [timePickerOpen, setTimePickerOpen] = useState<"end" | null>(null);
 
   // Navigate to previous month
   const previousMonth = () => {
+    sendHapticFeedbackCommand();
     setCurrentDate((prev) => {
       const newDate = new Date(prev);
       newDate.setMonth(newDate.getMonth() - 1);
@@ -50,6 +67,7 @@ export default function DateTimePicker({
 
   // Navigate to next month
   const nextMonth = () => {
+    sendHapticFeedbackCommand();
     setCurrentDate((prev) => {
       const newDate = new Date(prev);
       newDate.setMonth(newDate.getMonth() + 1);
@@ -59,6 +77,7 @@ export default function DateTimePicker({
 
   // Handle date click
   const handleDateClick = (day: number, month: number, year: number) => {
+    sendHapticFeedbackCommand();
     const clickedDate = new Date(year, month, day);
 
     if (clickedDate <= today) {
@@ -73,6 +92,7 @@ export default function DateTimePicker({
 
   // Handle time selection
   const handleTimeChange = (hours: number, minutes: number) => {
+    sendHapticFeedbackCommand();
     const formattedHours = hours.toString().padStart(2, "0");
     const formattedMinutes = minutes.toString().padStart(2, "0");
     const timeString = `${formattedHours}:${formattedMinutes}`;
@@ -85,6 +105,7 @@ export default function DateTimePicker({
 
   // Handle apply button click
   const handleApply = () => {
+    sendHapticFeedbackCommand();
     onApply(dateRange);
     onOpenChange(false);
   };
@@ -318,14 +339,17 @@ export default function DateTimePicker({
         <Button
           type="button"
           variant="outline"
-          className="w-5/12"
-          onClick={() => onOpenChange(false)}
+          className="w-5/12 active:scale-95 active:transition-transform active:duration-100"
+          onClick={() => {
+            sendHapticFeedbackCommand();
+            onOpenChange(false);
+          }}
         >
           Cancel
         </Button>
         <Button
           type="button"
-          className="w-5/12 disabled:opacity-50"
+          className="w-5/12 disabled:opacity-50 active:scale-95 active:transition-transform active:duration-100"
           onClick={handleApply}
           disabled={!dateRange.endDate}
         >
