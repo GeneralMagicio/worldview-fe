@@ -1,6 +1,6 @@
 import BottomModal from "../ui/BottomModal";
 import { Button } from "../ui/Button";
-
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 type ConfirmDeleteModalProps = {
   modalOpen: boolean;
   setModalOpen: (open: boolean) => void;
@@ -36,7 +36,10 @@ export default function ConfirmDeleteModal({
         <Button
           variant="ghost"
           className="text-sm font-semibold font-sora text-gray-500"
-          onClick={() => setModalOpen(false)}
+          onClick={() => {
+            sendHapticFeedbackCommand();
+            setModalOpen(false);
+          }}
         >
           Cancel
         </Button>

@@ -4,6 +4,7 @@ import { CheckIcon, UserIcon } from "@/components/icon-components";
 import { IPoll } from "@/types/poll";
 import { getRelativeTimeString } from "@/utils/time";
 import { useRouter } from "next/navigation";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 
 export default function PollCard({ poll }: { poll: IPoll }) {
   const router = useRouter();
@@ -14,14 +15,17 @@ export default function PollCard({ poll }: { poll: IPoll }) {
   );
 
   const navigateToPoll = () => {
+    sendHapticFeedbackCommand();
     router.push(`/poll/${poll.pollId}`);
   };
 
   const navigateToPollResults = () => {
+    sendHapticFeedbackCommand();
     router.push(`/poll/${poll.pollId}/results`);
   };
 
   const navigateToUserProfile = (e: React.MouseEvent) => {
+    sendHapticFeedbackCommand();
     e.stopPropagation();
     if (poll.author.worldID) {
       router.push(`/user/${poll.author.worldID}`);
@@ -29,10 +33,10 @@ export default function PollCard({ poll }: { poll: IPoll }) {
   };
 
   return (
-    <div className="rounded-xl p-4 border border-secondary shadow-[0px_0px_16px_0px_#00000029] transition-all hover:shadow-md">
+    <div className="rounded-xl p-4 border border-secondary shadow-[0px_0px_16px_0px_#00000029]">
       <div className="flex justify-between items-center mb-3">
         <div
-          className="flex items-center gap-2 cursor-pointer hover:opacity-80"
+          className="flex items-center gap-2 cursor-pointer active:scale-95 transition-none active:transition-transform active:duration-100"
           onClick={navigateToUserProfile}
         >
           <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
@@ -59,7 +63,7 @@ export default function PollCard({ poll }: { poll: IPoll }) {
         </div>
       </div>
 
-      <div onClick={navigateToPollResults}>
+      <div onClick={navigateToPollResults} className="cursor-pointer">
         <h3 className="text-gray-900 text-xl font-medium leading-tight mb-2">
           {poll.title}
         </h3>
@@ -94,9 +98,9 @@ export default function PollCard({ poll }: { poll: IPoll }) {
         </div>
       </div>
 
-      {!poll.hasVoted && (
+      {!poll.hasVoted && !isEnded && (
         <button
-          className="w-full py-2.5 bg-gray-200 text-gray-900 font-medium rounded-lg mt-3"
+          className="w-full py-2.5 bg-gray-200 text-gray-900 font-medium rounded-lg mt-3 active:scale-95 active:shadow-inner transition-none active:transition-transform active:duration-100"
           onClick={(e) => {
             e.stopPropagation();
             navigateToPoll();

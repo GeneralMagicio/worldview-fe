@@ -10,6 +10,7 @@ import { Button } from "../ui/Button";
 import BlurredCard from "../Verify/BlurredCard";
 import NoPollsView from "./NoPollsView";
 import PollCard from "./PollCard";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 
 const POLLS_PER_PAGE = 20;
 
@@ -19,10 +20,10 @@ interface PollListProps {
   setFiltersOpen: (open: boolean) => void;
 }
 
-export default function PollList({ 
-  filters, 
+export default function PollList({
+  filters,
   filterParam,
-  setFiltersOpen
+  setFiltersOpen,
 }: PollListProps) {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
@@ -122,11 +123,11 @@ export default function PollList({
 
   return (
     <section aria-label="Poll list" className="mb-6">
-        <FilterBar 
-          setFiltersOpen={setFiltersOpen} 
-          onSearch={handleSearch}
-          initialSearchTerm={searchTerm}
-        />
+      <FilterBar
+        setFiltersOpen={setFiltersOpen}
+        onSearch={handleSearch}
+        initialSearchTerm={searchTerm}
+      />
       {renderContent()}
       {renderPagination()}
       <Toaster />
@@ -139,7 +140,7 @@ export default function PollList({
     }
 
     if (!displayedPolls || displayedPolls.length === 0) {
-      return <NoPollsView />
+      return <NoPollsView />;
     }
 
     return (
@@ -173,8 +174,9 @@ export default function PollList({
         <Button
           variant="outline"
           onClick={handleLoadMore}
+          onTouchStart={() => sendHapticFeedbackCommand()}
           disabled={isLoadingMore || currentPage >= totalPages}
-          className="w-full py-3"
+          className="w-full py-3 active:scale-95 active:transition-transform active:duration-100"
         >
           {isLoadingMore ? "Loading..." : "Load More Polls"}
         </Button>

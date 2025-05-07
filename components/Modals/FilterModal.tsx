@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { IPollFilters } from "@/types/poll";
 import CustomCheckbox from "../ui/CustomCheckbox";
 import BottomModal from "../ui/BottomModal";
-
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 interface FilterModalProps {
   filters: IPollFilters;
   setFilters: (filters: IPollFilters) => void;
@@ -47,39 +47,44 @@ export default function FilterModal({
           id="live"
           label="Live Polls"
           checked={tempFilters.livePolls}
-          onChange={(checked) =>
-            setTempFilters({ ...tempFilters, livePolls: checked })
-          }
+          onChange={(checked) => {
+            sendHapticFeedbackCommand({ type: "selectionChanged" });
+            setTempFilters({ ...tempFilters, livePolls: checked });
+          }}
         />
         <CustomCheckbox
           id="finished"
           label="Finished Polls"
           checked={tempFilters.finishedPolls}
-          onChange={(checked) =>
-            setTempFilters({ ...tempFilters, finishedPolls: checked })
-          }
+          onChange={(checked) => {
+            sendHapticFeedbackCommand({ type: "selectionChanged" });
+            setTempFilters({ ...tempFilters, finishedPolls: checked });
+          }}
         />
         <CustomCheckbox
           id="voted"
           label="Polls Voted"
           checked={tempFilters.pollsVoted}
-          onChange={(checked) =>
-            setTempFilters({ ...tempFilters, pollsVoted: checked })
-          }
+          onChange={(checked) => {
+            sendHapticFeedbackCommand({ type: "selectionChanged" });
+            setTempFilters({ ...tempFilters, pollsVoted: checked });
+          }}
         />
         <CustomCheckbox
           id="created"
           label="Polls Created"
           checked={tempFilters.pollsCreated}
-          onChange={(checked) =>
-            setTempFilters({ ...tempFilters, pollsCreated: checked })
-          }
+          onChange={(checked) => {
+            sendHapticFeedbackCommand({ type: "selectionChanged" });
+            setTempFilters({ ...tempFilters, pollsCreated: checked });
+          }}
         />
       </div>
 
       <button
-        className="w-full bg-gray-900 text-white rounded-lg py-4 mt-8 text-sm font-medium font-sora disabled:bg-gray-200 disabled:text-gray-500"
+        className="w-full bg-gray-900 text-white rounded-lg py-4 mt-8 text-sm font-medium font-sora disabled:bg-gray-200 disabled:text-gray-500 active:scale-95 active:transition-transform active:duration-100"
         onClick={applyFilters}
+        onTouchStart={() => sendHapticFeedbackCommand()}
         disabled={
           tempFilters.livePolls === filters.livePolls &&
           tempFilters.finishedPolls === filters.finishedPolls &&
@@ -91,8 +96,9 @@ export default function FilterModal({
       </button>
 
       <button
-        className="w-full text-center text-gray-500 mt-4 py-2 text-sm font-semibold font-sora"
+        className="w-full text-center text-gray-500 mt-4 py-2 text-sm font-semibold font-sora active:scale-95 active:transition-transform active:duration-100"
         onClick={resetFilters}
+        onTouchStart={() => sendHapticFeedbackCommand()}
       >
         Reset
       </button>

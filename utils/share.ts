@@ -1,10 +1,14 @@
+const appUrl = `https://world.org/mini-app?app_id=${process.env.NEXT_PUBLIC_APP_ID}&path=`;
+
 export const handleSharePoll = async (pollTitle: string, pollId: number) => {
-  const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}/poll/${pollId}`;
+  const shareUrl = `${appUrl}/poll/${pollId}`;
+  console.log(shareUrl);
   await handleShareLink(shareUrl);
 };
 
 export const handleShareResults = async (pollTitle: string, pollId: number) => {
-  const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}/poll/${pollId}/results`;
+  const shareUrl = `${appUrl}/poll/${pollId}/results`;
+  console.log(shareUrl);
   await handleShareLink(shareUrl);
 };
 
