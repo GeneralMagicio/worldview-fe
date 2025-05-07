@@ -2,7 +2,7 @@
 
 import { usePollForm } from "@/hooks/usePollForm";
 import { cn } from "@/utils";
-import { type KeyboardEvent } from "react";
+import { useEffect, type KeyboardEvent } from "react";
 import DateTimePicker from "../DateTimePicker/DateTimePicker";
 import {
   CalendarIcon,
@@ -17,7 +17,7 @@ import PollCreatedModal from "../Modals/PollCreatedModal";
 import { Button } from "../ui/Button";
 import { sendHapticFeedbackCommand } from "@/utils/animation";
 
-export default function PollForm() {
+export default function PollForm({ usePollFormData }: { usePollFormData: ReturnType<typeof usePollForm> }) {
   const {
     register,
     errors,
@@ -30,7 +30,6 @@ export default function PollForm() {
     draftModalOpen,
     setDraftModalOpen,
     pollCreatedModalOpen,
-    setPollCreatedModalOpen,
     datePickerOpen,
     setDatePickerOpen,
     selectedDateTime,
@@ -49,7 +48,17 @@ export default function PollForm() {
     setDuration,
     handleDateTimeApply,
     handlePublish,
-  } = usePollForm();
+    saveDraftPoll,
+    deleteDraftPoll,
+    isLoadingDraft,
+  } = usePollFormData;
+
+  // Auto-save on unmount
+  useEffect(() => {
+    return () => {
+      saveDraftPoll();
+    };
+  }, []);
 
   const BASE_INPUT_CLASSES =
     "flex h-12 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:border-gray-500 disabled:cursor-not-allowed disabled:opacity-50";
@@ -69,6 +78,13 @@ export default function PollForm() {
 
     // Otherwise, just update the input value
     setTagInput(value);
+  };
+
+  // Handle blur event to apply tag when focus changes
+  const handleTagBlur = () => {
+    if (tagInput.trim()) {
+      addTag(tagInput);
+    }
   };
 
   const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -124,6 +140,7 @@ export default function PollForm() {
         onChange={handleTagChange}
         onKeyDown={handleTagKeyDown}
         onPaste={handleTagPaste}
+        onBlur={handleTagBlur}
         placeholder={watchedTags.length === 0 ? "Add tags" : ""}
         className="border-none flex-1 min-w-[100px] p-2 text-gray-900 focus:outline-none"
         disabled={watchedTags.length >= 5}
@@ -230,6 +247,10 @@ export default function PollForm() {
     </div>
   );
 
+  if (isLoadingDraft) {
+    return <div className="flex-1 flex items-center justify-center">Loading...</div>;
+  }
+
   return (
     <form onSubmit={form.handleSubmit((data) => {})}>
       <div className="flex-1 bg-white rounded-t-3xl p-4 flex flex-col">
@@ -331,6 +352,8 @@ export default function PollForm() {
       <DraftPollModal
         modalOpen={draftModalOpen}
         setModalOpen={setDraftModalOpen}
+        onSaveAsDraft={saveDraftPoll}
+        onDelete={deleteDraftPoll}
       />
     </form>
   );

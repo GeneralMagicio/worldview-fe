@@ -1,4 +1,11 @@
-import { useState } from "react";
+import { DAYS_OF_WEEK } from "@/lib/constants";
+import {
+  DateObj,
+  DateRange,
+  DateTimePickerProps,
+} from "@/types/dateTimePicker";
+import { formatDate } from "@/utils/time";
+import { useEffect, useState } from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -6,13 +13,6 @@ import {
 } from "../icon-components";
 import { Button } from "../ui/Button";
 import { Modal } from "../ui/Modal";
-import {
-  DateObj,
-  DateRange,
-  DateTimePickerProps,
-} from "@/types/dateTimePicker";
-import { DAYS_OF_WEEK } from "@/lib/constants";
-import { formatDate } from "@/utils/time";
 import { CalendarDay } from "./CalendarDay";
 import { TimePicker } from "./TimePicker";
 import { sendHapticFeedbackCommand } from "@/utils/animation";
@@ -36,6 +36,21 @@ export default function DateTimePicker({
     startTime: initialStartTime,
     endTime: initialEndTime,
   });
+
+  // Update dateRange when props change
+  useEffect(() => {
+    setDateRange({
+      startDate: initialStartDate,
+      endDate: initialEndDate,
+      startTime: initialStartTime,
+      endTime: initialEndTime,
+    });
+    
+    // If an end date is provided, ensure the calendar navigates to show that month
+    if (initialEndDate) {
+      setCurrentDate(new Date(initialEndDate));
+    }
+  }, [initialStartDate, initialEndDate, initialStartTime, initialEndTime, open]);
 
   // Time picker state
   const [timePickerOpen, setTimePickerOpen] = useState<"end" | null>(null);

@@ -4,11 +4,15 @@ import { Button } from "../ui/Button";
 type DraftPollModalProps = {
   modalOpen: boolean;
   setModalOpen: (open: boolean) => void;
+  onSaveAsDraft: () => void;
+  onDelete: () => void;
 };
 
 export default function DraftPollModal({
   modalOpen,
   setModalOpen,
+  onSaveAsDraft,
+  onDelete,
 }: DraftPollModalProps) {
   return (
     <BottomModal modalOpen={modalOpen} setModalOpen={setModalOpen}>
@@ -20,12 +24,16 @@ export default function DraftPollModal({
         up later.
       </p>
       <div className="flex flex-col gap-4 justify-center">
-        <Button className="text-sm font-semibold font-sora">
+        <Button 
+          className="text-sm font-semibold font-sora"
+          onClick={onSaveAsDraft}
+        >
           Save as Draft
         </Button>
         <Button
           variant="ghost"
           className="text-sm font-semibold font-sora text-gray-500"
+          onClick={onDelete}
         >
           Delete
         </Button>
