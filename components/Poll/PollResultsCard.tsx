@@ -195,7 +195,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                 <div className="flex items-center justify-between">
                   <div className="relative w-full h-10 bg-white rounded-lg overflow-hidden">
                     <div
-                      className="absolute left-0 top-0 bottom-0 flex items-center gap-3 py-2 rounded-lg bg-gray-200 px-2 w-auto"
+                      className="absolute left-0 top-0 bottom-0 flex items-center gap-3 py-2 rounded-lg bg-gray-200 px-2"
                       style={{
                         width: `${vote.percentage}%`,
                         minWidth: vote.percentage > 0 ? "60px" : "0",
