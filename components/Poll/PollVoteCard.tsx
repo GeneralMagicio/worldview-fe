@@ -404,7 +404,6 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                       className="absolute left-0 top-0 bottom-0 flex items-center gap-3 py-2 rounded-lg bg-gray-200 px-2"
                       style={{
                         width: `${vote.percentage}%`,
-                        minWidth: vote.percentage > 0 ? "60px" : "0",
                         maxWidth: "100%",
                         borderRight:
                           vote.percentage > 0 ? "1px solid #d6d9dd" : "none",

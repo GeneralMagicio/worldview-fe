@@ -1,7 +1,8 @@
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { PlusIcon } from "../icon-components";
 import { Button } from "../ui/Button";
-import { useRouter } from "next/navigation";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 
 export default function NoPollsView() {
   const router = useRouter();
@@ -17,12 +18,17 @@ export default function NoPollsView() {
         />
       </div>
 
-      <h2 className="text-xl text-gray-900 font-medium mb-2">Quiet in here...</h2>
+      <h2 className="text-xl text-gray-900 font-medium mb-2">
+        Quiet in here...
+      </h2>
       <p className="text-gray-900 mb-8">Want to get things rolling?</p>
 
       <Button
         className="flex items-center gap-2 w-full max-w-xs mb-10"
-        onClick={() => router.push("/poll/create")}
+        onClick={() => {
+          sendHapticFeedbackCommand();
+          router.push("/poll/create");
+        }}
       >
         <PlusIcon color="white" />
         <span className="text-lg font-medium">Create a New Poll</span>
