@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { sendHapticFeedbackCommand } from "@/utils/animation";
 import { ShareIcon } from "../icon-components";
-import { handleSharePoll } from "@/utils/share";
+import { useShare } from "@/hooks/useShare";
+import CustomShareModal from "../Modals/CustomShareModal";
 
 interface IModalProps {
   setShowModal: (showModal: boolean) => void;
@@ -14,6 +15,8 @@ export default function VotingSuccessModal({
   pollTitle,
   pollId,
 }: IModalProps) {
+  const { handleSharePoll, isOpen, setIsOpen, shareUrl } = useShare();
+
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/50">
       <div className="bg-white rounded-3xl max-w-md w-full overflow-hidden">
@@ -58,6 +61,11 @@ export default function VotingSuccessModal({
           </button>
         </div>
       </div>
+      <CustomShareModal
+        message={shareUrl}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
     </div>
   );
 }
