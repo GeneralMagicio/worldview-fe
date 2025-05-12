@@ -64,7 +64,7 @@ graph TB
 
 ### Prerequisites:
 
-* Node.js >= 22.x
+* Node.js >= 20.x
 * npm >= 10.x
 
 ### Installation Steps:
