@@ -11,10 +11,10 @@ WorldView utilizes **Quadratic Voting (QV)**, an innovative voting mechanism tha
 ### Key Features:
 
 * Poll creation and management with real-time updates
-* Secure, tamper-proof voting powered by WorldID verification
+* Secure, tamper-proof voting powered by World ID verification
 * Transparent results visualization with community insights
 * Decentralized identity verification through World ID
-* SWIE authentaction
+* SWIE authentication
 * Expressive voting capabilities via **Quadratic Voting (QV)**
 
 ### Live Links:
