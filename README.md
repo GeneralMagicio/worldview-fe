@@ -88,7 +88,7 @@ yarn install
 APP_ID=your_app_id
 
 NEXT_PUBLIC_APP_ID=your_app_id
-NEXT_PUBLIC_APP_URL=your_forntend_app_url
+NEXT_PUBLIC_APP_URL=your_frontend_app_url
 NEXT_PUBLIC_BACKEND_URL=your_backend_app_url #staging (https://backend.staging.worldview.fyi)
 ```
 
