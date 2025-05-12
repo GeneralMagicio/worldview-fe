@@ -11,9 +11,10 @@ WorldView utilizes **Quadratic Voting (QV)**, an innovative voting mechanism tha
 ### Key Features:
 
 * Poll creation and management with real-time updates
-* Secure, tamper-proof voting powered by blockchain verification
+* Secure, tamper-proof voting powered by WorldID verification
 * Transparent results visualization with community insights
 * Decentralized identity verification through World ID
+* SWIE authentaction
 * Expressive voting capabilities via **Quadratic Voting (QV)**
 
 ### Live Links:
@@ -30,10 +31,14 @@ WorldView utilizes **Quadratic Voting (QV)**, an innovative voting mechanism tha
 ```mermaid
 graph TB
     User-->Frontend["Frontend"]
+    Frontend-->WorldcoinID["World ID verification (Orb level)"]
+    Frontend-->SIWE["SIWE auth"]
+    SIWE-->Frontend
     Frontend-->API["API Gateway"]
-    API-->WorldcoinID["Worldcoin ID Verification (verify command)"]
     API-->Database["Database"]
-    Frontend-->WorldcoinID
+    API-->VerifyMessage["Verify SIWE Message"]
+    VerifyMessage-->API
+    API-->Frontend
     WorldcoinID-->Frontend
     Database-->API
 ```
@@ -119,7 +124,7 @@ yarn run build && yarn start
 
 1. `API not responding:` Verify `.env` variables are correctly configured.
 
-2. Verify Action Not Proceeding
+2. User verification not proceeding
 - Possible Cause: The "Verify" action has not been created or configured correctly in your Worldcoin App Dev Portal.
 - Resolution:
     - Navigate to your Worldcoin Dev Portal and make sure you're on the exact app.
@@ -174,7 +179,6 @@ yarn run build && yarn start
 
 ### Contact Information:
 
-* PM: @divine-comedian
 * Maintainers: @Meriem-BM, @RamRamez
 
 ### Acknowledgments:
