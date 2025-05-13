@@ -25,10 +25,14 @@ export const patchGlobalFetch = () => {
       "Content-Type": "application/json",
     };
 
-    // check if the response is unauthorized
     const response = await originalFetch(url, { ...init, headers });
 
-    if (response.status === 401) {
+    if (
+      !isFullUrl &&
+      !isInternal &&
+      input !== "/auth/verifyWorldId" &&
+      response.status === 401
+    ) {
       console.error("Unauthorized request detected (401)");
       localStorage.removeItem("authToken");
 
