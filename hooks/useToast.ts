@@ -11,6 +11,7 @@ type ToasterToast = ToastProps & {
   title?: React.ReactNode;
   description?: React.ReactNode;
   duration?: number;
+  position?: "top" | "bottom";
 };
 
 const actionTypes = {

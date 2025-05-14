@@ -35,7 +35,7 @@ const ToastDescription = React.forwardRef<
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => {
   return (
-    <p className={cn("text-sm opacity-90", className)} ref={ref} {...props} />
+    <p className={cn("text-sm opacity-90 text-center", className)} ref={ref} {...props} />
   );
 });
 ToastDescription.displayName = "ToastDescription";
