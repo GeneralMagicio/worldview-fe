@@ -85,13 +85,23 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
     );
   };
 
+  const navigateToUserProfile = () => {
+    sendHapticFeedbackCommand();
+    if (pollDetails?.author?.worldID) {
+      router.push(`/user/${pollDetails.author.worldID}`);
+    }
+  };
+
   if (!pollId) return null;
 
   return (
     <div className="bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029]">
       {/* Poll Voting Card Header */}
       <div className="flex justify-between items-center mb-3">
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-2 cursor-pointer hover:opacity-80 active:scale-95 active:transition-transform active:duration-100"
+          onClick={navigateToUserProfile}
+        >
           <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
             {isLoading ? (
               <div className="w-5 h-5 rounded-full bg-gray-300 animate-pulse" />
