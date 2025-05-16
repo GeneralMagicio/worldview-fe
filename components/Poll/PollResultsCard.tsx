@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGetPollDetails, useDeletePoll } from "@/hooks/usePoll";
 import { useGetUserVotes } from "@/hooks/useUser";
-import { handleShareResults } from "@/utils/share";
+import { useShare } from "@/hooks/useShare";
 import { getRelativeTimeString } from "@/utils/time";
 import { formatFloat } from "@/utils/number";
 import {
@@ -17,6 +17,7 @@ import QVInfoModal from "@/components/Modals/QVInfoModal";
 import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import { useAuth } from "@/context/AuthContext";
 import { sendHapticFeedbackCommand } from "@/utils/animation";
+import CustomShareModal from "../Modals/CustomShareModal";
 
 type VoteState = {
   option: string;
@@ -27,6 +28,7 @@ type VoteState = {
 export default function PollVoteCard({ pollId }: { pollId: number }) {
   const router = useRouter();
   const { worldID } = useAuth();
+  const { handleShareResults, isOpen, setIsOpen, shareUrl } = useShare();
 
   const { data: pollData, isLoading } = useGetPollDetails(pollId);
   const { data: userVotes } = useGetUserVotes(pollId);
@@ -200,7 +202,6 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                       className="absolute left-0 top-0 bottom-0 flex items-center gap-3 py-2 rounded-lg bg-gray-200 px-2"
                       style={{
                         width: `${vote.percentage}%`,
-                        minWidth: vote.percentage > 0 ? "60px" : "0",
                         maxWidth: "100%",
                         borderRight:
                           vote.percentage > 0 ? "1px solid #d6d9dd" : "none",
@@ -312,6 +313,12 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           isLoading={deletePollPending}
         />
       )}
+
+      <CustomShareModal
+        message={shareUrl}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
     </div>
   );
 }

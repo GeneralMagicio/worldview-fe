@@ -1,3 +1,11 @@
+import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { useDeletePoll, useGetPollDetails } from "@/hooks/usePoll";
+import { useEditVote, useGetUserVotes, useSetVote } from "@/hooks/useUser";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
+import { getRelativeTimeString } from "@/utils/time";
 import {
   CheckIcon,
   InfoIcon,
@@ -12,17 +20,10 @@ import {
 import ConfirmDeleteModal from "@/components/Modals/ConfirmDeleteModal";
 import QVInfoModal from "@/components/Modals/QVInfoModal";
 import VotingSuccessModal from "@/components/Modals/VotingSuccessModal";
-import { useAuth } from "@/context/AuthContext";
-import { useDeletePoll, useGetPollDetails } from "@/hooks/usePoll";
-import { useEditVote, useGetUserVotes, useSetVote } from "@/hooks/useUser";
 import { formatFloat } from "@/utils/number";
-import { handleSharePoll } from "@/utils/share";
-import { getRelativeTimeString } from "@/utils/time";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import { useShare } from "@/hooks/useShare";
 import { Button } from "../ui/Button";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import CustomShareModal from "../Modals/CustomShareModal";
 
 type VoteState = {
   option: string;
@@ -34,6 +35,7 @@ type VoteState = {
 export default function PollVoteCard({ pollId }: { pollId: number }) {
   const router = useRouter();
   const { worldID } = useAuth();
+  const { handleSharePoll, setIsOpen, isOpen, shareUrl } = useShare();
 
   const { data: pollData, isLoading: pollLoading } = useGetPollDetails(pollId);
   const { mutate: editVote, isPending: editVotePending } = useEditVote();
@@ -404,7 +406,6 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                       className="absolute left-0 top-0 bottom-0 flex items-center gap-3 py-2 rounded-lg bg-gray-200 px-2"
                       style={{
                         width: `${vote.percentage}%`,
-                        minWidth: vote.percentage > 0 ? "60px" : "0",
                         maxWidth: "100%",
                         borderRight:
                           vote.percentage > 0 ? "1px solid #d6d9dd" : "none",
@@ -587,6 +588,12 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           isLoading={deletePollPending}
         />
       )}
+
+      <CustomShareModal
+        message={shareUrl}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
     </div>
   );
 }
