@@ -25,7 +25,7 @@ type VoteState = {
   count: number;
 };
 
-export default function PollVoteCard({ pollId }: { pollId: number }) {
+export default function PollResultsCard({ pollId }: { pollId: number }) {
   const router = useRouter();
   const { worldID } = useAuth();
   const { handleShareResults, isOpen, setIsOpen, shareUrl } = useShare();

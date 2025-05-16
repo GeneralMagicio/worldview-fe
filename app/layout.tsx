@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import "./globals.css";
 import MiniKitProvider from "@/components/minikit-provider";
-import dynamic from "next/dynamic";
+import { ReactQueryClientProvider } from "@/components/react-query-client-provider";
 import { AuthProvider } from "@/context/AuthContext";
 import { FetchPatchProvider } from "@/lib/FetchPatchProvider";
-import { ReactQueryClientProvider } from "@/components/react-query-client-provider";
+import type { Metadata } from "next";
+import ErudaWrapper from "../components/ErudaWrapper";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "WorldView - Voting App",
@@ -16,25 +16,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const ErudaProvider = dynamic(
-    () => import("../components/Eruda").then((c) => c.ErudaProvider),
-    {
-      ssr: false,
-    }
-  );
   return (
     <html lang="en">
       <body>
-        <ErudaProvider>
-          <MiniKitProvider>
-            <AuthProvider>
-              <ReactQueryClientProvider>
-                <FetchPatchProvider />
-                {children}
-              </ReactQueryClientProvider>
-            </AuthProvider>
-          </MiniKitProvider>
-        </ErudaProvider>
+        <ErudaWrapper>
+            <MiniKitProvider>
+              <AuthProvider>
+                <ReactQueryClientProvider>
+                  <FetchPatchProvider />
+                  {children}
+                </ReactQueryClientProvider>
+              </AuthProvider>
+            </MiniKitProvider>
+        </ErudaWrapper>
       </body>
     </html>
   );
