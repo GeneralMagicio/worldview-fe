@@ -1,11 +1,24 @@
 "use client";
 
-import { useWorldAuth } from "@/hooks/useWorldAuth";
+import { useEffect } from "react";
 import Image from "next/image";
+import { useWorldAuth } from "@/hooks/useWorldAuth";
 import BlurredCard from "../Verify/BlurredCard";
+import { Toaster } from "@/components/Toaster";
+import { useToast } from "@/hooks/useToast";
 
 export function SplashScreen() {
-  const { handleLogin, isLoggingIn, isLoggedIn } = useWorldAuth();
+  const { handleLogin, isLoggingIn, isLoggedIn, error } = useWorldAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        description: error,
+        position: "top",
+      });
+    }
+  }, [error]);
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -40,6 +53,8 @@ export function SplashScreen() {
           <BlurredCard />
         </div>
       )}
+
+      <Toaster />
     </div>
   );
 }

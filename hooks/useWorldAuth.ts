@@ -1,18 +1,13 @@
-import { getNonce, verifyNonceCookie } from "@/app/actions/verify";
-import { useAuth } from "@/context/AuthContext";
-import { AUTH_ERRORS } from "@/lib/constants/authErrors";
+import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   ISuccessResult,
   MiniKit,
   VerificationLevel,
 } from "@worldcoin/minikit-js";
-import { useCallback, useState } from "react";
-
-const verifyCommand = {
-  action: "verify",
-  signal: "",
-  verification_level: VerificationLevel.Device,
-};
+import { useAuth } from "@/context/AuthContext";
+import { AUTH_ERRORS } from "@/lib/constants/authErrors";
+import { getNonce, verifyNonceCookie } from "@/app/actions/verify";
 
 export type AuthResult = {
   success: boolean;
@@ -20,7 +15,31 @@ export type AuthResult = {
   error?: string;
 };
 
+const getVerificationLevel = () => {
+  const configuredLevel =
+    process.env.NEXT_PUBLIC_WLD_VERIFICATION_LEVEL || VerificationLevel.Device;
+
+  const verificationLevel = String(
+    configuredLevel
+  ).toLowerCase() as VerificationLevel;
+
+  const verificationLevels = Object.keys(VerificationLevel).map((level) =>
+    level.toLowerCase()
+  );
+
+  if (!verificationLevels.includes(verificationLevel)) {
+    throw new Error(
+      `NEXT_PUBLIC_WLD_VERIFICATION_LEVEL is invalid: ${verificationLevel} 
+        Allowed levels: ${verificationLevels.join(", ")}`
+    );
+  }
+
+  return verificationLevel;
+};
+
 export const useWorldAuth = () => {
+  const router = useRouter();
+
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { storeToken, isLoggedIn } = useAuth();
@@ -43,6 +62,15 @@ export const useWorldAuth = () => {
 
   const startWorldIDVerification = async () => {
     try {
+      const verificationLevel = getVerificationLevel();
+
+      const actionId = process.env.NEXT_PUBLIC_WLD_ACTION_ID || "verify";
+      const verifyCommand = {
+        action: actionId,
+        signal: "",
+        verification_level: verificationLevel,
+      };
+
       const { finalPayload } = await MiniKit.commandsAsync.verify(
         verifyCommand
       );
@@ -64,8 +92,8 @@ export const useWorldAuth = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           payload: proof,
-          action: verifyCommand.action,
-          signal: verifyCommand.signal,
+          action: process.env.NEXT_PUBLIC_WLD_ACTION_ID || "verify",
+          signal: "",
         }),
         signal: AbortSignal.timeout(15000),
       });
@@ -117,6 +145,7 @@ export const useWorldAuth = () => {
           worldIdProof,
           userDetails,
           nonce,
+          verificationLevel: getVerificationLevel(),
         }),
       });
 
