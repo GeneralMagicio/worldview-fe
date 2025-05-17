@@ -56,7 +56,6 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
   // Auto-save on unmount
   useEffect(() => {
     return () => {
-      console.log("Auto-saving draft poll on unmount");
       saveDraftPoll();
     };
   }, []);
