@@ -293,13 +293,21 @@ export function usePollForm() {
       draftData.title ||
       draftData.description ||
       (draftData.options && draftData.options.length > 0) ||
-      (draftData.tags && draftData.tags.length > 0);
+      (draftData.tags && draftData.tags.length > 0) ||
+      draftData.startDate ||
+      draftData.endDate;
 
     if (hasData) {
-      createOrUpdateDraftPoll(draftData);
-    }
-    // Navigate back after saving
-    if (draftModalOpen) {
+      if (draftModalOpen) {
+        createOrUpdateDraftPoll(draftData, {
+          onSuccess: () => {
+            router.push("/");
+          }
+        });
+      } else {
+        createOrUpdateDraftPoll(draftData);
+      }
+    } else if (draftModalOpen) {
       router.push("/");
     }
   };
