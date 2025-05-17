@@ -26,7 +26,7 @@ export default function DraftPollModal({
       </p>
       <div className="flex flex-col gap-4 justify-center">
         <Button 
-          className="text-sm font-semibold font-sora"
+          className="text-sm font-semibold font-sora active:scale-95 active:transition-transform active:duration-100"
           onClick={() => {
             sendHapticFeedbackCommand();
             onSaveAsDraft();
@@ -36,7 +36,7 @@ export default function DraftPollModal({
         </Button>
         <Button
           variant="ghost"
-          className="text-sm font-semibold font-sora text-gray-500"
+          className="text-sm font-semibold font-sora text-gray-500 hover:bg-gray-300/90 active:scale-95 active:bg-gray-300/90 active:shadow-inner transition-none active:transition-transform active:duration-100"
           onClick={() => {
             sendHapticFeedbackCommand();
             onDelete();
