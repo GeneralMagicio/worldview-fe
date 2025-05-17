@@ -2,6 +2,7 @@
 
 import { usePollForm } from "@/hooks/usePollForm";
 import { cn } from "@/utils";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 import { useEffect, type KeyboardEvent } from "react";
 import DateTimePicker from "../DateTimePicker/DateTimePicker";
 import {
@@ -15,7 +16,6 @@ import {
 import DraftPollModal from "../Modals/DraftPollModal";
 import PollCreatedModal from "../Modals/PollCreatedModal";
 import { Button } from "../ui/Button";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
 
 export default function PollForm({ usePollFormData }: { usePollFormData: ReturnType<typeof usePollForm> }) {
   const {
@@ -56,6 +56,7 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
   // Auto-save on unmount
   useEffect(() => {
     return () => {
+      console.log("Auto-saving draft poll on unmount");
       saveDraftPoll();
     };
   }, []);

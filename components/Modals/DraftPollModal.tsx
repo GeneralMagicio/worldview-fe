@@ -1,3 +1,4 @@
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 import BottomModal from "../ui/BottomModal";
 import { Button } from "../ui/Button";
 
@@ -26,14 +27,20 @@ export default function DraftPollModal({
       <div className="flex flex-col gap-4 justify-center">
         <Button 
           className="text-sm font-semibold font-sora"
-          onClick={onSaveAsDraft}
+          onClick={() => {
+            sendHapticFeedbackCommand();
+            onSaveAsDraft();
+          }}
         >
           Save as Draft
         </Button>
         <Button
           variant="ghost"
           className="text-sm font-semibold font-sora text-gray-500"
-          onClick={onDelete}
+          onClick={() => {
+            sendHapticFeedbackCommand();
+            onDelete();
+          }}
         >
           Delete
         </Button>
