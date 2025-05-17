@@ -1,18 +1,18 @@
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { formatISO } from "date-fns";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import { combineDateTime, formatShortDate } from "@/utils/time";
 import {
   useCreateOrUpdateDraftPoll,
   useCreatePoll,
   useDeletePoll,
   useGetDraftPoll,
 } from "@/hooks/usePoll";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
+import { combineDateTime, formatShortDate } from "@/utils/time";
 import { pollSchema } from "@/validation/pollSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { formatISO } from "date-fns";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 type DateTimeValues = {
   startDate: Date | null;
@@ -328,7 +328,8 @@ export function usePollForm() {
   useEffect(() => {
     if (poll && !isCreatingPoll) {
       setPollCreatedModalOpen(true);
-
+      // Clear form
+      reset();
       // If we had a draft, it's now published so we can clear it
       if (hasDraftPoll && draftPollId) {
         deletePoll({ id: draftPollId });
