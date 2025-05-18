@@ -9,8 +9,13 @@ interface SwitchProps extends React.HTMLAttributes<HTMLButtonElement> {
   disabled?: boolean
 }
 
-const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
-  ({ className, checked = false, onCheckedChange, disabled = false, ...props }, ref) => {
+const Switch = ({ 
+    className, 
+    checked = false, 
+    onCheckedChange, 
+    disabled = false, 
+    ...props 
+  }: SwitchProps) => {
 
     const toggleSwitch = () => {
       if (disabled) return
@@ -31,7 +36,6 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
           className,
         )}
         onClick={toggleSwitch}
-        ref={ref}
         {...props}
       >
         <span
@@ -42,11 +46,7 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
           )}
         />
       </button>
-    )
-  },
-)
+    );
+  };
 
-Switch.displayName = "Switch"
-
-export { Switch };
-
+export default Switch;

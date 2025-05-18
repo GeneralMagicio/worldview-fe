@@ -16,7 +16,7 @@ import {
 import DraftPollModal from "../Modals/DraftPollModal";
 import PollCreatedModal from "../Modals/PollCreatedModal";
 import { Button } from "../ui/Button";
-import { Switch } from "../ui/Switch";
+import Switch from "../ui/Switch";
 
 export default function PollForm({ usePollFormData }: { usePollFormData: ReturnType<typeof usePollForm> }) {
   const {
