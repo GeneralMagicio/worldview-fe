@@ -312,7 +312,7 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
         <div className="border-t border-gray-200 my-4"></div>
 
         <div className="mb-6">
-        <h2 className="text-xl font-bold mb-4">Poll Traits</h2>
+        <h2 className="text-xl font-bold mb-4">Poll Type</h2>
 
         <div className="flex items-center justify-between mb-1">
           <span className="font-medium">Anonymous Poll</span>
