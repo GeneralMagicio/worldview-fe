@@ -83,6 +83,7 @@ export function usePollForm() {
   const watchedTags = watch("tags");
   const watchedDescription = watch("description");
   const watchedValues = watch();
+  const isAnonymous = watch("isAnonymous");
 
   // Form state
   const [tagInput, setTagInput] = useState("");
@@ -113,6 +114,12 @@ export function usePollForm() {
   // Timer ref for auto-saving
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Function to update the isAnonymous value
+  const setIsAnonymous = (value: boolean) => {
+    setValue("isAnonymous", value, { shouldDirty: true });
+    setHasFormChanged(true);
+  };
+
   // Load draft poll when the component mounts
   useEffect(() => {
     if (draftPoll && !isLoadingDraft) {
@@ -138,6 +145,7 @@ export function usePollForm() {
       }
       if (draftPoll.isAnonymous !== undefined) {
         setValue("isAnonymous", draftPoll.isAnonymous);
+        setIsAnonymous(draftPoll.isAnonymous);
       }
 
       // Handle startDate and endDate for duration display
@@ -294,8 +302,7 @@ export function usePollForm() {
       draftData.description ||
       (draftData.options && draftData.options.length > 0) ||
       (draftData.tags && draftData.tags.length > 0) ||
-      draftData.startDate ||
-      draftData.endDate;
+      draftData.isAnonymous;
 
     if (hasData) {
       if (draftModalOpen) {
@@ -594,5 +601,7 @@ export function usePollForm() {
     deleteDraftPoll,
     hasFormChanged,
     isLoadingDraft,
+    isAnonymous,
+    setIsAnonymous,
   };
 }
