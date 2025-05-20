@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useGetPollDetails, useDeletePoll } from "@/hooks/usePoll";
-import { useGetUserVotes } from "@/hooks/useUser";
-import { useShare } from "@/hooks/useShare";
-import { getRelativeTimeString } from "@/utils/time";
-import { formatFloat } from "@/utils/number";
 import {
-  ShareIcon,
-  InfoIcon,
-  UserIcon,
   CheckIcon,
+  InfoIcon,
+  ShareIcon,
   TrashIcon,
+  UserIcon
 } from "@/components/icon-components";
-import { Button } from "../ui/Button";
 import QVInfoModal from "@/components/Modals/QVInfoModal";
-import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import { useAuth } from "@/context/AuthContext";
+import { useDeletePoll, useGetPollDetails } from "@/hooks/usePoll";
+import { useShare } from "@/hooks/useShare";
+import { useGetUserVotes } from "@/hooks/useUser";
 import { sendHapticFeedbackCommand } from "@/utils/animation";
+import { formatFloat } from "@/utils/number";
+import { getRelativeTimeString } from "@/utils/time";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import PieChart from "../icon-components/PieChart";
+import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import CustomShareModal from "../Modals/CustomShareModal";
+import { Button } from "../ui/Button";
 
 type VoteState = {
   option: string;
@@ -287,6 +289,14 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         >
           {isActive ? "Vote" : "Voting Ended"}
         </button>
+        <Link
+          className="w-full flex items-center justify-center bg-gray-50 gap-2 py-3 text-gray-700 font-semibold rounded-xl font-sora active:scale-95 active:transition-transform active:duration-100"
+          href={`/voters/${pollId}`}
+          onClick={() => sendHapticFeedbackCommand()}
+        >
+          <PieChart />
+          View Voters
+        </Link>
 
         {isAuthor && (
           <Button
