@@ -77,6 +77,7 @@ export default function VotersList() {
   // Render loading state
   if (isLoading) {
     return (
+      <>
       <div className="flex-1 p-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-medium">Check out how others voted in this poll</h2>
@@ -88,12 +89,15 @@ export default function VotersList() {
           <p className="text-gray-500">Loading voters data...</p>
         </div>
       </div>
+      {showModal && <QuadraticInfoModal onClose={() => setShowModal(false)} />}
+      </>
     )
   }
 
   // Render error state
   if (error) {
     return (
+      <>
       <div className="flex-1 p-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-medium">Check out how others voted in this poll</h2>
@@ -105,6 +109,8 @@ export default function VotersList() {
           <p className="text-red-500">Failed to load voters data. Please try again later.</p>
         </div>
       </div>
+      {showModal && <QuadraticInfoModal onClose={() => setShowModal(false)} />}
+      </>
     )
   }
 
@@ -115,7 +121,11 @@ export default function VotersList() {
       <div className="flex-1 p-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-medium">Check out how others voted in this poll</h2>
-          <button onClick={() => setShowModal(true)}>
+          <button onClick={() => {
+            console.log("setShowModal clicked")
+            setShowModal(true)
+            }
+          }>
             <InfoIcon />
           </button>
         </div>
@@ -124,7 +134,7 @@ export default function VotersList() {
         </div>
         <Button
             variant="primary"
-            className="mt-2 w-full flex items-center justify-center gap-2 font-medium active:scale-95 active:transition-transform active:duration-100"
+            className="w-full flex items-center justify-center gap-2 font-medium active:scale-95 active:transition-transform active:duration-100"
             onClick={() => {
               sendHapticFeedbackCommand();
               handleSharePoll(pollTitle || "", Number(pollId));
@@ -139,6 +149,7 @@ export default function VotersList() {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
       />
+            {showModal && <QuadraticInfoModal onClose={() => setShowModal(false)} />}
       </>
     )
   }
