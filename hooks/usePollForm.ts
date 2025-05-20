@@ -314,6 +314,7 @@ export function usePollForm() {
 
   // Function to delete the draft poll
   const deleteDraftPoll = () => {
+    reset();
     if (draftPollId) {
       deletePoll(
         { id: draftPollId },
@@ -321,7 +322,6 @@ export function usePollForm() {
           onSuccess: () => {
             setHasDraftPoll(false);
             setDraftPollId(undefined);
-            reset();
             // Only navigate back after successful deletion
             router.push("/");
           }
