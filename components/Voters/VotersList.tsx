@@ -119,12 +119,12 @@ export default function VotersList() {
             <InfoIcon />
           </button>
         </div>
-        <div className="flex justify-center items-center h-40">
+        <div className="flex justify-center items-center h-40 text-center">
           <p className="text-gray-500">No one has voted on this poll.. yet, share it with your community!</p>
         </div>
         <Button
             variant="primary"
-            className="mt-3 w-full flex items-center justify-center gap-2 font-medium active:scale-95 active:transition-transform active:duration-100"
+            className="mt-2 w-full flex items-center justify-center gap-2 font-medium active:scale-95 active:transition-transform active:duration-100"
             onClick={() => {
               sendHapticFeedbackCommand();
               handleSharePoll(pollTitle || "", Number(pollId));
