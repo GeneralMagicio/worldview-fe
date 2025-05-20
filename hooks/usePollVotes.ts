@@ -1,6 +1,8 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
 interface PollVoterResponse {
+  pollId: number;
+  pollTitle: string;
   votes: {
     username: string;
     quadraticWeights: Record<string, number>;

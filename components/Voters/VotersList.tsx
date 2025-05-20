@@ -4,9 +4,14 @@ import ChevronDownIcon from "@/components/icon-components/ChevronDownIcon"
 import InfoIcon from "@/components/icon-components/InfoIcon"
 import UserIcon from "@/components/icon-components/UserIcon"
 import { usePollVotes } from "@/hooks/usePollVotes"
+import { useShare } from "@/hooks/useShare"
+import { sendHapticFeedbackCommand } from "@/utils/animation"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import { ShareIcon } from "../icon-components"
+import CustomShareModal from "../Modals/CustomShareModal"
 import QuadraticInfoModal from "../Modals/QuadraticInfoModal"
+import { Button } from "../ui/Button"
 
 interface Voter {
   id: string
@@ -31,6 +36,10 @@ export default function VotersList() {
     isLoading,
     error
   } = usePollVotes(pollId)
+
+  const { handleSharePoll, isOpen, setIsOpen, shareUrl } = useShare();
+
+  const pollTitle = votersData?.pollTitle;
 
   useEffect(() => {
     if (votersData && votersData.votes) {
@@ -102,6 +111,7 @@ export default function VotersList() {
   // Render empty state
   if (!voters || voters.length === 0) {
     return (
+      <>
       <div className="flex-1 p-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-medium">Check out how others voted in this poll</h2>
@@ -110,9 +120,26 @@ export default function VotersList() {
           </button>
         </div>
         <div className="flex justify-center items-center h-40">
-          <p className="text-gray-500">No votes have been cast yet.</p>
+          <p className="text-gray-500">No one has voted on this poll.. yet, share it with your community!</p>
         </div>
+        <Button
+            variant="primary"
+            className="mt-3 w-full flex items-center justify-center gap-2 font-medium active:scale-95 active:transition-transform active:duration-100"
+            onClick={() => {
+              sendHapticFeedbackCommand();
+              handleSharePoll(pollTitle || "", Number(pollId));
+            }}
+          >
+            <ShareIcon size={24} color="white" />
+            Share this Poll
+          </Button>
       </div>
+      <CustomShareModal
+        message={shareUrl}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
+      </>
     )
   }
 
