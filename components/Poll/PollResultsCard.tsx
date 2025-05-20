@@ -299,14 +299,14 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         >
           {isActive ? "Vote" : "Voting Ended"}
         </button>
-        <Link
+        {!pollData?.poll?.isAnonymous && (<Link
           className="w-full flex items-center justify-center bg-gray-50 gap-2 py-3 text-gray-700 font-semibold rounded-xl font-sora active:scale-95 active:transition-transform active:duration-100"
           href={`/voters/${pollId}`}
           onClick={() => sendHapticFeedbackCommand()}
         >
           <PieChart />
           View Voters
-        </Link>
+        </Link>)}
 
         {isAuthor && (
           <Button
