@@ -305,25 +305,38 @@ export function usePollForm() {
       draftData.isAnonymous;
 
     if (hasData) {
-      createOrUpdateDraftPoll(draftData);
-    }
-    // Navigate back after saving
-    if (draftModalOpen) {
+      if (draftModalOpen) {
+        createOrUpdateDraftPoll(draftData, {
+          onSuccess: () => {
+            router.push("/");
+          }
+        });
+      } else {
+        createOrUpdateDraftPoll(draftData);
+      }
+    } else if (draftModalOpen) {
       router.push("/");
     }
   };
 
   // Function to delete the draft poll
   const deleteDraftPoll = () => {
+    reset();
     if (draftPollId) {
-      deletePoll({ id: draftPollId });
-      setHasDraftPoll(false);
-      setDraftPollId(undefined);
-      reset(); // Reset the form
+      deletePoll(
+        { id: draftPollId },
+        {
+          onSuccess: () => {
+            setHasDraftPoll(false);
+            setDraftPollId(undefined);
+            // Only navigate back after successful deletion
+            router.push("/");
+          }
+        }
+      );
+    } else {
+      router.push("/");
     }
-
-    // Navigate back
-    router.push("/");
   };
 
   // Check for API errors
@@ -337,7 +350,8 @@ export function usePollForm() {
   useEffect(() => {
     if (poll && !isCreatingPoll) {
       setPollCreatedModalOpen(true);
-
+      // Clear form
+      reset();
       // If we had a draft, it's now published so we can clear it
       if (hasDraftPoll && draftPollId) {
         deletePoll({ id: draftPollId });
