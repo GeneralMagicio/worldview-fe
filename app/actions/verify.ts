@@ -1,13 +1,14 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { nanoid } from "nanoid";
+import { cookies } from "next/headers";
 
 export async function getNonce() {
   try {
     const nonce = nanoid(32);
+    const cookieStore = await cookies();
 
-    cookies().set("siwe_nonce", nonce, {
+    await cookieStore.set("siwe_nonce", nonce, {
       secure: true,
       httpOnly: true,
       sameSite: "strict",
@@ -23,7 +24,8 @@ export async function getNonce() {
 
 export async function verifyNonceCookie(submittedNonce: string) {
   try {
-    const storedNonce = cookies().get("siwe_nonce")?.value;
+    const cookieStore = await cookies();
+    const storedNonce = cookieStore.get("siwe_nonce")?.value;
 
     if (!storedNonce) {
       return { isValid: false, error: "No nonce found in cookies" };
@@ -32,7 +34,8 @@ export async function verifyNonceCookie(submittedNonce: string) {
     const isValid = storedNonce === submittedNonce;
 
     if (isValid) {
-      cookies().delete("siwe_nonce");
+      const cookieStore = await cookies();
+      await cookieStore.delete("siwe_nonce");
     }
 
     return { isValid };
