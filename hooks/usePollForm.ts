@@ -315,14 +315,21 @@ export function usePollForm() {
   // Function to delete the draft poll
   const deleteDraftPoll = () => {
     if (draftPollId) {
-      deletePoll({ id: draftPollId });
-      setHasDraftPoll(false);
-      setDraftPollId(undefined);
-      reset(); // Reset the form
+      deletePoll(
+        { id: draftPollId },
+        {
+          onSuccess: () => {
+            setHasDraftPoll(false);
+            setDraftPollId(undefined);
+            reset();
+            // Only navigate back after successful deletion
+            router.push("/");
+          }
+        }
+      );
+    } else {
+      router.push("/");
     }
-
-    // Navigate back
-    router.push("/");
   };
 
   // Check for API errors
