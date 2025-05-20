@@ -3,7 +3,9 @@
 import ChevronDownIcon from "@/components/icon-components/ChevronDownIcon"
 import InfoIcon from "@/components/icon-components/InfoIcon"
 import UserIcon from "@/components/icon-components/UserIcon"
-import { useState } from "react"
+import { usePollVotes } from "@/hooks/usePollVotes"
+import { useParams } from "next/navigation"
+import { useEffect, useState } from "react"
 import QuadraticInfoModal from "../Modals/QuadraticInfoModal"
 
 interface Voter {
@@ -15,122 +17,41 @@ interface Voter {
   }[]
 }
 
-const voters: Voter[] = [
-  {
-    id: "1",
-    username: "@mitch.1306",
-    votes: [
-      { option: "Polygon", count: 5.55 },
-      { option: "Optimism", count: 5.55 },
-      { option: "Avalanche", count: 5.55 },
-      { option: "BNB Smart Chain", count: 0 },
-    ],
-  },
-  {
-    id: "2",
-    username: "@sarah.bright",
-    votes: [
-      { option: "Polygon", count: 3.87 },
-      { option: "Optimism", count: 2.0 },
-      { option: "Avalanche", count: 0 },
-      { option: "BNB Smart Chain", count: 7.75 },
-    ],
-  },
-  {
-    id: "3",
-    username: "@john.doe",
-    votes: [
-      { option: "Polygon", count: 1.0 },
-      { option: "Optimism", count: 9.0 },
-      { option: "Avalanche", count: 2.24 },
-      { option: "BNB Smart Chain", count: 0 },
-    ],
-  },
-  {
-    id: "4",
-    username: "@emily.james",
-    votes: [
-      { option: "Polygon", count: 4.47 },
-      { option: "Optimism", count: 4.47 },
-      { option: "Avalanche", count: 0 },
-      { option: "BNB Smart Chain", count: 4.47 },
-    ],
-  },
-  {
-    id: "5",
-    username: "@tom.smith",
-    votes: [
-      { option: "Polygon", count: 8.66 },
-      { option: "Optimism", count: 0 },
-      { option: "Avalanche", count: 3.0 },
-      { option: "BNB Smart Chain", count: 0 },
-    ],
-  },
-  {
-    id: "6",
-    username: "@lisa.white",
-    votes: [
-      { option: "Polygon", count: 2.24 },
-      { option: "Optimism", count: 2.24 },
-      { option: "Avalanche", count: 2.24 },
-      { option: "BNB Smart Chain", count: 6.32 },
-    ],
-  },
-  {
-    id: "7",
-    username: "@kevin.brown",
-    votes: [
-      { option: "Polygon", count: 0 },
-      { option: "Optimism", count: 7.75 },
-      { option: "Avalanche", count: 3.87 },
-      { option: "BNB Smart Chain", count: 0 },
-    ],
-  },
-  {
-    id: "8",
-    username: "@anna.jones",
-    votes: [
-      { option: "Polygon", count: 5.0 },
-      { option: "Optimism", count: 0 },
-      { option: "Avalanche", count: 5.0 },
-      { option: "BNB Smart Chain", count: 3.0 },
-    ],
-  },
-  {
-    id: "9",
-    username: "@mike.davis",
-    votes: [
-      { option: "Polygon", count: 3.0 },
-      { option: "Optimism", count: 3.0 },
-      { option: "Avalanche", count: 3.0 },
-      { option: "BNB Smart Chain", count: 3.0 },
-    ],
-  },
-  {
-    id: "10",
-    username: "@julia.miller",
-    votes: [
-      { option: "Polygon", count: 10.0 },
-      { option: "Optimism", count: 0 },
-      { option: "Avalanche", count: 0 },
-      { option: "BNB Smart Chain", count: 0 },
-    ],
-  },
-  {
-    id: "11",
-    username: "@chris.taylor",
-    votes: [
-      { option: "Polygon", count: 0 },
-      { option: "Optimism", count: 0 },
-      { option: "Avalanche", count: 12.0 },
-      { option: "BNB Smart Chain", count: 0 },
-    ],
-  },
-]
-
 export default function VotersList() {
+  const params = useParams()
+  // Convert params.id which could be string or string[] to a single string or undefined
+  const pollId = params.id ? (Array.isArray(params.id) ? params.id[0] : params.id) : undefined
+  
   const [expandedVoter, setExpandedVoter] = useState<string | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [voters, setVoters] = useState<Voter[]>([])
+
+  const {
+    data: votersData,
+    isLoading,
+    error
+  } = usePollVotes(pollId)
+
+  useEffect(() => {
+    if (votersData && votersData.votes) {
+      // Transform the API response to match our component's expected format
+      const transformedVoters = votersData.votes.map((vote, index) => {
+        // Convert the quadraticWeights object to an array of option/count pairs
+        const votesArray = Object.entries(vote.quadraticWeights).map(([option, count]) => ({
+          option,
+          count
+        }))
+
+        return {
+          id: index.toString(), // Generate an ID based on array index
+          username: vote.username,
+          votes: votesArray
+        }
+      })
+
+      setVoters(transformedVoters)
+    }
+  }, [votersData])
 
   const toggleVoter = (id: string) => {
     if (expandedVoter === id) {
@@ -142,6 +63,57 @@ export default function VotersList() {
 
   const getTotalVotes = (votes: { option: string; count: number }[]) => {
     return votes.reduce((sum, vote) => sum + vote.count, 0)
+  }
+
+  // Render loading state
+  if (isLoading) {
+    return (
+      <div className="flex-1 p-4">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-medium">Check out how others voted in this poll</h2>
+          <button onClick={() => setShowModal(true)}>
+            <InfoIcon />
+          </button>
+        </div>
+        <div className="flex justify-center items-center h-40">
+          <p className="text-gray-500">Loading voters data...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Render error state
+  if (error) {
+    return (
+      <div className="flex-1 p-4">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-medium">Check out how others voted in this poll</h2>
+          <button onClick={() => setShowModal(true)}>
+            <InfoIcon />
+          </button>
+        </div>
+        <div className="flex justify-center items-center h-40">
+          <p className="text-red-500">Failed to load voters data. Please try again later.</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Render empty state
+  if (!voters || voters.length === 0) {
+    return (
+      <div className="flex-1 p-4">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-medium">Check out how others voted in this poll</h2>
+          <button onClick={() => setShowModal(true)}>
+            <InfoIcon />
+          </button>
+        </div>
+        <div className="flex justify-center items-center h-40">
+          <p className="text-gray-500">No votes have been cast yet.</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -179,7 +151,7 @@ export default function VotersList() {
                 {voter.votes.map((vote, index) => (
                   <div key={index} className="flex justify-between py-2">
                     <span>{vote.option}</span>
-                    <span className="text-gray-500">{vote.count} votes</span>
+                    <span className="text-gray-500">{vote.count.toFixed(2)} votes</span>
                   </div>
                 ))}
                 <div className="border-t border-gray-200 mt-2 pt-2 flex justify-between">
