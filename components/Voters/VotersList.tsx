@@ -188,7 +188,7 @@ export default function VotersList() {
               <div className="px-4 pb-4">
                 {voter.votes.map((vote, index) => (
                   <div key={index} className="flex justify-between py-2">
-                    <span>{vote.option}</span>
+                    <span className="truncate whitespace-nowrap overflow-hidden text-ellipsis max-w-[70%]">{vote.option}</span>
                     <span className="text-gray-400">{vote.count.toFixed(2)} votes</span>
                   </div>
                 ))}
