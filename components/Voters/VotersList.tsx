@@ -189,7 +189,7 @@ export default function VotersList() {
                 {voter.votes.map((vote, index) => (
                   <div key={index} className="flex justify-between py-2">
                     <span>{vote.option}</span>
-                    <span className="text-gray-500">{vote.count.toFixed(2)} votes</span>
+                    <span className="text-gray-400">{vote.count.toFixed(2)} votes</span>
                   </div>
                 ))}
                 <div className="text-right text-gray-500 border-t border-gray-200 mt-2 pt-2">
