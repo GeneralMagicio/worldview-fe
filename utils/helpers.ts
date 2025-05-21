@@ -20,7 +20,7 @@ export const transformActionToPoll = (action: UserActionDto): IPoll => {
         pollsParticipatedCount: 0, // Not available from the API
         worldID: action.authorWorldId,
       },
-      isAnonymous: false, // Not available from the API
+      isAnonymous: action.isAnonymous,
       options: [], // Not available from the API
       tags: [], // Not available from the API
       voteResults: [], // Not available from the API
