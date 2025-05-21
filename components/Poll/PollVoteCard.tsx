@@ -334,7 +334,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mb-2" onClick={() => {
+      {!isLoading && <div className="flex items-center gap-2 mb-2" onClick={() => {
         sendHapticFeedbackCommand();
         setIsVotingTypesModalOpen(true)
       }}>
@@ -343,7 +343,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         ) : (
           <PublicIconWrapper texty />
         )}
-      </div>
+      </div>}
 
       {/* Poll Title + Description */}
       <div className="pb-2">
