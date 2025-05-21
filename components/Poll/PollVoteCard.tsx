@@ -1,11 +1,3 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
-import { useDeletePoll, useGetPollDetails } from "@/hooks/usePoll";
-import { useEditVote, useGetUserVotes, useSetVote } from "@/hooks/useUser";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import { getRelativeTimeString } from "@/utils/time";
 import {
   CheckIcon,
   InfoIcon,
@@ -20,10 +12,20 @@ import {
 import ConfirmDeleteModal from "@/components/Modals/ConfirmDeleteModal";
 import QVInfoModal from "@/components/Modals/QVInfoModal";
 import VotingSuccessModal from "@/components/Modals/VotingSuccessModal";
-import { formatFloat } from "@/utils/number";
+import { useAuth } from "@/context/AuthContext";
+import { useDeletePoll, useGetPollDetails } from "@/hooks/usePoll";
 import { useShare } from "@/hooks/useShare";
-import { Button } from "../ui/Button";
+import { useEditVote, useGetUserVotes, useSetVote } from "@/hooks/useUser";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
+import { formatFloat } from "@/utils/number";
+import { getRelativeTimeString } from "@/utils/time";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
+import { AnonymousIconWrapper, PublicIconWrapper } from "../icon-components/IconWrapper";
 import CustomShareModal from "../Modals/CustomShareModal";
+import VotingTypesModal from "../Modals/VotingTypesModal";
+import { Button } from "../ui/Button";
 
 type VoteState = {
   option: string;
@@ -68,7 +70,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   const [showQVInfoModal, setShowQVInfoModal] = useState(false);
   const [showVotingSuccessModal, setShowVotingSuccessModal] = useState(false);
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
-
+  const [isVotingTypesModalOpen, setIsVotingTypesModalOpen] = useState(false);
   const [votes, setVotes] = useState<VoteState[]>();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -332,6 +334,17 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         </div>
       </div>
 
+      <div className="flex items-center gap-2 mb-2" onClick={() => {
+        sendHapticFeedbackCommand();
+        setIsVotingTypesModalOpen(true)
+      }}>
+        {pollDetails?.isAnonymous ? (
+          <AnonymousIconWrapper texty />
+        ) : (
+          <PublicIconWrapper texty />
+        )}
+      </div>
+
       {/* Poll Title + Description */}
       <div className="pb-2">
         {isLoading ? (
@@ -588,7 +601,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           isLoading={deletePollPending}
         />
       )}
-
+      {isVotingTypesModalOpen && <VotingTypesModal onClose={() => setIsVotingTypesModalOpen(false)} />}
       <CustomShareModal
         message={shareUrl}
         isOpen={isOpen}

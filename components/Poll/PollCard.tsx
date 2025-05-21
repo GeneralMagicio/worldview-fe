@@ -2,9 +2,10 @@
 
 import { CheckIcon, UserIcon } from "@/components/icon-components";
 import { IPoll } from "@/types/poll";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 import { getRelativeTimeString } from "@/utils/time";
 import { useRouter } from "next/navigation";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import { AnonymousIconWrapper, PublicIconWrapper } from "../icon-components/IconWrapper";
 
 export default function PollCard({ poll }: { poll: IPoll }) {
   const router = useRouter();
@@ -88,15 +89,23 @@ export default function PollCard({ poll }: { poll: IPoll }) {
             </span>
             <span className="text-sm text-gray-600">voters participated</span>
           </div>
+          
+          <div>
+            {poll.isAnonymous ? (
+              <AnonymousIconWrapper />
+            ) : (
+              <PublicIconWrapper />
+            )}
+          </div>
+        </div>
+      </div>
 
-          {poll.hasVoted && (
-            <div className="bg-success-300 text-success-900 px-2 py-1 rounded-full flex items-center gap-1 text-xs">
+      {poll.hasVoted && (
+            <div className="bg-success-300 text-success-900 px-2 py-1 rounded-full inline-flex w-fit items-center gap-1 text-xs">
               <span>You voted</span>
               <CheckIcon size={12} color="#18964F" />
             </div>
           )}
-        </div>
-      </div>
 
       {!poll.hasVoted && !isEnded && (
         <button

@@ -171,7 +171,7 @@ export default function VotersList() {
                 <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
                   <UserIcon size={24} />
                 </div>
-                <span>{voter.username}</span>
+                <span>{voter.username || "Anon"}</span>
               </div>
               <div
                 className={`transform transition-transform duration-300 ${expandedVoter === voter.id ? "rotate-180" : ""}`}
