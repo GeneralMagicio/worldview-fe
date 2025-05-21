@@ -34,7 +34,7 @@ export default function PollList({
   const [sortBy, setSortBy] = useState<
     "creationDate" | "endDate" | "participantCount"
   >();
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">();
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
