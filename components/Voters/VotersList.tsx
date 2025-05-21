@@ -192,9 +192,9 @@ export default function VotersList() {
                     <span className="text-gray-500">{vote.count.toFixed(2)} votes</span>
                   </div>
                 ))}
-                <div className="border-t border-gray-200 mt-2 pt-2 flex justify-between">
-                  <span className="font-medium">Total votes:</span>
-                  <span className="font-medium">{getTotalVotes(voter.votes).toFixed(2)}</span>
+                <div className="text-right text-gray-500 border-t border-gray-200 mt-2 pt-2">
+                  <span className="pr-1">Total votes:</span>
+                  <span>{getTotalVotes(voter.votes).toFixed(2)}</span>
                 </div>
               </div>
             </div>
