@@ -16,9 +16,11 @@ import { getRelativeTimeString } from "@/utils/time";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AnonymousIconWrapper, PublicIconWrapper } from "../icon-components/IconWrapper";
 import PieChart from "../icon-components/PieChart";
 import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import CustomShareModal from "../Modals/CustomShareModal";
+import VotingTypesModal from "../Modals/VotingTypesModal";
 import { Button } from "../ui/Button";
 
 type VoteState = {
@@ -27,7 +29,7 @@ type VoteState = {
   count: number;
 };
 
-export default function PollVoteCard({ pollId }: { pollId: number }) {
+export default function PollResultsCard({ pollId }: { pollId: number }) {
   const router = useRouter();
   const { worldID } = useAuth();
   const { handleShareResults, isOpen, setIsOpen, shareUrl } = useShare();
@@ -51,6 +53,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
 
   const [votes, setVotes] = useState<VoteState[]>();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isVotingTypesModalOpen, setIsVotingTypesModalOpen] = useState(false);
 
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
   const [showQVInfoModal, setShowQVInfoModal] = useState(false);
@@ -100,7 +103,6 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
 
   return (
     <div className="bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029]">
-      {/* Poll Voting Card Header */}
       <div className="flex justify-between items-center mb-3">
         <div
           className="flex items-center gap-2 cursor-pointer hover:opacity-80 active:scale-95 active:transition-transform active:duration-100"
@@ -143,6 +145,17 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             </>
           )}
         </div>
+      </div>
+
+      <div className="flex items-center gap-2 mb-2" onClick={() => {
+        sendHapticFeedbackCommand();
+        setIsVotingTypesModalOpen(true)
+      }}>
+        {pollDetails?.isAnonymous ? (
+          <AnonymousIconWrapper texty />
+        ) : (
+          <PublicIconWrapper texty />
+        )}
       </div>
 
       {/* Poll Title + Description */}
@@ -333,7 +346,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           isLoading={deletePollPending}
         />
       )}
-
+      {isVotingTypesModalOpen && <VotingTypesModal onClose={() => setIsVotingTypesModalOpen(false)} />}
       <CustomShareModal
         message={shareUrl}
         isOpen={isOpen}

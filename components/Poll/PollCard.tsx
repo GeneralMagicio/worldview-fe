@@ -1,10 +1,11 @@
 "use client";
 
-import { CheckIcon, UserIcon } from "@/components/icon-components";
+import { UserIcon } from "@/components/icon-components";
 import { IPoll } from "@/types/poll";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 import { getRelativeTimeString } from "@/utils/time";
 import { useRouter } from "next/navigation";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import { AnonymousIconWrapper, PublicIconWrapper } from "../icon-components/IconWrapper";
 
 export default function PollCard({ poll }: { poll: IPoll }) {
   const router = useRouter();
@@ -89,12 +90,19 @@ export default function PollCard({ poll }: { poll: IPoll }) {
             <span className="text-sm text-gray-600">voters participated</span>
           </div>
 
-          {poll.hasVoted && (
+          {/* {poll.hasVoted && (
             <div className="bg-success-300 text-success-900 px-2 py-1 rounded-full flex items-center gap-1 text-xs">
               <span>You voted</span>
               <CheckIcon size={12} color="#18964F" />
             </div>
-          )}
+          )} */}
+          <div>
+            {poll.isAnonymous ? (
+              <AnonymousIconWrapper />
+            ) : (
+              <PublicIconWrapper />
+            )}
+          </div>
         </div>
       </div>
 
