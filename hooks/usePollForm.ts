@@ -1,18 +1,18 @@
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { formatISO } from "date-fns";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import { combineDateTime, formatShortDate } from "@/utils/time";
 import {
   useCreateOrUpdateDraftPoll,
   useCreatePoll,
   useDeletePoll,
   useGetDraftPoll,
 } from "@/hooks/usePoll";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
+import { combineDateTime, formatShortDate } from "@/utils/time";
 import { pollSchema } from "@/validation/pollSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { formatISO } from "date-fns";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 type DateTimeValues = {
   startDate: Date | null;
@@ -83,6 +83,7 @@ export function usePollForm() {
   const watchedTags = watch("tags");
   const watchedDescription = watch("description");
   const watchedValues = watch();
+  const isAnonymous = watch("isAnonymous");
 
   // Form state
   const [tagInput, setTagInput] = useState("");
@@ -113,6 +114,12 @@ export function usePollForm() {
   // Timer ref for auto-saving
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Function to update the isAnonymous value
+  const setIsAnonymous = (value: boolean) => {
+    setValue("isAnonymous", value, { shouldDirty: true });
+    setHasFormChanged(true);
+  };
+
   // Load draft poll when the component mounts
   useEffect(() => {
     if (draftPoll && !isLoadingDraft) {
@@ -138,6 +145,7 @@ export function usePollForm() {
       }
       if (draftPoll.isAnonymous !== undefined) {
         setValue("isAnonymous", draftPoll.isAnonymous);
+        setIsAnonymous(draftPoll.isAnonymous);
       }
 
       // Handle startDate and endDate for duration display
@@ -293,28 +301,42 @@ export function usePollForm() {
       draftData.title ||
       draftData.description ||
       (draftData.options && draftData.options.length > 0) ||
-      (draftData.tags && draftData.tags.length > 0);
+      (draftData.tags && draftData.tags.length > 0) ||
+      draftData.isAnonymous;
 
     if (hasData) {
-      createOrUpdateDraftPoll(draftData);
-    }
-    // Navigate back after saving
-    if (draftModalOpen) {
+      if (draftModalOpen) {
+        createOrUpdateDraftPoll(draftData, {
+          onSuccess: () => {
+            router.push("/");
+          }
+        });
+      } else {
+        createOrUpdateDraftPoll(draftData);
+      }
+    } else if (draftModalOpen) {
       router.push("/");
     }
   };
 
   // Function to delete the draft poll
   const deleteDraftPoll = () => {
+    reset();
     if (draftPollId) {
-      deletePoll({ id: draftPollId });
-      setHasDraftPoll(false);
-      setDraftPollId(undefined);
-      reset(); // Reset the form
+      deletePoll(
+        { id: draftPollId },
+        {
+          onSuccess: () => {
+            setHasDraftPoll(false);
+            setDraftPollId(undefined);
+            // Only navigate back after successful deletion
+            router.push("/");
+          }
+        }
+      );
+    } else {
+      router.push("/");
     }
-
-    // Navigate back
-    router.push("/");
   };
 
   // Check for API errors
@@ -328,7 +350,8 @@ export function usePollForm() {
   useEffect(() => {
     if (poll && !isCreatingPoll) {
       setPollCreatedModalOpen(true);
-
+      // Clear form
+      reset();
       // If we had a draft, it's now published so we can clear it
       if (hasDraftPoll && draftPollId) {
         deletePoll({ id: draftPollId });
@@ -578,5 +601,7 @@ export function usePollForm() {
     deleteDraftPoll,
     hasFormChanged,
     isLoadingDraft,
+    isAnonymous,
+    setIsAnonymous,
   };
 }

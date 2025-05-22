@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useGetPollDetails, useDeletePoll } from "@/hooks/usePoll";
-import { useGetUserVotes } from "@/hooks/useUser";
-import { useShare } from "@/hooks/useShare";
-import { getRelativeTimeString } from "@/utils/time";
-import { formatFloat } from "@/utils/number";
 import {
-  ShareIcon,
-  InfoIcon,
-  UserIcon,
   CheckIcon,
+  InfoIcon,
+  ShareIcon,
   TrashIcon,
+  UserIcon
 } from "@/components/icon-components";
-import { Button } from "../ui/Button";
 import QVInfoModal from "@/components/Modals/QVInfoModal";
-import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import { useAuth } from "@/context/AuthContext";
+import { useDeletePoll, useGetPollDetails } from "@/hooks/usePoll";
+import { useShare } from "@/hooks/useShare";
+import { useGetUserVotes } from "@/hooks/useUser";
 import { sendHapticFeedbackCommand } from "@/utils/animation";
+import { formatFloat } from "@/utils/number";
+import { getRelativeTimeString } from "@/utils/time";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { AnonymousIconWrapper, PublicIconWrapper } from "../icon-components/IconWrapper";
+import PieChart from "../icon-components/PieChart";
+import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import CustomShareModal from "../Modals/CustomShareModal";
+import VotingTypesModal from "../Modals/VotingTypesModal";
+import { Button } from "../ui/Button";
 
 type VoteState = {
   option: string;
@@ -25,7 +29,7 @@ type VoteState = {
   count: number;
 };
 
-export default function PollVoteCard({ pollId }: { pollId: number }) {
+export default function PollResultsCard({ pollId }: { pollId: number }) {
   const router = useRouter();
   const { worldID } = useAuth();
   const { handleShareResults, isOpen, setIsOpen, shareUrl } = useShare();
@@ -49,6 +53,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
 
   const [votes, setVotes] = useState<VoteState[]>();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isVotingTypesModalOpen, setIsVotingTypesModalOpen] = useState(false);
 
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
   const [showQVInfoModal, setShowQVInfoModal] = useState(false);
@@ -87,13 +92,22 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
     );
   };
 
+  const navigateToUserProfile = () => {
+    sendHapticFeedbackCommand();
+    if (pollDetails?.author?.worldID) {
+      router.push(`/user/${pollDetails.author.worldID}`);
+    }
+  };
+
   if (!pollId) return null;
 
   return (
     <div className="bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029]">
-      {/* Poll Voting Card Header */}
       <div className="flex justify-between items-center mb-3">
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-2 cursor-pointer hover:opacity-80 active:scale-95 active:transition-transform active:duration-100"
+          onClick={navigateToUserProfile}
+        >
           <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
             {isLoading ? (
               <div className="w-5 h-5 rounded-full bg-gray-300 animate-pulse" />
@@ -132,6 +146,17 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           )}
         </div>
       </div>
+
+     {!isLoading && <div className="flex items-center gap-2 mb-2" onClick={() => {
+        sendHapticFeedbackCommand();
+        setIsVotingTypesModalOpen(true)
+      }}>
+        {pollDetails?.isAnonymous ? (
+          <AnonymousIconWrapper texty />
+        ) : (
+          <PublicIconWrapper texty />
+        )}
+      </div>}
 
       {/* Poll Title + Description */}
       <div className="pb-2">
@@ -287,6 +312,14 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         >
           {isActive ? "Vote" : "Voting Ended"}
         </button>
+        {!pollData?.poll?.isAnonymous && (<Link
+          className="w-full flex items-center justify-center bg-gray-50 gap-2 py-3 text-gray-700 font-semibold rounded-xl font-sora active:scale-95 active:transition-transform active:duration-100"
+          href={`/voters/${pollId}`}
+          onClick={() => sendHapticFeedbackCommand()}
+        >
+          <PieChart />
+          View Voters
+        </Link>)}
 
         {isAuthor && (
           <Button
@@ -313,7 +346,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           isLoading={deletePollPending}
         />
       )}
-
+      {isVotingTypesModalOpen && <VotingTypesModal onClose={() => setIsVotingTypesModalOpen(false)} />}
       <CustomShareModal
         message={shareUrl}
         isOpen={isOpen}

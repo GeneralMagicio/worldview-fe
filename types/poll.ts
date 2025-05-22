@@ -61,6 +61,7 @@ export interface UserActionDto {
   pollId: number;
   pollTitle: string;
   pollDescription: string;
+  isAnonymous: boolean;
   endDate: string;
   isActive: boolean;
   votersParticipated: number;

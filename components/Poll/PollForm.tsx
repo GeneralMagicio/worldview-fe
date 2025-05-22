@@ -2,6 +2,7 @@
 
 import { usePollForm } from "@/hooks/usePollForm";
 import { cn } from "@/utils";
+import { sendHapticFeedbackCommand } from "@/utils/animation";
 import { useEffect, type KeyboardEvent } from "react";
 import DateTimePicker from "../DateTimePicker/DateTimePicker";
 import {
@@ -15,7 +16,7 @@ import {
 import DraftPollModal from "../Modals/DraftPollModal";
 import PollCreatedModal from "../Modals/PollCreatedModal";
 import { Button } from "../ui/Button";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import Switch from "../ui/Switch";
 
 export default function PollForm({ usePollFormData }: { usePollFormData: ReturnType<typeof usePollForm> }) {
   const {
@@ -51,6 +52,8 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
     saveDraftPoll,
     deleteDraftPoll,
     isLoadingDraft,
+    isAnonymous,
+    setIsAnonymous,
   } = usePollFormData;
 
   // Auto-save on unmount
@@ -309,6 +312,14 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
         <div className="border-t border-gray-200 my-4"></div>
 
         <div className="mb-6">
+        <h2 className="text-xl font-bold mb-4">Poll Type</h2>
+
+        <div className="flex items-center justify-between mb-1">
+          <span className="font-medium">Anonymous Poll</span>
+          <Switch checked={isAnonymous} onCheckedChange={setIsAnonymous} />
+        </div>
+        <p className="text-gray-500 text-sm mb-6">Prevent anyone from seeing how others voted.</p>
+
           <h2 className="text-lg font-medium mb-4 text-gray-900">
             Poll Duration
           </h2>
