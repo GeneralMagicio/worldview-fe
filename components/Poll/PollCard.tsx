@@ -2,12 +2,14 @@
 
 import { CheckIcon, UserIcon } from "@/components/icon-components";
 import { IPoll } from "@/types/poll";
-import { getRelativeTimeString } from "@/utils/time";
-import { useRouter } from "next/navigation";
 import { sendHapticFeedbackCommand } from "@/utils/animation";
+import { getRelativeTimeString } from "@/utils/time";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function PollCard({ poll }: { poll: IPoll }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const isPublicProfile = pathname.includes("/user/") || pathname.includes("/userActivities/");
 
   const { timeLeft, isEnded } = getRelativeTimeString(
     poll.startDate ?? "",
@@ -89,7 +91,7 @@ export default function PollCard({ poll }: { poll: IPoll }) {
             <span className="text-sm text-gray-600">voters participated</span>
           </div>
 
-          {poll.hasVoted && (
+          {poll.hasVoted && !isPublicProfile && (
             <div className="bg-success-300 text-success-900 px-2 py-1 rounded-full flex items-center gap-1 text-xs">
               <span>You voted</span>
               <CheckIcon size={12} color="#18964F" />
