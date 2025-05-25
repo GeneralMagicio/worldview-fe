@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { FilterHorizontal, SearchIcon } from './icon-components'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { FilterHorizontal, SearchIcon } from './icon-components'
 interface FilterBarProps {
   setFiltersOpen: (open: boolean) => void
   onSearch: (searchTerm: string) => void

@@ -2,15 +2,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import {
-  AnonymousIconWrapper,
-  PublicIconWrapper,
-} from '../icon-components/IconWrapper'
-import PieChart from '../icon-components/PieChart'
-import ConfirmDeleteModal from '../Modals/ConfirmDeleteModal'
-import CustomShareModal from '../Modals/CustomShareModal'
-import VotingTypesModal from '../Modals/VotingTypesModal'
-import { Button } from '../ui/Button'
-import {
   CheckIcon,
   InfoIcon,
   ShareIcon,
@@ -25,6 +16,15 @@ import { useGetUserVotes } from '@/hooks/useUser'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { formatFloat } from '@/utils/number'
 import { getRelativeTimeString } from '@/utils/time'
+import {
+  AnonymousIconWrapper,
+  PublicIconWrapper,
+} from '../icon-components/IconWrapper'
+import PieChart from '../icon-components/PieChart'
+import ConfirmDeleteModal from '../Modals/ConfirmDeleteModal'
+import CustomShareModal from '../Modals/CustomShareModal'
+import VotingTypesModal from '../Modals/VotingTypesModal'
+import { Button } from '../ui/Button'
 
 type VoteState = {
   option: string

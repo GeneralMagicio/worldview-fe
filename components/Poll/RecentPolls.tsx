@@ -1,14 +1,14 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { useGetPolls } from '@/hooks/usePoll'
+import { useToast } from '@/hooks/useToast'
+import { IPoll } from '@/types/poll'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { PlusIcon } from '../icon-components'
 import { Toaster } from '../Toaster'
 import BlurredCard from '../Verify/BlurredCard'
 import NoPollsView from './NoPollsView'
 import PollCard from './PollCard'
-import { useGetPolls } from '@/hooks/usePoll'
-import { useToast } from '@/hooks/useToast'
-import { IPoll } from '@/types/poll'
-import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 export default function RecentPolls() {
   const { toast } = useToast()

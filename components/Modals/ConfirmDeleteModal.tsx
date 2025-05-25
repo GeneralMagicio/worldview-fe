@@ -1,6 +1,6 @@
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 import BottomModal from '../ui/BottomModal'
 import { Button } from '../ui/Button'
-import { sendHapticFeedbackCommand } from '@/utils/animation'
 type ConfirmDeleteModalProps = {
   modalOpen: boolean
   setModalOpen: (open: boolean) => void

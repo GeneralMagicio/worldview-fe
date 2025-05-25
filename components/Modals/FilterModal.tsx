@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import BottomModal from '../ui/BottomModal'
-import CustomCheckbox from '../ui/CustomCheckbox'
 import { IPollFilters } from '@/types/poll'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
+import BottomModal from '../ui/BottomModal'
+import CustomCheckbox from '../ui/CustomCheckbox'
 interface FilterModalProps {
   filters: IPollFilters
   setFilters: (filters: IPollFilters) => void

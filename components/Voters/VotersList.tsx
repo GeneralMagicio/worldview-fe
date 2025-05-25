@@ -2,16 +2,16 @@
 
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { ShareIcon } from '../icon-components'
-import CustomShareModal from '../Modals/CustomShareModal'
-import QuadraticInfoModal from '../Modals/QuadraticInfoModal'
-import { Button } from '../ui/Button'
 import ChevronDownIcon from '@/components/icon-components/ChevronDownIcon'
 import InfoIcon from '@/components/icon-components/InfoIcon'
 import UserIcon from '@/components/icon-components/UserIcon'
 import { usePollVotes } from '@/hooks/usePollVotes'
 import { useShare } from '@/hooks/useShare'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { ShareIcon } from '../icon-components'
+import CustomShareModal from '../Modals/CustomShareModal'
+import QuadraticInfoModal from '../Modals/QuadraticInfoModal'
+import { Button } from '../ui/Button'
 
 interface Voter {
   id: string

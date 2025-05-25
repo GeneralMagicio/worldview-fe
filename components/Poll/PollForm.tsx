@@ -1,6 +1,9 @@
 'use client'
 
 import { useEffect, type KeyboardEvent } from 'react'
+import { usePollForm } from '@/hooks/usePollForm'
+import { cn } from '@/utils'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 import DateTimePicker from '../DateTimePicker/DateTimePicker'
 import {
   CalendarIcon,
@@ -14,9 +17,6 @@ import DraftPollModal from '../Modals/DraftPollModal'
 import PollCreatedModal from '../Modals/PollCreatedModal'
 import { Button } from '../ui/Button'
 import Switch from '../ui/Switch'
-import { usePollForm } from '@/hooks/usePollForm'
-import { cn } from '@/utils'
-import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 export default function PollForm({
   usePollFormData,

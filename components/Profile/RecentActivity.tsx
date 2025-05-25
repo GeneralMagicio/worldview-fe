@@ -2,12 +2,12 @@
 
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import PollCard from '../Poll/PollCard'
 import { useAuth } from '@/context/AuthContext'
 import { useUserActivities } from '@/hooks/useUserActivity'
 import { UserActionDto } from '@/types/poll'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { transformActionToPoll } from '@/utils/helpers'
+import PollCard from '../Poll/PollCard'
 
 interface UserActivitiesResponseDto {
   userActions: UserActionDto[]

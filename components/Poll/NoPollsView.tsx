@@ -1,8 +1,8 @@
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { PlusIcon } from '../icon-components'
 import { Button } from '../ui/Button'
-import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 export default function NoPollsView() {
   const router = useRouter()

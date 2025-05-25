@@ -2,10 +2,10 @@
 
 import Image from 'next/image'
 import { useEffect } from 'react'
-import BlurredCard from '../Verify/BlurredCard'
 import { Toaster } from '@/components/Toaster'
 import { useToast } from '@/hooks/useToast'
 import { useWorldAuth } from '@/hooks/useWorldAuth'
+import BlurredCard from '../Verify/BlurredCard'
 
 export function SplashScreen() {
   const { handleLogin, isLoggingIn, isLoggedIn, error } = useWorldAuth()

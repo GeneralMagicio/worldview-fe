@@ -131,7 +131,7 @@ export function usePollForm() {
       if (draftPoll.description) setValue('description', draftPoll.description)
       if (draftPoll.options && draftPoll.options.length > 0) {
         // Always ensure there are at least 2 options shown
-        let options = [...draftPoll.options]
+        const options = [...draftPoll.options]
 
         // Add empty options if needed to meet the minimum of 2
         while (options.length < 2) {
@@ -474,9 +474,7 @@ export function usePollForm() {
   ) => {
     const now = new Date()
     let end: Date
-    let start: Date
-
-    start = now
+    const start = now
 
     if (duration === 24) {
       end = new Date(now.getTime() + 24 * 60 * 60 * 1000)

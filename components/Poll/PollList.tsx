@@ -1,16 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useGetPolls } from '@/hooks/usePoll'
+import { useToast } from '@/hooks/useToast'
+import { FilterParams, IPoll, IPollFilters } from '@/types/poll'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 import FilterBar from '../FilterBar'
 import { Toaster } from '../Toaster'
 import { Button } from '../ui/Button'
 import BlurredCard from '../Verify/BlurredCard'
 import NoPollsView from './NoPollsView'
 import PollCard from './PollCard'
-import { useGetPolls } from '@/hooks/usePoll'
-import { useToast } from '@/hooks/useToast'
-import { FilterParams, IPoll, IPollFilters } from '@/types/poll'
-import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 const POLLS_PER_PAGE = 20
 

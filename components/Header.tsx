@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, MoreVertical, PlusIcon } from './icon-components'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { ArrowLeft, MoreVertical, PlusIcon } from './icon-components'
 
 interface IHeaderProps {
   backUrl?: string

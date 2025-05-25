@@ -1,10 +1,10 @@
 'use client'
 
 import Image from 'next/image'
-import { Toaster } from '../Toaster'
-import BottomModal from '../ui/BottomModal'
 import { useToast } from '@/hooks/useToast'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { Toaster } from '../Toaster'
+import BottomModal from '../ui/BottomModal'
 
 export default function CustomShareModal({
   message,

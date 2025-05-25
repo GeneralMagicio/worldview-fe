@@ -2,15 +2,15 @@
 
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { useToast } from '@/hooks/useToast'
+import { useUserActivities } from '@/hooks/useUserActivity'
+import { IPollFilters, UserActionDto } from '@/types/poll'
+import { transformActionToPoll } from '@/utils/helpers'
 import FilterBar from '../FilterBar'
 import PollCard from '../Poll/PollCard'
 import { LoadingPolls } from '../Poll/PollList'
 import { Toaster } from '../Toaster'
 import NoUserActivityView from './NoUserActivityView'
-import { useToast } from '@/hooks/useToast'
-import { useUserActivities } from '@/hooks/useUserActivity'
-import { IPollFilters, UserActionDto } from '@/types/poll'
-import { transformActionToPoll } from '@/utils/helpers'
 
 interface UserActivityListProps {
   filters: IPollFilters
