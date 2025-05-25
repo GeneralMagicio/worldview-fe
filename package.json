@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "format": "prettier --write \"*/**/*.{js,jsx,ts,tsx}\"",
-    "lint": "next lint"
+    "lint": "eslint \"*/**/*.{js,jsx,ts,tsx}\"",
+    "lint:fix": "eslint \"*/**/*.{js,jsx,ts,tsx}\" --fix"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -26,16 +27,21 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^15.3.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.6",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint": "^9.27.0",
+    "eslint-config-next": "^15.4.0-canary.51",
     "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.4.0",
     "postcss": "^8",
     "prettier": "^3.5.3",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "typescript-eslint": "^8.32.1"
   }
 }
