@@ -1,13 +1,13 @@
-import { useCallback, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import {
   ISuccessResult,
   MiniKit,
   VerificationLevel,
 } from '@worldcoin/minikit-js'
+import { useRouter } from 'next/navigation'
+import { useCallback, useState } from 'react'
+import { getNonce, verifyNonceCookie } from '@/app/actions/verify'
 import { useAuth } from '@/context/AuthContext'
 import { AUTH_ERRORS } from '@/lib/constants/authErrors'
-import { getNonce, verifyNonceCookie } from '@/app/actions/verify'
 
 export type AuthResult = {
   success: boolean

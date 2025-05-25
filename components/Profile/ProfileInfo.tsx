@@ -1,8 +1,8 @@
 'use client'
 
-import { useAuth } from '@/context/AuthContext'
 import { useQuery } from '@tanstack/react-query'
 import UserIcon from '../icon-components/UserIcon'
+import { useAuth } from '@/context/AuthContext'
 
 interface UserData {
   pollsCreated: number

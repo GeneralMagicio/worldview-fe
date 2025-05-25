@@ -1,10 +1,10 @@
-import { IPoll, IPollDetails } from '@/types/poll'
 import {
   useMutation,
   useQuery,
   useQueryClient,
   UseQueryResult,
 } from '@tanstack/react-query'
+import { IPoll, IPollDetails } from '@/types/poll'
 
 export const POLLS_LIMIT = 10
 

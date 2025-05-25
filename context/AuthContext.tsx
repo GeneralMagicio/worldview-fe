@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import {
   createContext,
   useContext,
@@ -15,7 +16,6 @@ import {
   setToken as setTokenFromLib,
   getWorldID,
 } from '@/lib/auth'
-import { useRouter } from 'next/navigation'
 
 type AuthContextType = {
   token: string | null

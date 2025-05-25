@@ -1,14 +1,14 @@
 'use client'
 
-import { CheckIcon, UserIcon } from '@/components/icon-components'
-import { IPoll } from '@/types/poll'
-import { sendHapticFeedbackCommand } from '@/utils/animation'
-import { getRelativeTimeString } from '@/utils/time'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   AnonymousIconWrapper,
   PublicIconWrapper,
 } from '../icon-components/IconWrapper'
+import { CheckIcon, UserIcon } from '@/components/icon-components'
+import { IPoll } from '@/types/poll'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { getRelativeTimeString } from '@/utils/time'
 
 export default function PollCard({ poll }: { poll: IPoll }) {
   const router = useRouter()

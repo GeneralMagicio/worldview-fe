@@ -1,8 +1,8 @@
 import Image from 'next/image'
-import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { ShareIcon } from '../icon-components'
-import { useShare } from '@/hooks/useShare'
 import CustomShareModal from '../Modals/CustomShareModal'
+import { useShare } from '@/hooks/useShare'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 interface IModalProps {
   setShowModal: (showModal: boolean) => void

@@ -1,7 +1,7 @@
 'use server'
 
-import { cookies } from 'next/headers'
 import { nanoid } from 'nanoid'
+import { cookies } from 'next/headers'
 
 export async function getNonce() {
   try {

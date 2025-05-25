@@ -1,8 +1,8 @@
-import { TimePickerProps } from '@/types/dateTimePicker'
-import { parseTime } from '@/utils/time'
 import { useEffect, useRef } from 'react'
-import { cn } from '@/utils'
 import { ClockIcon } from '../icon-components'
+import { TimePickerProps } from '@/types/dateTimePicker'
+import { cn } from '@/utils'
+import { parseTime } from '@/utils/time'
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
 const MINUTES = Array.from({ length: 12 }, (_, i) => i * 5)

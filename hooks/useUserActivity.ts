@@ -1,5 +1,5 @@
-import { UserActionDto } from '@/types/poll'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
+import { UserActionDto } from '@/types/poll'
 
 interface UserActivitiesResponseDto {
   userActions: UserActionDto[]

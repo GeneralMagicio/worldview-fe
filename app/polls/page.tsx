@@ -1,11 +1,11 @@
 'use client'
 
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import FilterModal, { DEFAULT_FILTERS } from '@/components/Modals/FilterModal'
 import PollList from '@/components/Poll/PollList'
 import { FilterParams, IPollFilters } from '@/types/poll'
-import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
 
 export default function PollsPage() {
   const searchParams = useSearchParams()

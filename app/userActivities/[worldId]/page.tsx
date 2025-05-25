@@ -1,11 +1,11 @@
 'use client'
 
+import { useParams } from 'next/navigation'
+import { useState } from 'react'
 import Header from '@/components/Header'
 import FilterModal, { DEFAULT_FILTERS } from '@/components/Modals/FilterModal'
 import UserActivityList from '@/components/userActivity/UserActivityList'
 import { IPollFilters } from '@/types/poll'
-import { useParams } from 'next/navigation'
-import { useState } from 'react'
 
 export default function UserActivitiesPage() {
   const { worldId } = useParams()

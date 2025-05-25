@@ -1,3 +1,9 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { formatISO } from 'date-fns'
+import { useRouter } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import {
   useCreateOrUpdateDraftPoll,
   useCreatePoll,
@@ -7,12 +13,6 @@ import {
 import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { combineDateTime, formatShortDate } from '@/utils/time'
 import { pollSchema } from '@/validation/pollSchemas'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { formatISO } from 'date-fns'
-import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 
 type DateTimeValues = {
   startDate: Date | null
@@ -112,7 +112,7 @@ export function usePollForm() {
   const [customTimeRange, setCustomTimeRange] = useState<string | null>(null)
 
   // Timer ref for auto-saving
-  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Function to update the isAnonymous value
   const setIsAnonymous = (value: boolean) => {

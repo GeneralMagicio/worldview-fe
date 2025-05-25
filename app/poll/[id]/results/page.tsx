@@ -1,8 +1,8 @@
 'use client'
 
-import PollResultsCard from '@/components/Poll/PollResultsCard'
-import Header from '@/components/Header'
 import { useParams } from 'next/navigation'
+import Header from '@/components/Header'
+import PollResultsCard from '@/components/Poll/PollResultsCard'
 
 export default function PollPage() {
   const { id } = useParams()

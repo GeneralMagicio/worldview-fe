@@ -1,9 +1,9 @@
 'use client'
 
+import { useParams } from 'next/navigation'
 import Header from '@/components/Header'
 import ProfileInfo from '@/components/Profile/ProfileInfo'
 import RecentActivity from '@/components/Profile/RecentActivity'
-import { useParams } from 'next/navigation'
 
 export default function UserProfilePage() {
   const { worldId } = useParams()

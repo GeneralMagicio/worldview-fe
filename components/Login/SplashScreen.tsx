@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect } from 'react'
 import Image from 'next/image'
-import { useWorldAuth } from '@/hooks/useWorldAuth'
+import { useEffect } from 'react'
 import BlurredCard from '../Verify/BlurredCard'
 import { Toaster } from '@/components/Toaster'
 import { useToast } from '@/hooks/useToast'
+import { useWorldAuth } from '@/hooks/useWorldAuth'
 
 export function SplashScreen() {
   const { handleLogin, isLoggingIn, isLoggedIn, error } = useWorldAuth()

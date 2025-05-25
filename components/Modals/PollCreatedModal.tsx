@@ -1,11 +1,11 @@
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { ShareIcon } from '../icon-components'
-import { useShare } from '@/hooks/useShare'
-import { Modal } from '../ui/Modal'
-import { Button } from '../ui/Button'
-import { sendHapticFeedbackCommand } from '@/utils/animation'
 import CustomShareModal from '../Modals/CustomShareModal'
+import { Button } from '../ui/Button'
+import { Modal } from '../ui/Modal'
+import { useShare } from '@/hooks/useShare'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 interface IModalProps {
   open: boolean

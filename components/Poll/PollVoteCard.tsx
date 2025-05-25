@@ -1,3 +1,13 @@
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import React, { useEffect, useRef, useState } from 'react'
+import {
+  AnonymousIconWrapper,
+  PublicIconWrapper,
+} from '../icon-components/IconWrapper'
+import CustomShareModal from '../Modals/CustomShareModal'
+import VotingTypesModal from '../Modals/VotingTypesModal'
+import { Button } from '../ui/Button'
 import {
   CheckIcon,
   InfoIcon,
@@ -19,16 +29,6 @@ import { useEditVote, useGetUserVotes, useSetVote } from '@/hooks/useUser'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { formatFloat } from '@/utils/number'
 import { getRelativeTimeString } from '@/utils/time'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import React, { useEffect, useRef, useState } from 'react'
-import {
-  AnonymousIconWrapper,
-  PublicIconWrapper,
-} from '../icon-components/IconWrapper'
-import CustomShareModal from '../Modals/CustomShareModal'
-import VotingTypesModal from '../Modals/VotingTypesModal'
-import { Button } from '../ui/Button'
 
 type VoteState = {
   option: string

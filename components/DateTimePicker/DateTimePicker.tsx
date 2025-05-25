@@ -1,6 +1,3 @@
-import { DAYS_OF_WEEK } from '@/lib/constants'
-import { DateObj, DateRange, DateTimePickerProps } from '@/types/dateTimePicker'
-import { formatDate } from '@/utils/time'
 import { useEffect, useState } from 'react'
 import {
   ChevronLeftIcon,
@@ -11,7 +8,10 @@ import { Button } from '../ui/Button'
 import { Modal } from '../ui/Modal'
 import { CalendarDay } from './CalendarDay'
 import { TimePicker } from './TimePicker'
+import { DAYS_OF_WEEK } from '@/lib/constants'
+import { DateObj, DateRange, DateTimePickerProps } from '@/types/dateTimePicker'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { formatDate } from '@/utils/time'
 
 export default function DateTimePicker({
   open,
