@@ -1,45 +1,47 @@
-import { UserActionDto } from "@/types/poll";
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { UserActionDto } from '@/types/poll'
+import { useQuery, UseQueryResult } from '@tanstack/react-query'
 
 interface UserActivitiesResponseDto {
-  userActions: UserActionDto[];
+  userActions: UserActionDto[]
 }
 
 interface UseUserActivitiesParams {
-  worldID: string;
-  isActive?: boolean;
-  isInactive?: boolean;
-  isCreated?: boolean;
-  isParticipated?: boolean;
-  search?: string;
+  worldID: string
+  isActive?: boolean
+  isInactive?: boolean
+  isCreated?: boolean
+  isParticipated?: boolean
+  search?: string
 }
 
 export const useUserActivities = (
-  params: UseUserActivitiesParams
+  params: UseUserActivitiesParams,
 ): UseQueryResult<UserActivitiesResponseDto> => {
-  const { worldID, ...restParams } = params;
+  const { worldID, ...restParams } = params
 
   return useQuery({
-    queryKey: ["userActivities", params],
+    queryKey: ['userActivities', params],
     queryFn: async () => {
-      const queryParams = new URLSearchParams();
-      
-      queryParams.append("worldID", worldID);
-      
+      const queryParams = new URLSearchParams()
+
+      queryParams.append('worldID', worldID)
+
       Object.entries(restParams).forEach(([key, value]) => {
         if (value !== undefined) {
-          queryParams.append(key, String(value));
+          queryParams.append(key, String(value))
         }
-      });
+      })
 
-      const res = await fetch(`/user/getUserActivities?${queryParams.toString()}`);
-      
+      const res = await fetch(
+        `/user/getUserActivities?${queryParams.toString()}`,
+      )
+
       if (!res.ok) {
-        throw new Error("Failed to fetch user activities");
+        throw new Error('Failed to fetch user activities')
       }
-      
-      return res.json();
+
+      return res.json()
     },
     enabled: !!worldID,
-  });
-};
+  })
+}

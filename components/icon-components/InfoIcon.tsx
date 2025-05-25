@@ -1,6 +1,6 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
-export default function InfoIcon({ size = 24, color = "#191C20" }: IconProps) {
+export default function InfoIcon({ size = 24, color = '#191C20' }: IconProps) {
   return (
     <svg
       width={size}
@@ -29,5 +29,5 @@ export default function InfoIcon({ size = 24, color = "#191C20" }: IconProps) {
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

@@ -8,284 +8,287 @@ import {
   StatisticBarsIcon,
   TrashIcon,
   UserIcon,
-} from "@/components/icon-components";
-import ConfirmDeleteModal from "@/components/Modals/ConfirmDeleteModal";
-import QVInfoModal from "@/components/Modals/QVInfoModal";
-import VotingSuccessModal from "@/components/Modals/VotingSuccessModal";
-import { useAuth } from "@/context/AuthContext";
-import { useDeletePoll, useGetPollDetails } from "@/hooks/usePoll";
-import { useShare } from "@/hooks/useShare";
-import { useEditVote, useGetUserVotes, useSetVote } from "@/hooks/useUser";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import { formatFloat } from "@/utils/number";
-import { getRelativeTimeString } from "@/utils/time";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import { AnonymousIconWrapper, PublicIconWrapper } from "../icon-components/IconWrapper";
-import CustomShareModal from "../Modals/CustomShareModal";
-import VotingTypesModal from "../Modals/VotingTypesModal";
-import { Button } from "../ui/Button";
+} from '@/components/icon-components'
+import ConfirmDeleteModal from '@/components/Modals/ConfirmDeleteModal'
+import QVInfoModal from '@/components/Modals/QVInfoModal'
+import VotingSuccessModal from '@/components/Modals/VotingSuccessModal'
+import { useAuth } from '@/context/AuthContext'
+import { useDeletePoll, useGetPollDetails } from '@/hooks/usePoll'
+import { useShare } from '@/hooks/useShare'
+import { useEditVote, useGetUserVotes, useSetVote } from '@/hooks/useUser'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { formatFloat } from '@/utils/number'
+import { getRelativeTimeString } from '@/utils/time'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import React, { useEffect, useRef, useState } from 'react'
+import {
+  AnonymousIconWrapper,
+  PublicIconWrapper,
+} from '../icon-components/IconWrapper'
+import CustomShareModal from '../Modals/CustomShareModal'
+import VotingTypesModal from '../Modals/VotingTypesModal'
+import { Button } from '../ui/Button'
 
 type VoteState = {
-  option: string;
-  percentage: number;
-  count: number;
-  isDragging: boolean;
-};
+  option: string
+  percentage: number
+  count: number
+  isDragging: boolean
+}
 
 export default function PollVoteCard({ pollId }: { pollId: number }) {
-  const router = useRouter();
-  const { worldID } = useAuth();
-  const { handleSharePoll, setIsOpen, isOpen, shareUrl } = useShare();
+  const router = useRouter()
+  const { worldID } = useAuth()
+  const { handleSharePoll, setIsOpen, isOpen, shareUrl } = useShare()
 
-  const { data: pollData, isLoading: pollLoading } = useGetPollDetails(pollId);
-  const { mutate: editVote, isPending: editVotePending } = useEditVote();
-  const { mutate: setVote, isPending: setVotePending } = useSetVote();
-  const { mutate: deletePoll, isPending: deletePollPending } = useDeletePoll();
+  const { data: pollData, isLoading: pollLoading } = useGetPollDetails(pollId)
+  const { mutate: editVote, isPending: editVotePending } = useEditVote()
+  const { mutate: setVote, isPending: setVotePending } = useSetVote()
+  const { mutate: deletePoll, isPending: deletePollPending } = useDeletePoll()
   const {
     data: userVotes,
     isFetched: userVotesFetched,
     isLoading: userVotesLoading,
-  } = useGetUserVotes(pollId);
+  } = useGetUserVotes(pollId)
 
-  const pollDetails = pollData?.poll;
-  const isActive = pollData?.isActive;
-  const pollOptions = pollDetails?.options;
-  const isAuthor = worldID === pollDetails?.author?.worldID;
+  const pollDetails = pollData?.poll
+  const isActive = pollData?.isActive
+  const pollOptions = pollDetails?.options
+  const isAuthor = worldID === pollDetails?.author?.worldID
 
   const { timeLeft } = getRelativeTimeString(
-    pollDetails?.startDate ?? "",
-    pollDetails?.endDate ?? ""
-  );
+    pollDetails?.startDate ?? '',
+    pollDetails?.endDate ?? '',
+  )
 
   const navigateToUserProfile = () => {
-    sendHapticFeedbackCommand();
+    sendHapticFeedbackCommand()
     if (pollDetails?.author?.worldID) {
-      router.push(`/user/${pollDetails.author.worldID}`);
+      router.push(`/user/${pollDetails.author.worldID}`)
     }
-  };
+  }
 
   // Modals
-  const [showQVInfoModal, setShowQVInfoModal] = useState(false);
-  const [showVotingSuccessModal, setShowVotingSuccessModal] = useState(false);
-  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
-  const [isVotingTypesModalOpen, setIsVotingTypesModalOpen] = useState(false);
-  const [votes, setVotes] = useState<VoteState[]>();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [showQVInfoModal, setShowQVInfoModal] = useState(false)
+  const [showVotingSuccessModal, setShowVotingSuccessModal] = useState(false)
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false)
+  const [isVotingTypesModalOpen, setIsVotingTypesModalOpen] = useState(false)
+  const [votes, setVotes] = useState<VoteState[]>()
+  const [isExpanded, setIsExpanded] = useState(false)
 
   // Refs
-  const sliderRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const containerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const sliderRefs = useRef<(HTMLDivElement | null)[]>([])
+  const containerRefs = useRef<(HTMLDivElement | null)[]>([])
 
-  const [votesChanged, setVotesChanged] = useState(false);
+  const [votesChanged, setVotesChanged] = useState(false)
 
   const handleDragStart = (index: number) => {
-    if (!votes) return;
+    if (!votes) return
 
-    const newVotes = [...votes];
-    newVotes[index].isDragging = true;
-    setVotes(newVotes);
-  };
+    const newVotes = [...votes]
+    newVotes[index].isDragging = true
+    setVotes(newVotes)
+  }
 
   const handleDragEnd = () => {
-    const newVotes = votes?.map((vote) => ({ ...vote, isDragging: false }));
-    setVotes(newVotes);
-  };
+    const newVotes = votes?.map(vote => ({ ...vote, isDragging: false }))
+    setVotes(newVotes)
+  }
 
   const handleDrag = (
     e: React.MouseEvent | React.TouchEvent,
-    index: number
+    index: number,
   ) => {
-    if (!votes?.[index].isDragging) return;
+    if (!votes?.[index].isDragging) return
 
-    const container = containerRefs.current[index];
-    if (!container) return;
+    const container = containerRefs.current[index]
+    if (!container) return
 
-    const rect = container.getBoundingClientRect();
-    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const rect = container.getBoundingClientRect()
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
 
-    let percentage = Math.round(((clientX - rect.left) / rect.width) * 100);
-    percentage = Math.max(0, Math.min(100, percentage));
+    let percentage = Math.round(((clientX - rect.left) / rect.width) * 100)
+    percentage = Math.max(0, Math.min(100, percentage))
 
-    const totalVotes = votes.reduce((acc, vote) => acc + vote.percentage, 0);
-    const currentElementPercentage = votes[index].percentage;
+    const totalVotes = votes.reduce((acc, vote) => acc + vote.percentage, 0)
+    const currentElementPercentage = votes[index].percentage
 
     if (totalVotes - currentElementPercentage + percentage > 100) {
-      percentage = 100 - (totalVotes - currentElementPercentage);
+      percentage = 100 - (totalVotes - currentElementPercentage)
     }
 
-    const newVotes = [...votes];
-    newVotes[index].percentage = percentage;
-    newVotes[index].count = Math.sqrt(percentage);
+    const newVotes = [...votes]
+    newVotes[index].percentage = percentage
+    newVotes[index].count = Math.sqrt(percentage)
 
-    setVotes(newVotes);
-  };
+    setVotes(newVotes)
+  }
 
   const handleVote = () => {
-    sendHapticFeedbackCommand();
-    let weightDistribution: Record<string, number> = {};
+    sendHapticFeedbackCommand()
+    let weightDistribution: Record<string, number> = {}
 
     if (votes) {
       weightDistribution = votes.reduce<Record<string, number>>((acc, vote) => {
-        acc[vote.option] = vote.percentage || 0;
-        return acc;
-      }, {});
+        acc[vote.option] = vote.percentage || 0
+        return acc
+      }, {})
     } else {
       weightDistribution =
         pollOptions?.reduce<Record<string, number>>((acc, option) => {
-          acc[option] = 0;
-          return acc;
-        }, {}) ?? {};
+          acc[option] = 0
+          return acc
+        }, {}) ?? {}
     }
 
     if (userVotes) {
       editVote({
         voteID: userVotes.voteID,
         weightDistribution,
-      });
+      })
     } else {
       setVote({
         pollId,
         weightDistribution,
-      });
+      })
     }
 
-    setShowVotingSuccessModal(true);
-  };
+    setShowVotingSuccessModal(true)
+  }
 
   const handleDeletePoll = () => {
-    sendHapticFeedbackCommand();
+    sendHapticFeedbackCommand()
     deletePoll(
       { id: pollId },
       {
         onSuccess: () => {
-          router.push("/");
-          setShowConfirmDeleteModal(false);
+          router.push('/')
+          setShowConfirmDeleteModal(false)
         },
-        onError: (error) => {
-          setShowConfirmDeleteModal(false);
+        onError: error => {
+          setShowConfirmDeleteModal(false)
         },
-      }
-    );
-  };
+      },
+    )
+  }
 
   // Add event listeners for mouse/touch events outside the component
   useEffect(() => {
-    if (!votes?.length) return;
+    if (!votes?.length) return
 
-    const totalVotes = votes.reduce((acc, vote) => acc + vote.percentage, 0);
+    const totalVotes = votes.reduce((acc, vote) => acc + vote.percentage, 0)
 
     if (totalVotes === 0) {
-      setVotesChanged(false);
+      setVotesChanged(false)
     } else if (totalVotes > 100) {
-      setVotesChanged(false);
+      setVotesChanged(false)
     } else {
       const votesChanged =
         votes.some(
-          (vote) =>
-            vote.percentage !== userVotes?.weightDistribution[vote.option]
-        ) ?? true;
+          vote =>
+            vote.percentage !== userVotes?.weightDistribution[vote.option],
+        ) ?? true
 
-      setVotesChanged(votesChanged);
+      setVotesChanged(votesChanged)
     }
 
-    const handleMouseUp = () => handleDragEnd();
+    const handleMouseUp = () => handleDragEnd()
     const handleMouseMove = (e: MouseEvent) => {
-      const draggingIndex = votes?.findIndex((vote) => vote.isDragging);
+      const draggingIndex = votes?.findIndex(vote => vote.isDragging)
 
-      if (draggingIndex === -1) return;
+      if (draggingIndex === -1) return
 
-      handleDrag(e as unknown as React.MouseEvent, draggingIndex);
-    };
+      handleDrag(e as unknown as React.MouseEvent, draggingIndex)
+    }
 
-    window.addEventListener("mouseup", handleMouseUp);
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("touchend", handleMouseUp);
+    window.addEventListener('mouseup', handleMouseUp)
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('touchend', handleMouseUp)
     window.addEventListener(
-      "touchmove",
-      handleMouseMove as unknown as (e: TouchEvent) => void
-    );
+      'touchmove',
+      handleMouseMove as unknown as (e: TouchEvent) => void,
+    )
 
     return () => {
-      window.removeEventListener("mouseup", handleMouseUp);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("touchend", handleMouseUp);
+      window.removeEventListener('mouseup', handleMouseUp)
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('touchend', handleMouseUp)
       window.removeEventListener(
-        "touchmove",
-        handleMouseMove as unknown as (e: TouchEvent) => void
-      );
-    };
-  }, [votes]);
+        'touchmove',
+        handleMouseMove as unknown as (e: TouchEvent) => void,
+      )
+    }
+  }, [votes])
 
   useEffect(() => {
     if (!userVotes) {
       setVotes(
-        pollDetails?.options.map((option) => ({
+        pollDetails?.options.map(option => ({
           option: option,
           percentage: 0,
           count: 0,
           isDragging: false,
-        }))
-      );
-      return;
+        })),
+      )
+      return
     }
 
-    const mappedUserVotes = userVotes?.options.map((option) => ({
+    const mappedUserVotes = userVotes?.options.map(option => ({
       option: option,
       percentage: userVotes?.weightDistribution[option] ?? 0,
       count: Math.sqrt(userVotes?.weightDistribution[option] ?? 0),
       isDragging: false,
-    }));
+    }))
 
-    setVotes(mappedUserVotes);
-  }, [userVotesFetched]);
+    setVotes(mappedUserVotes)
+  }, [userVotesFetched])
 
   const decreaseVote = (index: number) => {
-    sendHapticFeedbackCommand();
-    const vote = votes?.[index];
+    sendHapticFeedbackCommand()
+    const vote = votes?.[index]
 
-    if (!vote) return;
-    if (vote.percentage <= 0) return;
+    if (!vote) return
+    if (vote.percentage <= 0) return
 
     const newVotes = votes?.map((vote, i) =>
       i === index
         ? { ...vote, percentage: Math.max(0, vote.percentage - 1) }
-        : vote
-    );
+        : vote,
+    )
 
     if (newVotes) {
-      newVotes[index].count = Math.sqrt(newVotes[index].percentage);
-      setVotes(newVotes);
+      newVotes[index].count = Math.sqrt(newVotes[index].percentage)
+      setVotes(newVotes)
     }
-  };
+  }
 
   const increaseVote = (index: number) => {
-    sendHapticFeedbackCommand();
-    const vote = votes?.[index];
+    sendHapticFeedbackCommand()
+    const vote = votes?.[index]
 
-    if (!vote) return;
-    if (vote.percentage >= 100) return;
+    if (!vote) return
+    if (vote.percentage >= 100) return
 
     const newVotes = votes?.map((vote, i) =>
       i === index
         ? { ...vote, percentage: Math.min(100, vote.percentage + 1) }
-        : vote
-    );
+        : vote,
+    )
 
     if (newVotes) {
-      newVotes[index].count = Math.sqrt(newVotes[index].percentage);
-      setVotes(newVotes);
+      newVotes[index].count = Math.sqrt(newVotes[index].percentage)
+      setVotes(newVotes)
     }
-  };
+  }
 
   const isOverVoted = votes
     ? votes.reduce((acc, vote) => acc + vote.percentage, 0) >= 100
-    : false;
+    : false
 
-  if (!pollId) return null;
+  if (!pollId) return null
 
-  const isLoading = pollLoading || userVotesLoading;
+  const isLoading = pollLoading || userVotesLoading
 
   return (
     <div className="bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029]">
@@ -308,7 +311,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             <span className="text-sm text-gray-900">
               {pollDetails?.author?.name
                 ? `@${pollDetails?.author?.name}`
-                : "Anon"}
+                : 'Anon'}
             </span>
           )}
         </div>
@@ -319,7 +322,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             <>
               <div
                 className={`w-2 h-2 rounded-full ${
-                  isActive ? "bg-success-900" : "bg-gray-400"
+                  isActive ? 'bg-success-900' : 'bg-gray-400'
                 }`}
               />
               {isActive ? (
@@ -334,16 +337,21 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         </div>
       </div>
 
-      {!isLoading && <div className="flex items-center gap-2 mb-2" onClick={() => {
-        sendHapticFeedbackCommand();
-        setIsVotingTypesModalOpen(true)
-      }}>
-        {pollDetails?.isAnonymous ? (
-          <AnonymousIconWrapper texty />
-        ) : (
-          <PublicIconWrapper texty />
-        )}
-      </div>}
+      {!isLoading && (
+        <div
+          className="flex items-center gap-2 mb-2"
+          onClick={() => {
+            sendHapticFeedbackCommand()
+            setIsVotingTypesModalOpen(true)
+          }}
+        >
+          {pollDetails?.isAnonymous ? (
+            <AnonymousIconWrapper texty />
+          ) : (
+            <PublicIconWrapper texty />
+          )}
+        </div>
+      )}
 
       {/* Poll Title + Description */}
       <div className="pb-2">
@@ -363,7 +371,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
               <>
                 <p
                   className={`text-gray-900 text-sm mb-1 ${
-                    isExpanded ? "" : "line-clamp-2"
+                    isExpanded ? '' : 'line-clamp-2'
                   }`}
                 >
                   {pollDetails?.description}
@@ -373,7 +381,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                     className="text-gray-700 font-medium text-xs mb-4"
                     onClick={() => setIsExpanded(!isExpanded)}
                   >
-                    {isExpanded ? "Read less" : "Read more"}
+                    {isExpanded ? 'Read less' : 'Read more'}
                   </button>
                 )}
               </>
@@ -389,7 +397,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           </div>
         ) : (
           <div className="flex gap-2 mb-4">
-            {pollDetails?.tags.map((tag) => (
+            {pollDetails?.tags.map(tag => (
               <span
                 key={tag}
                 className="px-3 py-0.5 bg-gray-300 border border-gray-300 text-gray-900 rounded-full font-medium text-xs"
@@ -410,8 +418,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
               <div key={index} className="space-y-1">
                 <div
                   className="flex items-center justify-between"
-                  ref={(el) => {
-                    containerRefs.current[index] = el;
+                  ref={el => {
+                    containerRefs.current[index] = el
                   }}
                 >
                   <div className="relative w-full h-10 bg-white rounded-lg overflow-hidden">
@@ -419,23 +427,23 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                       className="absolute left-0 top-0 bottom-0 flex items-center gap-3 py-2 rounded-lg bg-gray-200 px-2"
                       style={{
                         width: `${vote.percentage}%`,
-                        maxWidth: "100%",
+                        maxWidth: '100%',
                         borderRight:
-                          vote.percentage > 0 ? "1px solid #d6d9dd" : "none",
-                        position: "relative",
-                        cursor: "grab",
+                          vote.percentage > 0 ? '1px solid #d6d9dd' : 'none',
+                        position: 'relative',
+                        cursor: 'grab',
                       }}
                       onMouseDown={() => handleDragStart(index)}
                       onTouchStart={() => handleDragStart(index)}
-                      ref={(el) => {
-                        sliderRefs.current[index] = el;
+                      ref={el => {
+                        sliderRefs.current[index] = el
                       }}
                     >
                       <div
                         className="absolute right-2 w-1 my-auto rounded-full"
                         style={{
-                          cursor: "col-resize",
-                          touchAction: "none",
+                          cursor: 'col-resize',
+                          touchAction: 'none',
                         }}
                       >
                         <SlidingIcon />
@@ -451,12 +459,12 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                       disabled={vote.percentage === 0}
                     >
                       <MinusRoundIcon
-                        color={vote.percentage === 0 ? "#9BA3AE" : "#191C20"}
+                        color={vote.percentage === 0 ? '#9BA3AE' : '#191C20'}
                       />
                     </button>
                     <span
                       className={`w-10 text-center ${
-                        vote.percentage > 0 ? "text-gray-900" : "text-gray-400"
+                        vote.percentage > 0 ? 'text-gray-900' : 'text-gray-400'
                       }`}
                     >
                       {formatFloat(vote.percentage)}%
@@ -468,8 +476,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                       <PlusRoundIcon
                         color={
                           vote.percentage === 100 || isOverVoted
-                            ? "#9BA3AE"
-                            : "#191C20"
+                            ? '#9BA3AE'
+                            : '#191C20'
                         }
                       />
                     </button>
@@ -477,8 +485,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                 </div>
 
                 <div className="text-right text-gray-500 text-sm w-full">
-                  {formatFloat(vote.count)}{" "}
-                  {vote.count === 1 ? "Vote" : "Votes"}
+                  {formatFloat(vote.count)}{' '}
+                  {vote.count === 1 ? 'Vote' : 'Votes'}
                 </div>
               </div>
             ))
@@ -497,7 +505,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
                 </span>
                 {!userVotes?.voteID ? (
                   `${
-                    pollDetails?.participantCount === 1 ? "voter" : "voters"
+                    pollDetails?.participantCount === 1 ? 'voter' : 'voters'
                   } participated`
                 ) : (
                   <span className="flex items-center gap-2">votes</span>
@@ -516,8 +524,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             <button
               className="rounded-full h-8 w-8 disabled:opacity-50 active:scale-95 active:transition-transform active:duration-100"
               onClick={() => {
-                sendHapticFeedbackCommand();
-                setShowQVInfoModal(true);
+                sendHapticFeedbackCommand()
+                setShowQVInfoModal(true)
               }}
               disabled={isLoading || editVotePending || setVotePending}
             >
@@ -526,8 +534,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             <button
               className="rounded-full h-8 w-8 disabled:opacity-50 active:scale-95 active:transition-transform active:duration-100"
               onClick={() => {
-                sendHapticFeedbackCommand();
-                handleSharePoll(pollDetails?.title ?? "", pollId);
+                sendHapticFeedbackCommand()
+                handleSharePoll(pollDetails?.title ?? '', pollId)
               }}
               disabled={isLoading || editVotePending || setVotePending}
             >
@@ -550,13 +558,13 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         >
           {isActive
             ? isLoading
-              ? "Loading..."
+              ? 'Loading...'
               : editVotePending
-              ? "Saving..."
-              : setVotePending
-              ? "Submitting..."
-              : "Vote"
-            : "Voting Ended"}
+                ? 'Saving...'
+                : setVotePending
+                  ? 'Submitting...'
+                  : 'Vote'
+            : 'Voting Ended'}
         </button>
 
         {/* View Results */}
@@ -574,8 +582,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             variant="ghost"
             className="w-full flex items-center justify-center gap-3 text-error-800 text-sm font-semibold font-sora active:scale-95 active:transition-transform active:duration-100"
             onClick={() => {
-              sendHapticFeedbackCommand();
-              setShowConfirmDeleteModal(true);
+              sendHapticFeedbackCommand()
+              setShowConfirmDeleteModal(true)
             }}
           >
             <TrashIcon />
@@ -588,7 +596,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
       {showVotingSuccessModal && (
         <VotingSuccessModal
           setShowModal={setShowVotingSuccessModal}
-          pollTitle={pollDetails?.title ?? ""}
+          pollTitle={pollDetails?.title ?? ''}
           pollId={pollId}
         />
       )}
@@ -601,20 +609,22 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           isLoading={deletePollPending}
         />
       )}
-      {isVotingTypesModalOpen && <VotingTypesModal onClose={() => setIsVotingTypesModalOpen(false)} />}
+      {isVotingTypesModalOpen && (
+        <VotingTypesModal onClose={() => setIsVotingTypesModalOpen(false)} />
+      )}
       <CustomShareModal
         message={shareUrl}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
       />
     </div>
-  );
+  )
 }
 
 const OptionsLoadingSkeleton = () => {
   return (
     <>
-      {[1, 2, 3].map((index) => (
+      {[1, 2, 3].map(index => (
         <div key={index} className="space-y-1">
           <div className="flex items-center justify-between">
             <div className="relative w-full h-10 bg-gray-100 rounded-lg overflow-hidden">
@@ -632,5 +642,5 @@ const OptionsLoadingSkeleton = () => {
         </div>
       ))}
     </>
-  );
-};
+  )
+}

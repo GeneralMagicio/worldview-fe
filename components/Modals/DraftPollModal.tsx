@@ -1,13 +1,13 @@
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import BottomModal from "../ui/BottomModal";
-import { Button } from "../ui/Button";
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import BottomModal from '../ui/BottomModal'
+import { Button } from '../ui/Button'
 
 type DraftPollModalProps = {
-  modalOpen: boolean;
-  setModalOpen: (open: boolean) => void;
-  onSaveAsDraft: () => void;
-  onDelete: () => void;
-};
+  modalOpen: boolean
+  setModalOpen: (open: boolean) => void
+  onSaveAsDraft: () => void
+  onDelete: () => void
+}
 
 export default function DraftPollModal({
   modalOpen,
@@ -25,11 +25,11 @@ export default function DraftPollModal({
         up later.
       </p>
       <div className="flex flex-col gap-4 justify-center">
-        <Button 
+        <Button
           className="text-sm font-semibold font-sora active:scale-95 active:transition-transform active:duration-100"
           onClick={() => {
-            sendHapticFeedbackCommand();
-            onSaveAsDraft();
+            sendHapticFeedbackCommand()
+            onSaveAsDraft()
           }}
         >
           Save as Draft
@@ -38,13 +38,13 @@ export default function DraftPollModal({
           variant="ghost"
           className="text-sm font-semibold font-sora text-gray-500 hover:bg-gray-300/90 active:scale-95 active:bg-gray-300/90 active:shadow-inner transition-none active:transition-transform active:duration-100"
           onClick={() => {
-            sendHapticFeedbackCommand();
-            onDelete();
+            sendHapticFeedbackCommand()
+            onDelete()
           }}
         >
           Delete
         </Button>
       </div>
     </BottomModal>
-  );
+  )
 }

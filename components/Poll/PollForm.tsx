@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { usePollForm } from "@/hooks/usePollForm";
-import { cn } from "@/utils";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import { useEffect, type KeyboardEvent } from "react";
-import DateTimePicker from "../DateTimePicker/DateTimePicker";
+import { usePollForm } from '@/hooks/usePollForm'
+import { cn } from '@/utils'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { useEffect, type KeyboardEvent } from 'react'
+import DateTimePicker from '../DateTimePicker/DateTimePicker'
 import {
   CalendarIcon,
   CheckIcon,
@@ -12,13 +12,17 @@ import {
   CloseIcon,
   PlusIcon,
   XOutlinedIcon,
-} from "../icon-components";
-import DraftPollModal from "../Modals/DraftPollModal";
-import PollCreatedModal from "../Modals/PollCreatedModal";
-import { Button } from "../ui/Button";
-import Switch from "../ui/Switch";
+} from '../icon-components'
+import DraftPollModal from '../Modals/DraftPollModal'
+import PollCreatedModal from '../Modals/PollCreatedModal'
+import { Button } from '../ui/Button'
+import Switch from '../ui/Switch'
 
-export default function PollForm({ usePollFormData }: { usePollFormData: ReturnType<typeof usePollForm> }) {
+export default function PollForm({
+  usePollFormData,
+}: {
+  usePollFormData: ReturnType<typeof usePollForm>
+}) {
   const {
     register,
     errors,
@@ -54,72 +58,72 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
     isLoadingDraft,
     isAnonymous,
     setIsAnonymous,
-  } = usePollFormData;
+  } = usePollFormData
 
   // Auto-save on unmount
   useEffect(() => {
     return () => {
-      saveDraftPoll();
-    };
-  }, []);
+      saveDraftPoll()
+    }
+  }, [])
 
   const BASE_INPUT_CLASSES =
-    "flex h-12 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:border-gray-500 disabled:cursor-not-allowed disabled:opacity-50";
+    'flex h-12 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:border-gray-500 disabled:cursor-not-allowed disabled:opacity-50'
 
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.target.value
 
     // If the user typed a space or comma, we should process the tag
-    if (value.endsWith(" ") || value.endsWith(",")) {
+    if (value.endsWith(' ') || value.endsWith(',')) {
       // Process everything before the last character as a potential tag
-      const tagValue = value.slice(0, -1);
+      const tagValue = value.slice(0, -1)
       if (tagValue.trim()) {
-        addTag(tagValue);
+        addTag(tagValue)
       }
-      return;
+      return
     }
 
     // Otherwise, just update the input value
-    setTagInput(value);
-  };
+    setTagInput(value)
+  }
 
   // Handle blur event to apply tag when focus changes
   const handleTagBlur = () => {
     if (tagInput.trim()) {
-      addTag(tagInput);
+      addTag(tagInput)
     }
-  };
+  }
 
   const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === " " || e.key === ",") {
-      e.preventDefault();
+    if (e.key === 'Enter' || e.key === ' ' || e.key === ',') {
+      e.preventDefault()
       // Process tag when Enter, space, or comma is pressed
       if (tagInput.trim()) {
-        addTag(tagInput);
+        addTag(tagInput)
       }
     } else if (
-      e.key === "Backspace" &&
-      tagInput === "" &&
+      e.key === 'Backspace' &&
+      tagInput === '' &&
       watchedTags.length > 0
     ) {
-      const lastTag = watchedTags[watchedTags.length - 1];
-      removeTag(lastTag);
+      const lastTag = watchedTags[watchedTags.length - 1]
+      removeTag(lastTag)
     }
-  };
+  }
 
   // Handle paste event to immediately process tags
   const handleTagPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    const pastedText = e.clipboardData.getData("text");
+    const pastedText = e.clipboardData.getData('text')
     // Handle paste regardless of content - the addTag function will handle validation
-    e.preventDefault();
-    addTag(tagInput + pastedText);
-  };
+    e.preventDefault()
+    addTag(tagInput + pastedText)
+  }
 
   const renderErrorMessage = (message: string) => (
     <div className="text-error-700 text-sm mt-1 flex items-center justify-end gap-1 error-message">
       <span>{message}</span>
     </div>
-  );
+  )
 
   const renderTagsInput = () => (
     <div className="border border-gray-200 rounded-lg p-2 flex flex-wrap items-center gap-2">
@@ -144,12 +148,12 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
         onKeyDown={handleTagKeyDown}
         onPaste={handleTagPaste}
         onBlur={handleTagBlur}
-        placeholder={watchedTags.length === 0 ? "Add tags" : ""}
+        placeholder={watchedTags.length === 0 ? 'Add tags' : ''}
         className="border-none flex-1 min-w-[100px] p-2 text-gray-900 focus:outline-none"
         disabled={watchedTags.length >= 5}
       />
     </div>
-  );
+  )
 
   const renderPollOptions = () => (
     <div className="space-y-3 mb-6">
@@ -162,8 +166,8 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
               className={cn(
                 BASE_INPUT_CLASSES,
                 errors.options?.[index]
-                  ? "border-error-700 focus:ring-error-700 focus:border-error-700"
-                  : ""
+                  ? 'border-error-700 focus:ring-error-700 focus:border-error-700'
+                  : '',
               )}
             />
             {watchedOptions.length > 2 &&
@@ -197,7 +201,7 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
         </p>
       )}
     </div>
-  );
+  )
 
   const renderDurationSelector = () => (
     <div className="space-y-4">
@@ -213,13 +217,13 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
       />
       <div className="flex items-center justify-between">
         <span className="text-gray-900">Custom</span>
-        {duration === "custom" ? (
+        {duration === 'custom' ? (
           <Button
             type="button"
             variant="outline"
             onClick={() => {
-              sendHapticFeedbackCommand();
-              setDatePickerOpen(true);
+              sendHapticFeedbackCommand()
+              setDatePickerOpen(true)
             }}
             className="flex items-center gap-2 px-3 py-2"
           >
@@ -237,8 +241,8 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
             type="button"
             variant="outline"
             onClick={() => {
-              sendHapticFeedbackCommand();
-              setDatePickerOpen(true);
+              sendHapticFeedbackCommand()
+              setDatePickerOpen(true)
             }}
             className="flex items-center gap-2 p-2 px-3 font-normal text-sm"
           >
@@ -248,25 +252,27 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
         )}
       </div>
     </div>
-  );
+  )
 
   if (isLoadingDraft) {
-    return <div className="flex-1 flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="flex-1 flex items-center justify-center">Loading...</div>
+    )
   }
 
   return (
-    <form onSubmit={form.handleSubmit((data) => {})}>
+    <form onSubmit={form.handleSubmit(data => {})}>
       <div className="flex-1 bg-white rounded-t-3xl p-4 flex flex-col">
         <div className="space-y-4 mb-6">
           <div>
             <input
-              {...register("title")}
+              {...register('title')}
               placeholder="Enter poll question"
               className={cn(
                 BASE_INPUT_CLASSES,
                 errors.title
-                  ? "border-error-700 focus:ring-error-700 focus:border-error-700"
-                  : ""
+                  ? 'border-error-700 focus:ring-error-700 focus:border-error-700'
+                  : '',
               )}
             />
             {errors.title && renderErrorMessage(errors.title.message as string)}
@@ -274,14 +280,14 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
 
           <div>
             <textarea
-              {...register("description")}
+              {...register('description')}
               placeholder="Enter description"
               className={cn(
                 BASE_INPUT_CLASSES,
-                "min-h-[120px] p-4 text-gray-900",
+                'min-h-[120px] p-4 text-gray-900',
                 errors.description
-                  ? "border-error-700 focus:ring-error-700 focus:border-error-700"
-                  : ""
+                  ? 'border-error-700 focus:ring-error-700 focus:border-error-700'
+                  : '',
               )}
             />
             {errors.description
@@ -312,25 +318,27 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
         <div className="border-t border-gray-200 my-4"></div>
 
         <div className="mb-6">
-        <h2 className="text-xl font-bold mb-4">Poll Type</h2>
+          <h2 className="text-xl font-bold mb-4">Poll Type</h2>
 
-        <div className="flex items-center justify-between mb-1">
-          <span className="font-medium">Anonymous Poll</span>
-          <Switch checked={isAnonymous} onCheckedChange={setIsAnonymous} />
-        </div>
-        <p className="text-gray-500 text-sm mb-6">Prevent anyone from seeing how others voted.</p>
+          <div className="flex items-center justify-between mb-1">
+            <span className="font-medium">Anonymous Poll</span>
+            <Switch checked={isAnonymous} onCheckedChange={setIsAnonymous} />
+          </div>
+          <p className="text-gray-500 text-sm mb-6">
+            Prevent anyone from seeing how others voted.
+          </p>
 
           <h2 className="text-lg font-medium mb-4 text-gray-900">
             Poll Duration
           </h2>
           {renderDurationSelector()}
           {(errors.startDate || errors.endDate) &&
-            renderErrorMessage("Valid start and end dates are required")}
+            renderErrorMessage('Valid start and end dates are required')}
         </div>
 
         {(generalError || createPollError) && (
           <div className="mb-4 p-3 bg-red-100 border border-red-300 rounded-lg text-red-700">
-            {generalError || "An error occurred. Please try again."}
+            {generalError || 'An error occurred. Please try again.'}
           </div>
         )}
 
@@ -340,7 +348,7 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
           onClick={handlePublish}
           disabled={isCreatingPoll}
         >
-          {isCreatingPoll ? "Publishing..." : "Publish Poll"}
+          {isCreatingPoll ? 'Publishing...' : 'Publish Poll'}
         </Button>
       </div>
 
@@ -356,7 +364,7 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
 
       <PollCreatedModal
         open={pollCreatedModalOpen}
-        pollTitle={getValues("title")}
+        pollTitle={getValues('title')}
         pollId={poll?.pollId}
       />
 
@@ -367,7 +375,7 @@ export default function PollForm({ usePollFormData }: { usePollFormData: ReturnT
         onDelete={deleteDraftPoll}
       />
     </form>
-  );
+  )
 }
 
 function DurationOption({
@@ -375,9 +383,9 @@ function DurationOption({
   selected,
   onClick,
 }: {
-  label: string;
-  selected: boolean;
-  onClick: () => void;
+  label: string
+  selected: boolean
+  onClick: () => void
 }) {
   return (
     <div className="flex items-center justify-between">
@@ -387,15 +395,15 @@ function DurationOption({
       </div>
       <div
         className={`w-5 h-5 rounded flex items-center justify-center cursor-pointer ${
-          selected ? "bg-gray-900" : "border border-gray-300"
+          selected ? 'bg-gray-900' : 'border border-gray-300'
         }`}
         onClick={onClick}
         onTouchStart={() =>
-          sendHapticFeedbackCommand({ type: "selectionChanged" })
+          sendHapticFeedbackCommand({ type: 'selectionChanged' })
         }
       >
         {selected && <CheckIcon />}
       </div>
     </div>
-  );
+  )
 }

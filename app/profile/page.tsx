@@ -1,6 +1,6 @@
-import ProfileInfo from "@/components/Profile/ProfileInfo";
-import RecentActivity from "@/components/Profile/RecentActivity";
-import Header from "@/components/Header";
+import ProfileInfo from '@/components/Profile/ProfileInfo'
+import RecentActivity from '@/components/Profile/RecentActivity'
+import Header from '@/components/Header'
 
 export default function ProfilePage() {
   return (
@@ -9,5 +9,5 @@ export default function ProfilePage() {
       <ProfileInfo />
       <RecentActivity />
     </main>
-  );
+  )
 }

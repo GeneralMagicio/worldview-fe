@@ -1,8 +1,8 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
 export default function ChevronLeftIcon({
   size = 21,
-  color = "#191C20",
+  color = '#191C20',
 }: IconProps) {
   return (
     <svg
@@ -20,5 +20,5 @@ export default function ChevronLeftIcon({
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

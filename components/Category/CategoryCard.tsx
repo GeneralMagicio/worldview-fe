@@ -1,11 +1,11 @@
-import Image from "next/image";
-import Link from "next/link";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import Image from 'next/image'
+import Link from 'next/link'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 interface CategoryCardProps {
-  title: string;
-  icon: string;
-  href: string;
+  title: string
+  icon: string
+  href: string
 }
 
 export default function CategoryCard({ title, icon, href }: CategoryCardProps) {
@@ -20,7 +20,7 @@ export default function CategoryCard({ title, icon, href }: CategoryCardProps) {
       </h3>
       <div className="absolute right-0 my-auto">
         <Image
-          src={icon || "/placeholder.svg"}
+          src={icon || '/placeholder.svg'}
           alt=""
           width={80}
           height={80}
@@ -28,5 +28,5 @@ export default function CategoryCard({ title, icon, href }: CategoryCardProps) {
         />
       </div>
     </Link>
-  );
+  )
 }

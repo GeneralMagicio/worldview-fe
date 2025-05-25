@@ -1,39 +1,39 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { FilterHorizontal, SearchIcon } from "./icon-components";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import { useEffect, useState } from 'react'
+import { FilterHorizontal, SearchIcon } from './icon-components'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 interface FilterBarProps {
-  setFiltersOpen: (open: boolean) => void;
-  onSearch: (searchTerm: string) => void;
-  initialSearchTerm?: string;
+  setFiltersOpen: (open: boolean) => void
+  onSearch: (searchTerm: string) => void
+  initialSearchTerm?: string
 }
 
-const DEBOUNCE_TIME = 800;
+const DEBOUNCE_TIME = 800
 
 export default function FilterBar({
   setFiltersOpen,
   onSearch,
-  initialSearchTerm = "",
+  initialSearchTerm = '',
 }: FilterBarProps) {
-  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm)
 
-  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm)
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
+    setSearchTerm(e.target.value)
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearch(searchTerm);
-    }, DEBOUNCE_TIME);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
+      setDebouncedSearch(searchTerm)
+    }, DEBOUNCE_TIME)
+    return () => clearTimeout(timer)
+  }, [searchTerm])
 
   useEffect(() => {
-    onSearch(debouncedSearch);
-  }, [debouncedSearch, onSearch]);
+    onSearch(debouncedSearch)
+  }, [debouncedSearch, onSearch])
 
   return (
     <div className="flex gap-4 mb-4">
@@ -52,12 +52,12 @@ export default function FilterBar({
       <button
         className="bg-gray-900 rounded-xl p-4"
         onClick={() => {
-          sendHapticFeedbackCommand();
-          setFiltersOpen(true);
+          sendHapticFeedbackCommand()
+          setFiltersOpen(true)
         }}
       >
         <FilterHorizontal />
       </button>
     </div>
-  );
+  )
 }

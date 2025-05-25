@@ -1,59 +1,59 @@
-import { IPoll, IPollDetails } from "@/types/poll";
+import { IPoll, IPollDetails } from '@/types/poll'
 import {
   useMutation,
   useQuery,
   useQueryClient,
   UseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 
-export const POLLS_LIMIT = 10;
+export const POLLS_LIMIT = 10
 
 interface IUsePollParams {
-  page?: number;
-  limit?: number;
-  isActive?: boolean | "none";
-  userVoted?: boolean;
-  userCreated?: boolean;
-  sortBy?: "creationDate" | "endDate" | "participantCount";
-  sortOrder?: "asc" | "desc";
-  search?: string;
+  page?: number
+  limit?: number
+  isActive?: boolean | 'none'
+  userVoted?: boolean
+  userCreated?: boolean
+  sortBy?: 'creationDate' | 'endDate' | 'participantCount'
+  sortOrder?: 'asc' | 'desc'
+  search?: string
 }
 
 interface ICreatePollData {
-  title: string;
-  description: string;
-  options: string[];
-  startDate: string;
-  endDate: string;
-  tags: string[];
-  isAnonymous?: boolean;
+  title: string
+  description: string
+  options: string[]
+  startDate: string
+  endDate: string
+  tags: string[]
+  isAnonymous?: boolean
 }
 
 interface IDraftPollData {
-  title?: string;
-  description?: string;
-  options?: string[];
-  tags?: string[];
-  isAnonymous?: boolean;
-  pollId?: number;
-  startDate?: string;
-  endDate?: string;
+  title?: string
+  description?: string
+  options?: string[]
+  tags?: string[]
+  isAnonymous?: boolean
+  pollId?: number
+  startDate?: string
+  endDate?: string
 }
 
 export const useGetPolls = (
-  filters: IUsePollParams = {}
+  filters: IUsePollParams = {},
 ): UseQueryResult<{
-  polls: IPoll[];
-  total: number;
+  polls: IPoll[]
+  total: number
 }> => {
   return useQuery({
-    queryKey: ["polls", filters],
+    queryKey: ['polls', filters],
     queryFn: async () => {
-      if (filters.isActive === "none") {
+      if (filters.isActive === 'none') {
         return {
           polls: [],
           total: 0,
-        };
+        }
       }
 
       const params: IUsePollParams = {
@@ -65,106 +65,106 @@ export const useGetPolls = (
         sortBy: filters.sortBy || undefined,
         sortOrder: filters.sortOrder || undefined,
         search: filters.search || undefined,
-      };
+      }
 
       const paramsString = Object.entries(params)
         .filter(([_, value]) => value !== undefined)
         .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
-        .join("&");
+        .join('&')
 
-      const res = await fetch(`/poll?${paramsString}`);
-      if (!res.ok) throw new Error("Failed to fetch polls");
+      const res = await fetch(`/poll?${paramsString}`)
+      if (!res.ok) throw new Error('Failed to fetch polls')
 
-      return res.json();
+      return res.json()
     },
-  });
-};
+  })
+}
 
 export const useGetPollDetails = (id: number): UseQueryResult<IPollDetails> => {
   return useQuery({
-    queryKey: ["poll", id],
+    queryKey: ['poll', id],
     queryFn: async () => {
-      const res = await fetch(`/poll/${id}`);
-      if (!res.ok) throw new Error("Failed to fetch poll details");
-      return res.json();
+      const res = await fetch(`/poll/${id}`)
+      if (!res.ok) throw new Error('Failed to fetch poll details')
+      return res.json()
     },
     enabled: !!id,
-  });
-};
+  })
+}
 
 export const useCreatePoll = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (data: ICreatePollData): Promise<IPoll> => {
-      const res = await fetch("/poll", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/poll', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error("Failed to create poll");
-      return res.json();
+      })
+      if (!res.ok) throw new Error('Failed to create poll')
+      return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["polls"] });
+      queryClient.invalidateQueries({ queryKey: ['polls'] })
     },
     retry: false,
-  });
-};
+  })
+}
 
 export const useDeletePoll = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async ({ id }: { id: number }) => {
       const res = await fetch(`/poll/${id}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!res.ok) throw new Error("Failed to delete poll");
-      return res.json();
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      })
+      if (!res.ok) throw new Error('Failed to delete poll')
+      return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["polls"] });
+      queryClient.invalidateQueries({ queryKey: ['polls'] })
     },
-  });
-};
+  })
+}
 
 export const useGetDraftPoll = () => {
   return useQuery({
-    queryKey: ["draftPoll"],
+    queryKey: ['draftPoll'],
     queryFn: async () => {
-      const res = await fetch("/poll/draft", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      
+      const res = await fetch('/poll/draft', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      })
+
       if (res.status === 404) {
-        return null; // No draft poll exists
+        return null // No draft poll exists
       }
-      
-      if (!res.ok) throw new Error("Failed to fetch draft poll");
-      return res.json();
+
+      if (!res.ok) throw new Error('Failed to fetch draft poll')
+      return res.json()
     },
-  });
-};
+  })
+}
 
 export const useCreateOrUpdateDraftPoll = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (data: IDraftPollData): Promise<any> => {
-      const res = await fetch("/poll/draft", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/poll/draft', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-      });
-      
-      if (!res.ok) throw new Error("Failed to save draft poll");
-      return res.json();
+      })
+
+      if (!res.ok) throw new Error('Failed to save draft poll')
+      return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["draftPoll"] });
+      queryClient.invalidateQueries({ queryKey: ['draftPoll'] })
     },
-  });
-};
+  })
+}

@@ -1,6 +1,6 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
-export default function UserIcon({ size = 20, color = "#657080" }: IconProps) {
+export default function UserIcon({ size = 20, color = '#657080' }: IconProps) {
   return (
     <svg
       width={size}
@@ -22,5 +22,5 @@ export default function UserIcon({ size = 20, color = "#657080" }: IconProps) {
         strokeWidth="1.5"
       />
     </svg>
-  );
+  )
 }

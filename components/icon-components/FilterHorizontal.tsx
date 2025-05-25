@@ -1,8 +1,8 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
 export default function SlidersHorizontal({
   size = 20,
-  color = "white",
+  color = 'white',
 }: IconProps) {
   return (
     <svg
@@ -51,5 +51,5 @@ export default function SlidersHorizontal({
         strokeWidth="1.5"
       />
     </svg>
-  );
+  )
 }

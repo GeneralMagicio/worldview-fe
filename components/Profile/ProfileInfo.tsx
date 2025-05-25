@@ -1,38 +1,38 @@
-"use client";
+'use client'
 
-import { useAuth } from "@/context/AuthContext";
-import { useQuery } from "@tanstack/react-query";
-import UserIcon from "../icon-components/UserIcon";
+import { useAuth } from '@/context/AuthContext'
+import { useQuery } from '@tanstack/react-query'
+import UserIcon from '../icon-components/UserIcon'
 
 interface UserData {
-  pollsCreated: number;
-  pollsParticipated: number;
-  worldID: string;
-  worldProfilePic?: string;
-  name?: string;
+  pollsCreated: number
+  pollsParticipated: number
+  worldID: string
+  worldProfilePic?: string
+  name?: string
 }
 
 interface ProfileInfoProps {
-  worldId?: string;
+  worldId?: string
 }
 
 export default function ProfileInfo({ worldId }: ProfileInfoProps) {
-  const { worldID: authWorldId } = useAuth();
-  const effectiveWorldId = worldId || authWorldId;
+  const { worldID: authWorldId } = useAuth()
+  const effectiveWorldId = worldId || authWorldId
 
   const {
     data: userData,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["user", "profile", effectiveWorldId],
+    queryKey: ['user', 'profile', effectiveWorldId],
     queryFn: async () => {
-      const res = await fetch(`/user/getUserData?worldID=${effectiveWorldId}`);
-      if (!res.ok) throw new Error("Failed to fetch user data");
-      return (await res.json()) as UserData;
+      const res = await fetch(`/user/getUserData?worldID=${effectiveWorldId}`)
+      if (!res.ok) throw new Error('Failed to fetch user data')
+      return (await res.json()) as UserData
     },
     enabled: !!effectiveWorldId,
-  });
+  })
 
   return (
     <div className="flex flex-col items-center mb-8">
@@ -44,12 +44,12 @@ export default function ProfileInfo({ worldId }: ProfileInfoProps) {
         <p className="text-gray-500">Loading profile...</p>
       ) : error ? (
         <p className="text-red-500 text-sm">
-          {(error as Error).message || "An error occurred"}
+          {(error as Error).message || 'An error occurred'}
         </p>
       ) : (
         <>
           <h2 className="text-2xl font-semibold mb-6 text-gray-900 font-sora">
-            {userData?.name ? `@${userData?.name}` : "Anon"}
+            {userData?.name ? `@${userData?.name}` : 'Anon'}
           </h2>
 
           <div className="relative flex w-full justify-around border-y border-gray-200 py-4">
@@ -72,5 +72,5 @@ export default function ProfileInfo({ worldId }: ProfileInfoProps) {
         </>
       )}
     </div>
-  );
+  )
 }

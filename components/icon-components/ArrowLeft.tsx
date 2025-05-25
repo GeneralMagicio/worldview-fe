@@ -1,6 +1,6 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
-export default function ArrowLeft({ size = 20, color = "#3C424B" }: IconProps) {
+export default function ArrowLeft({ size = 20, color = '#3C424B' }: IconProps) {
   return (
     <svg
       width={size}
@@ -24,5 +24,5 @@ export default function ArrowLeft({ size = 20, color = "#3C424B" }: IconProps) {
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

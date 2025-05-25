@@ -1,11 +1,11 @@
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { PlusIcon } from "../icon-components";
-import { Button } from "../ui/Button";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { PlusIcon } from '../icon-components'
+import { Button } from '../ui/Button'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 export default function NoPollsView() {
-  const router = useRouter();
+  const router = useRouter()
 
   return (
     <div className="flex flex-col items-center justify-center px-6 pt-16">
@@ -26,13 +26,13 @@ export default function NoPollsView() {
       <Button
         className="flex items-center gap-2 w-full max-w-xs mb-10"
         onClick={() => {
-          sendHapticFeedbackCommand();
-          router.push("/poll/create");
+          sendHapticFeedbackCommand()
+          router.push('/poll/create')
         }}
       >
         <PlusIcon color="white" />
         <span className="text-lg font-medium">Create a New Poll</span>
       </Button>
     </div>
-  );
+  )
 }

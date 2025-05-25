@@ -1,101 +1,101 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import { useToast } from "@/hooks/useToast";
-import BottomModal from "../ui/BottomModal";
-import { Toaster } from "../Toaster";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import Image from 'next/image'
+import { useToast } from '@/hooks/useToast'
+import BottomModal from '../ui/BottomModal'
+import { Toaster } from '../Toaster'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 export default function CustomShareModal({
   message,
   isOpen,
   setIsOpen,
 }: {
-  message: string;
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  message: string
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
 }) {
-  const { toast } = useToast();
+  const { toast } = useToast()
 
   const apps = [
     {
-      name: "WhatsApp",
-      icon: "/socials/whatsapp.png",
+      name: 'WhatsApp',
+      icon: '/socials/whatsapp.png',
     },
     {
-      name: "Telegram",
-      icon: "/socials/telegram.png",
+      name: 'Telegram',
+      icon: '/socials/telegram.png',
     },
     {
-      name: "Facebook",
-      icon: "/socials/facebook.png",
+      name: 'Facebook',
+      icon: '/socials/facebook.png',
     },
     {
-      name: "Twitter",
-      icon: "/socials/twitter.png",
+      name: 'Twitter',
+      icon: '/socials/twitter.png',
     },
     // {
     //   name: "Instagram",
     //   icon: "/socials/instagram.png",
     // },
     {
-      name: "Email",
-      icon: "/socials/gmail.png",
+      name: 'Email',
+      icon: '/socials/gmail.png',
     },
     {
-      name: "Copy Link",
-      icon: "/socials/copy-link.svg",
+      name: 'Copy Link',
+      icon: '/socials/copy-link.svg',
     },
-  ];
+  ]
 
   const handleShare = (app: string) => {
-    if (app === "Copy Link") {
-      sendHapticFeedbackCommand({ type: "notification", style: "success" });
-      navigator.clipboard.writeText(message);
+    if (app === 'Copy Link') {
+      sendHapticFeedbackCommand({ type: 'notification', style: 'success' })
+      navigator.clipboard.writeText(message)
       toast({
-        description: "Link copied to clipboard",
+        description: 'Link copied to clipboard',
         duration: 1000,
-      });
-      return;
+      })
+      return
     }
 
-    sendHapticFeedbackCommand();
-    if (app === "WhatsApp") {
-      const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
-      window.open(url, "_blank");
+    sendHapticFeedbackCommand()
+    if (app === 'WhatsApp') {
+      const url = `https://wa.me/?text=${encodeURIComponent(message)}`
+      window.open(url, '_blank')
     }
 
-    if (app === "Facebook") {
+    if (app === 'Facebook') {
       const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-        message
-      )}`;
-      window.open(url, "_blank");
+        message,
+      )}`
+      window.open(url, '_blank')
     }
 
-    if (app === "Twitter") {
+    if (app === 'Twitter') {
       const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-        message
-      )}`;
-      window.open(url, "_blank");
+        message,
+      )}`
+      window.open(url, '_blank')
     }
 
-    if (app === "Telegram") {
-      const url = `https://t.me/share/url?url=${encodeURIComponent(message)}`;
-      window.open(url, "_blank");
+    if (app === 'Telegram') {
+      const url = `https://t.me/share/url?url=${encodeURIComponent(message)}`
+      window.open(url, '_blank')
     }
 
-    if (app === "Email") {
-      const url = `mailto:?body=${encodeURIComponent(message)}`;
-      window.open(url, "_blank");
+    if (app === 'Email') {
+      const url = `mailto:?body=${encodeURIComponent(message)}`
+      window.open(url, '_blank')
     }
 
-    if (app === "Messages") {
-      const url = `sms:?body=${encodeURIComponent(message)}`;
-      window.open(url, "_blank");
+    if (app === 'Messages') {
+      const url = `sms:?body=${encodeURIComponent(message)}`
+      window.open(url, '_blank')
     }
 
-    setIsOpen(false);
-  };
+    setIsOpen(false)
+  }
 
   return (
     <>
@@ -116,7 +116,7 @@ export default function CustomShareModal({
           </div>
 
           <div className="grid grid-cols-4 gap-4 py-2">
-            {apps.map((app) => (
+            {apps.map(app => (
               <button
                 key={app.name}
                 onClick={() => handleShare(app.name)}
@@ -133,5 +133,5 @@ export default function CustomShareModal({
 
       <Toaster />
     </>
-  );
+  )
 }
