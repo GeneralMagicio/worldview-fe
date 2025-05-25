@@ -1,9 +1,24 @@
+import { FlatCompat } from '@eslint/eslintrc'
 import js from '@eslint/js'
 import typescript from '@typescript-eslint/eslint-plugin'
 import typescriptParser from '@typescript-eslint/parser'
 import importPlugin from 'eslint-plugin-import'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all
+})
 
 export default [
+  ...compat.extends(
+    'plugin:prettier/recommended',
+    'next/core-web-vitals'
+  ),
   js.configs.recommended,
   {
     ignores: ['.next/**'],
@@ -18,56 +33,9 @@ export default [
         ecmaFeatures: {
           jsx: true,
         },
+        project: './tsconfig.json',
       },
       globals: {
-        // Browser globals
-        window: 'readonly',
-        document: 'readonly',
-        navigator: 'readonly',
-        localStorage: 'readonly',
-        sessionStorage: 'readonly',
-        fetch: 'readonly',
-        setTimeout: 'readonly',
-        setInterval: 'readonly',
-        clearTimeout: 'readonly',
-        clearInterval: 'readonly',
-        console: 'readonly',
-        alert: 'readonly',
-        confirm: 'readonly',
-        prompt: 'readonly',
-        URLSearchParams: 'readonly',
-        AbortSignal: 'readonly',
-        Request: 'readonly',
-        Response: 'readonly',
-
-        // DOM types
-        HTMLDivElement: 'readonly',
-        HTMLElement: 'readonly',
-        HTMLParagraphElement: 'readonly',
-        HTMLButtonElement: 'readonly',
-        HTMLInputElement: 'readonly',
-        HTMLTextAreaElement: 'readonly',
-        MouseEvent: 'readonly',
-        TouchEvent: 'readonly',
-        KeyboardEvent: 'readonly',
-        Event: 'readonly',
-        BeforeUnloadEvent: 'readonly',
-        PopStateEvent: 'readonly',
-        Node: 'readonly',
-        Element: 'readonly',
-
-        // Node.js globals
-        process: 'readonly',
-        Buffer: 'readonly',
-        global: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        module: 'readonly',
-        require: 'readonly',
-        exports: 'readonly',
-        NodeJS: 'readonly',
-
-        // React/JSX globals
         React: 'readonly',
         JSX: 'readonly',
       },
@@ -78,6 +46,8 @@ export default [
     },
     rules: {
       'no-unused-vars': 'off',
+      'react/no-unescaped-entities': 'off',
+      'react-hooks/exhaustive-deps': 'off',
       'import/order': [
         'error',
         {
