@@ -11,17 +11,14 @@ const __dirname = path.dirname(__filename)
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
+  allConfig: js.configs.all,
 })
 
 export default [
-  ...compat.extends(
-    'plugin:prettier/recommended',
-    'next/core-web-vitals'
-  ),
+  ...compat.extends('plugin:prettier/recommended', 'next/core-web-vitals'),
   js.configs.recommended,
   {
-    ignores: ['.next/**'],
+    ignores: ['eslint.config.mjs', '.next/**'],
   },
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
