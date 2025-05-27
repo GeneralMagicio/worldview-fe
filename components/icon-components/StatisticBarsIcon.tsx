@@ -1,8 +1,8 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
 export default function StatisticBarsIcon({
   size = 24,
-  color = "#3C424B",
+  color = '#3C424B',
 }: IconProps) {
   return (
     <svg
@@ -34,5 +34,5 @@ export default function StatisticBarsIcon({
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

@@ -1,8 +1,8 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
 export default function MinusRoundIcon({
   size = 18,
-  color = "#9BA3AE",
+  color = '#9BA3AE',
 }: IconProps) {
   return (
     <svg
@@ -20,5 +20,5 @@ export default function MinusRoundIcon({
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

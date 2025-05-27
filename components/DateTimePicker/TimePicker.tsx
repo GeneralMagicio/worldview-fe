@@ -1,11 +1,11 @@
-import { TimePickerProps } from "@/types/dateTimePicker";
-import { parseTime } from "@/utils/time";
-import { useEffect, useRef } from "react";
-import { cn } from "@/utils";
-import { ClockIcon } from "../icon-components";
+import { useEffect, useRef } from 'react'
+import { TimePickerProps } from '@/types/dateTimePicker'
+import { cn } from '@/utils'
+import { parseTime } from '@/utils/time'
+import { ClockIcon } from '../icon-components'
 
-const HOURS = Array.from({ length: 24 }, (_, i) => i);
-const MINUTES = Array.from({ length: 12 }, (_, i) => i * 5);
+const HOURS = Array.from({ length: 24 }, (_, i) => i)
+const MINUTES = Array.from({ length: 12 }, (_, i) => i * 5)
 
 export const TimePicker = ({
   time,
@@ -14,33 +14,33 @@ export const TimePicker = ({
   onToggle,
   className,
 }: TimePickerProps) => {
-  const timePickerRef = useRef<HTMLDivElement>(null);
-  const timeValues = parseTime(time);
+  const timePickerRef = useRef<HTMLDivElement>(null)
+  const timeValues = parseTime(time)
 
   // Close time picker when clicking outside
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) return
 
     function handleClickOutside(event: MouseEvent) {
       if (
         timePickerRef.current &&
         !timePickerRef.current.contains(event.target as Node)
       ) {
-        onToggle();
+        onToggle()
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen, onToggle]);
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isOpen, onToggle])
 
   return (
-    <div className={cn("flex-1 relative", className)} ref={timePickerRef}>
+    <div className={cn('flex-1 relative', className)} ref={timePickerRef}>
       <button
         type="button"
         className={cn(
-          "w-full border rounded-lg p-4 bg-transparent flex items-center gap-2",
-          isOpen ? "border-gray-500" : "border-gray-300"
+          'w-full border rounded-lg p-4 bg-transparent flex items-center gap-2',
+          isOpen ? 'border-gray-500' : 'border-gray-300',
         )}
         onClick={onToggle}
       >
@@ -57,22 +57,22 @@ export const TimePicker = ({
                 Hours
               </div>
               <div className="h-48 overflow-y-auto flex flex-col items-center">
-                {HOURS.map((hour) => (
+                {HOURS.map(hour => (
                   <button
                     type="button"
                     key={hour}
                     className={cn(
-                      "w-full py-2 text-center rounded-md",
+                      'w-full py-2 text-center rounded-md',
                       hour === timeValues.hours
-                        ? "bg-gray-100 text-gray-900 font-medium"
-                        : "text-gray-500 hover:bg-gray-100"
+                        ? 'bg-gray-100 text-gray-900 font-medium'
+                        : 'text-gray-500 hover:bg-gray-100',
                     )}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onTimeChange(hour, timeValues.minutes);
+                    onClick={e => {
+                      e.stopPropagation()
+                      onTimeChange(hour, timeValues.minutes)
                     }}
                   >
-                    {hour.toString().padStart(2, "0")}
+                    {hour.toString().padStart(2, '0')}
                   </button>
                 ))}
               </div>
@@ -84,22 +84,22 @@ export const TimePicker = ({
                 Minutes
               </div>
               <div className="h-48 overflow-y-auto flex flex-col items-center">
-                {MINUTES.map((minute) => (
+                {MINUTES.map(minute => (
                   <button
                     type="button"
                     key={minute}
                     className={cn(
-                      "w-full py-2 text-center rounded-md",
+                      'w-full py-2 text-center rounded-md',
                       minute === timeValues.minutes
-                        ? "bg-gray-100 text-gray-900 font-medium"
-                        : "text-gray-500 hover:bg-gray-100"
+                        ? 'bg-gray-100 text-gray-900 font-medium'
+                        : 'text-gray-500 hover:bg-gray-100',
                     )}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onTimeChange(timeValues.hours, minute);
+                    onClick={e => {
+                      e.stopPropagation()
+                      onTimeChange(timeValues.hours, minute)
                     }}
                   >
-                    {minute.toString().padStart(2, "0")}
+                    {minute.toString().padStart(2, '0')}
                   </button>
                 ))}
               </div>
@@ -108,5 +108,5 @@ export const TimePicker = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}

@@ -1,34 +1,34 @@
-"use client";
+'use client'
 
-import CategoryCard from "@/components/Category/CategoryCard";
-import { UserIcon } from "@/components/icon-components";
-import RecentPolls from "@/components/Poll/RecentPolls";
-import { FilterParams } from "@/types/poll";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import Link from "next/link";
+import Link from 'next/link'
+import CategoryCard from '@/components/Category/CategoryCard'
+import { UserIcon } from '@/components/icon-components'
+import RecentPolls from '@/components/Poll/RecentPolls'
+import { FilterParams } from '@/types/poll'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 const categories = [
   {
     id: FilterParams.All,
-    title: "Explore All",
-    icon: "/categories/explore-all.svg",
+    title: 'Explore All',
+    icon: '/categories/explore-all.svg',
   },
   {
     id: FilterParams.Trending,
-    title: "Trending Polls",
-    icon: "/categories/trending-polls.svg",
+    title: 'Trending Polls',
+    icon: '/categories/trending-polls.svg',
   },
   {
     id: FilterParams.Recent,
-    title: "Most Recent",
-    icon: "/categories/most-recent.svg",
+    title: 'Most Recent',
+    icon: '/categories/most-recent.svg',
   },
   {
     id: FilterParams.Voted,
-    title: "My Votes",
-    icon: "/categories/my-votes.svg",
+    title: 'My Votes',
+    icon: '/categories/my-votes.svg',
   },
-];
+]
 
 export default function MainView() {
   return (
@@ -48,7 +48,7 @@ export default function MainView() {
       </h1>
 
       <div className="grid grid-cols-2 gap-4 mb-8">
-        {categories.map((category) => (
+        {categories.map(category => (
           <CategoryCard
             key={category.id}
             title={category.title}
@@ -60,5 +60,5 @@ export default function MainView() {
 
       <RecentPolls />
     </main>
-  );
+  )
 }

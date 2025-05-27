@@ -14,5 +14,5 @@ export default function BlurredCard() {
       <div className="h-3 bg-gray-200 rounded-full w-4/5 mb-6 animate-pulse"></div>
       <div className="h-14 bg-gray-200 rounded-lg w-full animate-pulse"></div>
     </div>
-  );
+  )
 }

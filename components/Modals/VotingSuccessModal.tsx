@@ -1,13 +1,13 @@
-import Image from "next/image";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import { ShareIcon } from "../icon-components";
-import { useShare } from "@/hooks/useShare";
-import CustomShareModal from "../Modals/CustomShareModal";
+import Image from 'next/image'
+import { useShare } from '@/hooks/useShare'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { ShareIcon } from '../icon-components'
+import CustomShareModal from '../Modals/CustomShareModal'
 
 interface IModalProps {
-  setShowModal: (showModal: boolean) => void;
-  pollTitle: string;
-  pollId: number;
+  setShowModal: (showModal: boolean) => void
+  pollTitle: string
+  pollId: number
 }
 
 export default function VotingSuccessModal({
@@ -15,7 +15,7 @@ export default function VotingSuccessModal({
   pollTitle,
   pollId,
 }: IModalProps) {
-  const { handleSharePoll, isOpen, setIsOpen, shareUrl } = useShare();
+  const { handleSharePoll, isOpen, setIsOpen, shareUrl } = useShare()
 
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/50">
@@ -42,8 +42,8 @@ export default function VotingSuccessModal({
           <button
             className="w-full bg-gray-900 text-white py-4 rounded-xl font-semibold font-sora"
             onClick={() => {
-              sendHapticFeedbackCommand();
-              setShowModal(false);
+              sendHapticFeedbackCommand()
+              setShowModal(false)
             }}
           >
             Done
@@ -52,8 +52,8 @@ export default function VotingSuccessModal({
           <button
             className="w-full flex items-center justify-center gap-2 text-gray-500 py-4 rounded-xl font-semibold font-sora active:scale-95 active:transition-transform active:duration-100"
             onClick={() => {
-              sendHapticFeedbackCommand();
-              handleSharePoll(pollTitle, pollId);
+              sendHapticFeedbackCommand()
+              handleSharePoll(pollTitle, pollId)
             }}
           >
             <ShareIcon size={24} />
@@ -67,5 +67,5 @@ export default function VotingSuccessModal({
         setIsOpen={setIsOpen}
       />
     </div>
-  );
+  )
 }

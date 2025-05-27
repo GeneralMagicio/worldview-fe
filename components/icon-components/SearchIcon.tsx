@@ -1,8 +1,8 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
 export default function SearchIcon({
   size = 20,
-  color = "#657080",
+  color = '#657080',
 }: IconProps) {
   return (
     <svg
@@ -26,5 +26,5 @@ export default function SearchIcon({
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

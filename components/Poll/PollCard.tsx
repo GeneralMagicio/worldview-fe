@@ -1,39 +1,43 @@
-"use client";
+'use client'
 
-import { CheckIcon, UserIcon } from "@/components/icon-components";
-import { IPoll } from "@/types/poll";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import { getRelativeTimeString } from "@/utils/time";
-import { usePathname, useRouter } from "next/navigation";
-import { AnonymousIconWrapper, PublicIconWrapper } from "../icon-components/IconWrapper";
+import { usePathname, useRouter } from 'next/navigation'
+import { CheckIcon, UserIcon } from '@/components/icon-components'
+import { IPoll } from '@/types/poll'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { getRelativeTimeString } from '@/utils/time'
+import {
+  AnonymousIconWrapper,
+  PublicIconWrapper,
+} from '../icon-components/IconWrapper'
 
 export default function PollCard({ poll }: { poll: IPoll }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const isPublicProfile = pathname.includes("/user/") || pathname.includes("/userActivities/");
+  const router = useRouter()
+  const pathname = usePathname()
+  const isPublicProfile =
+    pathname.includes('/user/') || pathname.includes('/userActivities/')
 
   const { timeLeft, isEnded } = getRelativeTimeString(
-    poll.startDate ?? "",
-    poll.endDate ?? ""
-  );
+    poll.startDate ?? '',
+    poll.endDate ?? '',
+  )
 
   const navigateToPoll = () => {
-    sendHapticFeedbackCommand();
-    router.push(`/poll/${poll.pollId}`);
-  };
+    sendHapticFeedbackCommand()
+    router.push(`/poll/${poll.pollId}`)
+  }
 
   const navigateToPollResults = () => {
-    sendHapticFeedbackCommand();
-    router.push(`/poll/${poll.pollId}/results`);
-  };
+    sendHapticFeedbackCommand()
+    router.push(`/poll/${poll.pollId}/results`)
+  }
 
   const navigateToUserProfile = (e: React.MouseEvent) => {
-    sendHapticFeedbackCommand();
-    e.stopPropagation();
+    sendHapticFeedbackCommand()
+    e.stopPropagation()
     if (poll.author.worldID) {
-      router.push(`/user/${poll.author.worldID}`);
+      router.push(`/user/${poll.author.worldID}`)
     }
-  };
+  }
 
   return (
     <div className="rounded-xl p-4 border border-secondary shadow-[0px_0px_16px_0px_#00000029]">
@@ -46,13 +50,13 @@ export default function PollCard({ poll }: { poll: IPoll }) {
             <UserIcon />
           </div>
           <span className="text-sm text-gray-900">
-            {poll.author.name ? `@${poll.author.name}` : "Anon"}
+            {poll.author.name ? `@${poll.author.name}` : 'Anon'}
           </span>
         </div>
         <div className="flex items-center gap-1">
           <div
             className={`w-2 h-2 rounded-full ${
-              isEnded ? "bg-gray-400" : "bg-success-900"
+              isEnded ? 'bg-gray-400' : 'bg-success-900'
             }`}
           />
 
@@ -91,7 +95,7 @@ export default function PollCard({ poll }: { poll: IPoll }) {
             </span>
             <span className="text-sm text-gray-600">voters participated</span>
           </div>
-          
+
           <div>
             {poll.isAnonymous ? (
               <AnonymousIconWrapper />
@@ -103,23 +107,23 @@ export default function PollCard({ poll }: { poll: IPoll }) {
       </div>
 
       {poll.hasVoted && !isPublicProfile && (
-            <div className="bg-success-300 text-success-900 px-2 py-1 rounded-full inline-flex w-fit items-center gap-1 text-xs">
-              <span>You voted</span>
-              <CheckIcon size={12} color="#18964F" />
-            </div>
-          )}
+        <div className="bg-success-300 text-success-900 px-2 py-1 rounded-full inline-flex w-fit items-center gap-1 text-xs">
+          <span>You voted</span>
+          <CheckIcon size={12} color="#18964F" />
+        </div>
+      )}
 
       {!poll.hasVoted && !isEnded && (
         <button
           className="w-full py-2.5 bg-gray-200 text-gray-900 font-medium rounded-lg mt-3 active:scale-95 active:shadow-inner transition-none active:transition-transform active:duration-100"
-          onClick={(e) => {
-            e.stopPropagation();
-            navigateToPoll();
+          onClick={e => {
+            e.stopPropagation()
+            navigateToPoll()
           }}
         >
           Vote
         </button>
       )}
     </div>
-  );
+  )
 }
