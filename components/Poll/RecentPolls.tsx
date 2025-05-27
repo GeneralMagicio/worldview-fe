@@ -1,8 +1,8 @@
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useGetPolls } from '@/hooks/usePoll'
 import { useToast } from '@/hooks/useToast'
-import { IPoll } from '@/types/poll'
+import { IPoll, PollSortBy } from '@/types/poll'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { PlusIcon } from '../icon-components'
 import { Toaster } from '../Toaster'
@@ -22,7 +22,7 @@ export default function RecentPolls() {
     refetch,
   } = useGetPolls({
     isActive: true,
-    sortBy: 'endDate',
+    sortBy: PollSortBy.END_DATE,
   })
 
   const polls = pollsData?.polls || []
