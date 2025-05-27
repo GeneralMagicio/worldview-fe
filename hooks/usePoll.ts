@@ -153,7 +153,7 @@ export const useCreateOrUpdateDraftPoll = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (data: IDraftPollData): Promise<any> => {
+    mutationFn: async (data: IDraftPollData): Promise<IDraftPollData> => {
       const res = await fetch('/poll/draft', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },

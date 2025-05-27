@@ -15,7 +15,7 @@ const compat = new FlatCompat({
 })
 
 export default [
-  ...compat.extends('plugin:prettier/recommended', 'next/core-web-vitals'),
+  ...compat.extends('plugin:prettier/recommended', 'next/core-web-vitals', 'plugin:@typescript-eslint/recommended'),
   js.configs.recommended,
   {
     ignores: ['eslint.config.mjs', '.next/**'],
@@ -45,6 +45,7 @@ export default [
       'no-unused-vars': 'off',
       'react/no-unescaped-entities': 'off',
       'react-hooks/exhaustive-deps': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
       'import/order': [
         'error',
         {

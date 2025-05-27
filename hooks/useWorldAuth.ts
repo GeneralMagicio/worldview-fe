@@ -1,5 +1,6 @@
 import {
   ISuccessResult,
+  MiniAppWalletAuthPayload,
   MiniKit,
   VerificationLevel,
 } from '@worldcoin/minikit-js'
@@ -11,7 +12,7 @@ import { AUTH_ERRORS } from '@/lib/constants/authErrors'
 
 export type AuthResult = {
   success: boolean
-  data?: any
+  data?: unknown
   error?: string
 }
 
@@ -116,7 +117,7 @@ export const useWorldAuth = () => {
   }
 
   const verifyPayload = async (
-    walletPayload: any,
+    walletPayload: MiniAppWalletAuthPayload,
     worldIdProof: ISuccessResult,
     nonce: string,
   ): Promise<AuthResult> => {
@@ -128,6 +129,14 @@ export const useWorldAuth = () => {
         return {
           success: false,
           error: AUTH_ERRORS.NONCE_VERIFICATION_FAILED,
+        }
+      }
+
+      if (walletPayload.status !== 'success') {
+        setError(AUTH_ERRORS.WALLET_AUTH_FAILED)
+        return {
+          success: false,
+          error: AUTH_ERRORS.WALLET_AUTH_FAILED,
         }
       }
 
