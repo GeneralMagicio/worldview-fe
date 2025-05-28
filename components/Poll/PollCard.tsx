@@ -1,6 +1,6 @@
 'use client'
 
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { CheckIcon, UserIcon } from '@/components/icon-components'
 import { IPoll } from '@/types/poll'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
@@ -12,9 +12,6 @@ import {
 
 export default function PollCard({ poll }: { poll: IPoll }) {
   const router = useRouter()
-  const pathname = usePathname()
-  const isPublicProfile =
-    pathname.includes('/user/') || pathname.includes('/userActivities/')
 
   const { timeLeft, isEnded } = getRelativeTimeString(
     poll.startDate ?? '',
@@ -106,7 +103,7 @@ export default function PollCard({ poll }: { poll: IPoll }) {
         </div>
       </div>
 
-      {poll.hasVoted && !isPublicProfile && (
+      {poll.hasVoted && (
         <div className="bg-success-300 text-success-900 px-2 py-1 rounded-full inline-flex w-fit items-center gap-1 text-xs">
           <span>You voted</span>
           <CheckIcon size={12} color="#18964F" />

@@ -1,4 +1,4 @@
-import { ActionType, IPoll, UserActionDto } from '@/types/poll'
+import { IPoll, UserActionDto } from '@/types/poll'
 
 // Transform UserActionDto to match IPoll structure for PollCard
 export const transformActionToPoll = (action: UserActionDto): IPoll => {
@@ -10,7 +10,7 @@ export const transformActionToPoll = (action: UserActionDto): IPoll => {
     startDate: action.createdAt,
     creationDate: action.createdAt,
     participantCount: action.votersParticipated,
-    hasVoted: action.type === ActionType.VOTED,
+    hasVoted: action.hasVoted,
     authorUserId: 0, // Not available from the API
     author: {
       id: 0, // Not available from the API

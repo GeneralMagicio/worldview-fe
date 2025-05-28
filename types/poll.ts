@@ -69,6 +69,7 @@ export interface UserActionDto {
   authorName: string
   authorProfilePicture: string
   createdAt: string
+  hasVoted: boolean
 }
 
 export enum PollSortBy {
