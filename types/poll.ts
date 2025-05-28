@@ -70,3 +70,9 @@ export interface UserActionDto {
   authorProfilePicture: string
   createdAt: string
 }
+
+export enum PollSortBy {
+  CREATION_DATE = 'creationDate',
+  END_DATE = 'endDate',
+  PARTICIPANT_COUNT = 'participantCount',
+}

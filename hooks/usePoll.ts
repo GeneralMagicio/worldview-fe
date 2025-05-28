@@ -1,10 +1,10 @@
+import { IPoll, IPollDetails, PollSortBy } from '@/types/poll'
 import {
   useMutation,
   useQuery,
   useQueryClient,
   UseQueryResult,
 } from '@tanstack/react-query'
-import { IPoll, IPollDetails } from '@/types/poll'
 
 export const POLLS_LIMIT = 10
 
@@ -14,7 +14,7 @@ interface IUsePollParams {
   isActive?: boolean | 'none'
   userVoted?: boolean
   userCreated?: boolean
-  sortBy?: 'creationDate' | 'endDate' | 'participantCount'
+  sortBy?: PollSortBy
   sortOrder?: 'asc' | 'desc'
   search?: string
 }

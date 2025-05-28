@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useGetPolls } from '@/hooks/usePoll'
 import { useToast } from '@/hooks/useToast'
-import { FilterParams, IPoll, IPollFilters } from '@/types/poll'
+import { FilterParams, IPoll, IPollFilters, PollSortBy } from '@/types/poll'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
 import FilterBar from '../FilterBar'
 import { Toaster } from '../Toaster'
@@ -31,10 +31,8 @@ export default function PollList({
   const [totalPages, setTotalPages] = useState(1)
   const [displayedPolls, setDisplayedPolls] = useState<IPoll[]>([])
   const [isLoadingMore, setIsLoadingMore] = useState(false)
-  const [sortBy, setSortBy] = useState<
-    'creationDate' | 'endDate' | 'participantCount'
-  >()
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>()
+  const [sortBy, setSortBy] = useState<PollSortBy>(PollSortBy.CREATION_DATE)
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
   const handleSearch = (term: string) => {
     setSearchTerm(term)
@@ -56,12 +54,12 @@ export default function PollList({
 
   useEffect(() => {
     if (filterParam === FilterParams.Recent) {
-      setSortBy('creationDate')
+      setSortBy(PollSortBy.CREATION_DATE)
       setSortOrder('desc')
     }
 
     if (filterParam === FilterParams.Trending) {
-      setSortBy('participantCount')
+      setSortBy(PollSortBy.PARTICIPANT_COUNT)
       setSortOrder('desc')
     }
   }, [filterParam])
