@@ -1,5 +1,5 @@
 import { useGetPolls } from "@/hooks/usePoll";
-import PollCard from "./PollCard";
+import { LazyPollCard } from "./PollCard";
 import BlurredCard from "../Verify/BlurredCard";
 import NoPollsView from "./NoPollsView";
 import Link from "next/link";
@@ -81,7 +81,7 @@ export default function RecentPolls() {
       <>
         <div className="space-y-4 mb-6" aria-label="Poll list">
           {polls.map((poll: IPoll) => (
-            <PollCard key={poll.pollId} poll={poll} />
+            <LazyPollCard key={poll.pollId} poll={poll} />
           ))}
         </div>
 

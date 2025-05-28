@@ -1,33 +1,9 @@
 import { motion } from "framer-motion";
-
-const itemVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-    scale: 0.95,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.5,
-      ease: [0.4, 0.0, 0.2, 1],
-    },
-  },
-  exit: {
-    opacity: 0,
-    y: -20,
-    scale: 0.95,
-    transition: {
-      duration: 0.3,
-    },
-  },
-};
+import { pollCardVariants } from "@/lib/constants/animationVariants";
 
 export default function BlurredCard() {
   return (
-    <motion.div variants={itemVariants}>
+    <motion.div variants={pollCardVariants}>
       <div className="w-full bg-white rounded-xl p-6 flex-1 mb-6 shadow-[0_0_16px_0_#00000029] animate-fadeInUp">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>

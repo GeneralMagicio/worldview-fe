@@ -3,7 +3,7 @@ import {
   InfoIcon,
   ShareIcon,
   TrashIcon,
-  UserIcon
+  UserIcon,
 } from "@/components/icon-components";
 import QVInfoModal from "@/components/Modals/QVInfoModal";
 import { useAuth } from "@/context/AuthContext";
@@ -16,7 +16,10 @@ import { getRelativeTimeString } from "@/utils/time";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AnonymousIconWrapper, PublicIconWrapper } from "../icon-components/IconWrapper";
+import {
+  AnonymousIconWrapper,
+  PublicIconWrapper,
+} from "../icon-components/IconWrapper";
 import PieChart from "../icon-components/PieChart";
 import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 import CustomShareModal from "../Modals/CustomShareModal";
@@ -57,6 +60,8 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
 
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
   const [showQVInfoModal, setShowQVInfoModal] = useState(false);
+
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     if (!pollResults) return;
@@ -99,10 +104,23 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
     }
   };
 
+  useEffect(() => {
+    const timer = requestAnimationFrame(() => {
+      setIsVisible(true);
+    });
+
+    return () => cancelAnimationFrame(timer);
+  }, []);
+
   if (!pollId) return null;
 
   return (
-    <div className="bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029]">
+    <div
+      className={`bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029] transition-all duration-500 ease-out ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      }`}
+    >
+      {" "}
       <div className="flex justify-between items-center mb-3">
         <div
           className="flex items-center gap-2 cursor-pointer hover:opacity-80 active:scale-95 active:transition-transform active:duration-100"
@@ -146,18 +164,21 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
           )}
         </div>
       </div>
-
-     {!isLoading && <div className="flex items-center gap-2 mb-2" onClick={() => {
-        sendHapticFeedbackCommand();
-        setIsVotingTypesModalOpen(true)
-      }}>
-        {pollDetails?.isAnonymous ? (
-          <AnonymousIconWrapper texty />
-        ) : (
-          <PublicIconWrapper texty />
-        )}
-      </div>}
-
+      {!isLoading && (
+        <div
+          className="flex items-center gap-2 mb-2"
+          onClick={() => {
+            sendHapticFeedbackCommand();
+            setIsVotingTypesModalOpen(true);
+          }}
+        >
+          {pollDetails?.isAnonymous ? (
+            <AnonymousIconWrapper texty />
+          ) : (
+            <PublicIconWrapper texty />
+          )}
+        </div>
+      )}
       {/* Poll Title + Description */}
       <div className="pb-2">
         {isLoading ? (
@@ -312,14 +333,16 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
         >
           {isActive ? "Vote" : "Voting Ended"}
         </button>
-        {!pollData?.poll?.isAnonymous && (<Link
-          className="w-full flex items-center justify-center bg-gray-50 gap-2 py-3 text-gray-700 font-semibold rounded-xl font-sora active:scale-95 active:transition-transform active:duration-100"
-          href={`/voters/${pollId}`}
-          onClick={() => sendHapticFeedbackCommand()}
-        >
-          <PieChart />
-          View Voters
-        </Link>)}
+        {!pollData?.poll?.isAnonymous && (
+          <Link
+            className="w-full flex items-center justify-center bg-gray-50 gap-2 py-3 text-gray-700 font-semibold rounded-xl font-sora active:scale-95 active:transition-transform active:duration-100"
+            href={`/voters/${pollId}`}
+            onClick={() => sendHapticFeedbackCommand()}
+          >
+            <PieChart />
+            View Voters
+          </Link>
+        )}
 
         {isAuthor && (
           <Button
@@ -335,9 +358,7 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
           </Button>
         )}
       </div>
-
       {showQVInfoModal && <QVInfoModal setShowModal={setShowQVInfoModal} />}
-
       {isAuthor && (
         <ConfirmDeleteModal
           modalOpen={showConfirmDeleteModal}
@@ -346,7 +367,9 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
           isLoading={deletePollPending}
         />
       )}
-      {isVotingTypesModalOpen && <VotingTypesModal onClose={() => setIsVotingTypesModalOpen(false)} />}
+      {isVotingTypesModalOpen && (
+        <VotingTypesModal onClose={() => setIsVotingTypesModalOpen(false)} />
+      )}
       <CustomShareModal
         message={shareUrl}
         isOpen={isOpen}

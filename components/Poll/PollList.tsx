@@ -4,14 +4,18 @@ import { useGetPolls } from "@/hooks/usePoll";
 import { useToast } from "@/hooks/useToast";
 import { FilterParams, IPoll, IPollFilters } from "@/types/poll";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import FilterBar from "../FilterBar";
 import { Toaster } from "../Toaster";
 import { Button } from "../ui/Button";
 import BlurredCard from "../Verify/BlurredCard";
 import NoPollsView from "./NoPollsView";
-import PollCard from "./PollCard";
 import { sendHapticFeedbackCommand } from "@/utils/animation";
+import {
+  containerVariants,
+  loadMoreVariants,
+} from "@/lib/constants/animationVariants";
+import { LazyPollCard } from "./PollCard";
 
 const POLLS_PER_PAGE = 20;
 
@@ -20,29 +24,6 @@ interface PollListProps {
   filterParam: FilterParams;
   setFiltersOpen: (open: boolean) => void;
 }
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const loadMoreVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.4,
-      ease: "easeOut",
-    },
-  },
-};
 
 export default function PollList({
   filters,
@@ -148,9 +129,9 @@ export default function PollList({
   return (
     <section aria-label="Poll list" className="mb-6">
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.5 }}
       >
         <FilterBar
           setFiltersOpen={setFiltersOpen}
@@ -184,13 +165,11 @@ export default function PollList({
 
     return (
       <div className="space-y-4">
-        <AnimatePresence mode="popLayout">
-          {displayedPolls.map((poll: IPoll, index: number) => (
-            <PollCard key={poll.pollId} index={index} poll={poll} />
-          ))}
-        </AnimatePresence>
+        {displayedPolls.map((poll: IPoll, index: number) => (
+          <LazyPollCard key={poll.pollId} poll={poll} />
+        ))}
 
-        <AnimatePresence>{isLoadingMore && <BlurredCard />}</AnimatePresence>
+        {isLoadingMore && <BlurredCard />}
       </div>
     );
   }

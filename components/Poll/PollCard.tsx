@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import { CheckIcon, UserIcon } from "@/components/icon-components";
 import { IPoll } from "@/types/poll";
 import { sendHapticFeedbackCommand } from "@/utils/animation";
@@ -10,39 +11,9 @@ import {
   PublicIconWrapper,
 } from "../icon-components/IconWrapper";
 import { motion } from "framer-motion";
+import { pollCardVariants } from "@/lib/constants/animationVariants";
 
-const itemVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-    scale: 0.95,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.5,
-      ease: [0.4, 0.0, 0.2, 1],
-    },
-  },
-  exit: {
-    opacity: 0,
-    y: -20,
-    scale: 0.95,
-    transition: {
-      duration: 0.3,
-    },
-  },
-};
-
-export default function PollCard({
-  index,
-  poll,
-}: {
-  index: number;
-  poll: IPoll;
-}) {
+export default function PollCard({ poll }: { poll: IPoll }) {
   const router = useRouter();
   const pathname = usePathname();
   const isPublicProfile =
@@ -72,19 +43,7 @@ export default function PollCard({
   };
 
   return (
-    <motion.div
-      key={poll.pollId}
-      variants={itemVariants}
-      className="rounded-xl p-4 border border-secondary shadow-[0px_0px_16px_0px_#00000029]"
-      initial="hidden"
-      animate="visible"
-      layout
-      whileHover={{
-        scale: 1.02,
-        transition: { duration: 0.2, ease: "easeInOut" },
-      }}
-      whileTap={{ scale: 0.98 }}
-    >
+    <div className="rounded-xl p-4 border border-secondary shadow-[0px_0px_16px_0px_#00000029]">
       <div className="flex justify-between items-center mb-3">
         <div
           className="flex items-center gap-2 cursor-pointer active:scale-95 transition-none active:transition-transform active:duration-100"
@@ -167,6 +126,58 @@ export default function PollCard({
         >
           Vote
         </button>
+      )}
+    </div>
+  );
+}
+
+export function LazyPollCard({ poll }: { poll: IPoll }) {
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasLoaded) {
+          setIsIntersecting(true);
+          setHasLoaded(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "50px",
+      }
+    );
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasLoaded]);
+
+  return (
+    <motion.div
+      ref={elementRef}
+      variants={pollCardVariants}
+      initial="hidden"
+      animate={isIntersecting ? "visible" : "hidden"}
+      layout
+      whileHover={{
+        scale: 1.02,
+        transition: { duration: 0.2 },
+      }}
+      whileTap={{ scale: 0.98 }}
+      style={{ minHeight: hasLoaded ? "auto" : "200px" }}
+    >
+      {isIntersecting ? (
+        <PollCard poll={poll} />
+      ) : (
+        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg h-48 flex items-center justify-center">
+          <div className="animate-pulse w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        </div>
       )}
     </motion.div>
   );

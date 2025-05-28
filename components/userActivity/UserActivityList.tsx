@@ -7,19 +7,20 @@ import { transformActionToPoll } from "@/utils/helpers";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import FilterBar from "../FilterBar";
-import PollCard from "../Poll/PollCard";
+import { LazyPollCard } from "../Poll/PollCard";
 import { LoadingPolls } from "../Poll/PollList";
 import { Toaster } from "../Toaster";
 import NoUserActivityView from "./NoUserActivityView";
+import { motion } from "framer-motion";
 
 interface UserActivityListProps {
   filters: IPollFilters;
   setFiltersOpen: (open: boolean) => void;
 }
 
-export default function UserActivityList({ 
-  filters, 
-  setFiltersOpen
+export default function UserActivityList({
+  filters,
+  setFiltersOpen,
 }: UserActivityListProps) {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,7 +30,7 @@ export default function UserActivityList({
   };
 
   const { worldId } = useParams();
-  const userWorldId = Array.isArray(worldId) ? worldId[0] : worldId as string;
+  const userWorldId = Array.isArray(worldId) ? worldId[0] : (worldId as string);
 
   const {
     data: userActivitiesData,
@@ -59,11 +60,17 @@ export default function UserActivityList({
 
   return (
     <section aria-label="Poll list" className="mb-6">
-        <FilterBar 
-          setFiltersOpen={setFiltersOpen} 
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <FilterBar
+          setFiltersOpen={setFiltersOpen}
           onSearch={handleSearch}
           initialSearchTerm={searchTerm}
         />
+      </motion.div>
       {renderContent()}
       <Toaster />
     </section>
@@ -75,13 +82,16 @@ export default function UserActivityList({
     }
 
     if (!userActions || userActions.length === 0) {
-      return <NoUserActivityView />
+      return <NoUserActivityView />;
     }
 
     return (
       <div className="space-y-4">
         {userActions.map((userAction: UserActionDto) => (
-          <PollCard key={userAction.pollId} poll={transformActionToPoll(userAction)} />
+          <LazyPollCard
+            key={userAction.pollId}
+            poll={transformActionToPoll(userAction)}
+          />
         ))}
       </div>
     );
