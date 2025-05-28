@@ -4,6 +4,7 @@ import { useGetPolls } from "@/hooks/usePoll";
 import { useToast } from "@/hooks/useToast";
 import { FilterParams, IPoll, IPollFilters } from "@/types/poll";
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import FilterBar from "../FilterBar";
 import { Toaster } from "../Toaster";
 import { Button } from "../ui/Button";
@@ -19,6 +20,29 @@ interface PollListProps {
   filterParam: FilterParams;
   setFiltersOpen: (open: boolean) => void;
 }
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const loadMoreVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut",
+    },
+  },
+};
 
 export default function PollList({
   filters,
@@ -123,11 +147,18 @@ export default function PollList({
 
   return (
     <section aria-label="Poll list" className="mb-6">
-      <FilterBar
-        setFiltersOpen={setFiltersOpen}
-        onSearch={handleSearch}
-        initialSearchTerm={searchTerm}
-      />
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <FilterBar
+          setFiltersOpen={setFiltersOpen}
+          onSearch={handleSearch}
+          initialSearchTerm={searchTerm}
+        />
+      </motion.div>
+
       {renderContent()}
       {renderPagination()}
       <Toaster />
@@ -140,20 +171,26 @@ export default function PollList({
     }
 
     if (!displayedPolls || displayedPolls.length === 0) {
-      return <NoPollsView />;
+      return (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <NoPollsView />
+        </motion.div>
+      );
     }
 
     return (
       <div className="space-y-4">
-        {displayedPolls.map((poll: IPoll) => (
-          <PollCard key={poll.pollId} poll={poll} />
-        ))}
+        <AnimatePresence mode="popLayout">
+          {displayedPolls.map((poll: IPoll, index: number) => (
+            <PollCard key={poll.pollId} index={index} poll={poll} />
+          ))}
+        </AnimatePresence>
 
-        {isLoadingMore && (
-          <div className="pt-4">
-            <BlurredCard />
-          </div>
-        )}
+        <AnimatePresence>{isLoadingMore && <BlurredCard />}</AnimatePresence>
       </div>
     );
   }
@@ -170,34 +207,57 @@ export default function PollList({
     }
 
     return currentPage < totalPages ? (
-      <div className="mt-6">
-        <Button
-          variant="outline"
-          onClick={handleLoadMore}
-          onTouchStart={() => sendHapticFeedbackCommand()}
-          disabled={isLoadingMore || currentPage >= totalPages}
-          className="w-full py-3 active:scale-95 active:transition-transform active:duration-100"
+      <motion.div
+        className="mt-6"
+        variants={loadMoreVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+          <Button
+            variant="outline"
+            onClick={handleLoadMore}
+            onTouchStart={() => sendHapticFeedbackCommand()}
+            disabled={isLoadingMore || currentPage >= totalPages}
+            className="w-full py-3 active:scale-95 active:transition-transform active:duration-100"
+          >
+            {isLoadingMore ? "Loading..." : "Load More Polls"}
+          </Button>
+        </motion.div>
+        <motion.div
+          className="text-center text-sm text-gray-500 mt-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
         >
-          {isLoadingMore ? "Loading..." : "Load More Polls"}
-        </Button>
-        <div className="text-center text-sm text-gray-500 mt-2">
           Showing {displayedPolls.length} of {totalItems} polls
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     ) : (
-      <div className="text-center text-sm text-gray-500 mt-6">
+      <motion.div
+        className="text-center text-sm text-gray-500 mt-6"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
         All polls loaded ({totalItems} polls)
-      </div>
+      </motion.div>
     );
   }
 }
 
 export const LoadingPolls = () => {
   return (
-    <div className="space-y-4" aria-label="Loading polls">
+    <motion.div
+      className="space-y-4"
+      aria-label="Loading polls"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {Array.from({ length: 3 }).map((_, index) => (
         <BlurredCard key={index} />
       ))}
-    </div>
+    </motion.div>
   );
 };

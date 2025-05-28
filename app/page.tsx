@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import CategoryCard from "@/components/Category/CategoryCard";
 import { UserIcon } from "@/components/icon-components";
 import RecentPolls from "@/components/Poll/RecentPolls";
@@ -58,7 +59,9 @@ export default function MainView() {
         ))}
       </div>
 
-      <RecentPolls />
+      <Suspense fallback={<div>Loading...</div>}>
+        <RecentPolls />
+      </Suspense>
     </main>
   );
 }

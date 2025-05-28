@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { sendHapticFeedbackCommand } from "@/utils/animation";
@@ -8,7 +9,7 @@ interface CategoryCardProps {
   href: string;
 }
 
-export default function CategoryCard({ title, icon, href }: CategoryCardProps) {
+function CategoryCard({ title, icon, href }: CategoryCardProps) {
   return (
     <Link
       className="relative flex justify-between items-center rounded-2xl p-1 h-24 overflow-hidden bg-category-noise bg-no-repeat bg-cover active:scale-95 transition-none active:transition-transform active:duration-100"
@@ -30,3 +31,11 @@ export default function CategoryCard({ title, icon, href }: CategoryCardProps) {
     </Link>
   );
 }
+
+export default React.memo(CategoryCard, (prev, next) => {
+  return (
+    prev.title === next.title &&
+    prev.icon === next.icon &&
+    prev.href === next.href
+  );
+});

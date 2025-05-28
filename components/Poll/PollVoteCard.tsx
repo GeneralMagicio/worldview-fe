@@ -22,7 +22,10 @@ import { getRelativeTimeString } from "@/utils/time";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { AnonymousIconWrapper, PublicIconWrapper } from "../icon-components/IconWrapper";
+import {
+  AnonymousIconWrapper,
+  PublicIconWrapper,
+} from "../icon-components/IconWrapper";
 import CustomShareModal from "../Modals/CustomShareModal";
 import VotingTypesModal from "../Modals/VotingTypesModal";
 import { Button } from "../ui/Button";
@@ -66,13 +69,14 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
     }
   };
 
-  // Modals
+  // States
   const [showQVInfoModal, setShowQVInfoModal] = useState(false);
   const [showVotingSuccessModal, setShowVotingSuccessModal] = useState(false);
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
   const [isVotingTypesModalOpen, setIsVotingTypesModalOpen] = useState(false);
   const [votes, setVotes] = useState<VoteState[]>();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   // Refs
   const sliderRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -241,6 +245,14 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
     setVotes(mappedUserVotes);
   }, [userVotesFetched]);
 
+  useEffect(() => {
+    const timer = requestAnimationFrame(() => {
+      setIsVisible(true);
+    });
+
+    return () => cancelAnimationFrame(timer);
+  }, []);
+
   const decreaseVote = (index: number) => {
     sendHapticFeedbackCommand();
     const vote = votes?.[index];
@@ -288,7 +300,11 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   const isLoading = pollLoading || userVotesLoading;
 
   return (
-    <div className="bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029]">
+    <div
+      className={`bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029] transition-all duration-500 ease-out ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      }`}
+    >
       {/* Poll Voting Card Header */}
       <div className="flex justify-between items-center mb-3">
         <div
@@ -334,16 +350,21 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         </div>
       </div>
 
-      {!isLoading && <div className="flex items-center gap-2 mb-2" onClick={() => {
-        sendHapticFeedbackCommand();
-        setIsVotingTypesModalOpen(true)
-      }}>
-        {pollDetails?.isAnonymous ? (
-          <AnonymousIconWrapper texty />
-        ) : (
-          <PublicIconWrapper texty />
-        )}
-      </div>}
+      {!isLoading && (
+        <div
+          className="flex items-center gap-2 mb-2"
+          onClick={() => {
+            sendHapticFeedbackCommand();
+            setIsVotingTypesModalOpen(true);
+          }}
+        >
+          {pollDetails?.isAnonymous ? (
+            <AnonymousIconWrapper texty />
+          ) : (
+            <PublicIconWrapper texty />
+          )}
+        </div>
+      )}
 
       {/* Poll Title + Description */}
       <div className="pb-2">
@@ -601,7 +622,9 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           isLoading={deletePollPending}
         />
       )}
-      {isVotingTypesModalOpen && <VotingTypesModal onClose={() => setIsVotingTypesModalOpen(false)} />}
+      {isVotingTypesModalOpen && (
+        <VotingTypesModal onClose={() => setIsVotingTypesModalOpen(false)} />
+      )}
       <CustomShareModal
         message={shareUrl}
         isOpen={isOpen}
