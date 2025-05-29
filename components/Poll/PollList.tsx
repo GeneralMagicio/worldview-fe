@@ -32,7 +32,6 @@ export default function PollList({
   const [displayedPolls, setDisplayedPolls] = useState<IPoll[]>([])
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [sortBy, setSortBy] = useState<PollSortBy>(PollSortBy.CREATION_DATE)
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
   const handleSearch = (term: string) => {
     setSearchTerm(term)
@@ -55,12 +54,12 @@ export default function PollList({
   useEffect(() => {
     if (filterParam === FilterParams.Recent) {
       setSortBy(PollSortBy.CREATION_DATE)
-      setSortOrder('desc')
     }
-
     if (filterParam === FilterParams.Trending) {
       setSortBy(PollSortBy.PARTICIPANT_COUNT)
-      setSortOrder('desc')
+    }
+    if (filterParam === FilterParams.All) {
+      setSortBy(PollSortBy.CLOSEST_END_DATE)
     }
   }, [filterParam])
 
@@ -72,7 +71,6 @@ export default function PollList({
     page: currentPage,
     limit: POLLS_PER_PAGE,
     sortBy,
-    sortOrder,
     isActive: checkIsActive(),
     userVoted: filters.pollsVoted,
     userCreated: filters.pollsCreated,

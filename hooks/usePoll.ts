@@ -1,10 +1,10 @@
-import { IPoll, IPollDetails, PollSortBy } from '@/types/poll'
 import {
   useMutation,
   useQuery,
   useQueryClient,
   UseQueryResult,
 } from '@tanstack/react-query'
+import { IPoll, IPollDetails, PollSortBy } from '@/types/poll'
 
 export const POLLS_LIMIT = 10
 
@@ -63,7 +63,7 @@ export const useGetPolls = (
         userVoted: filters.userVoted ?? undefined,
         userCreated: filters.userCreated ?? undefined,
         sortBy: filters.sortBy || undefined,
-        sortOrder: filters.sortOrder || undefined,
+        sortOrder: filters.sortOrder || 'desc',
         search: filters.search || undefined,
       }
 
