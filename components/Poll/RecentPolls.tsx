@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useGetPolls } from '@/hooks/usePoll'
 import { useToast } from '@/hooks/useToast'
-import { IPoll, PollSortBy } from '@/types/poll'
+import { FilterParams, IPoll, PollSortBy } from '@/types/poll'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { PlusIcon } from '../icon-components'
 import { Toaster } from '../Toaster'
@@ -91,7 +91,7 @@ export default function RecentPolls() {
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
           <Link
             className="py-3 bg-gray-300 text-primary font-medium rounded-lg flex items-center justify-center active:scale-95 active:bg-gray-300/90 active:shadow-inner transition-none active:transition-transform active:duration-100"
-            href="/polls"
+            href={`/polls?filter=${FilterParams.All}`}
             onClick={() => sendHapticFeedbackCommand()}
           >
             Explore all
