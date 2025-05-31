@@ -49,7 +49,7 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
   const didVote = userVotes?.voteID
   const isAuthor = worldID === pollDetails?.author?.worldID
 
-  const { timeLeft } = getRelativeTimeString(
+  const { timeLeft, isNotStarted } = getRelativeTimeString(
     pollDetails?.startDate ?? '',
     pollDetails?.endDate ?? '',
   )
@@ -75,7 +75,7 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
 
   const handleVote = () => {
     sendHapticFeedbackCommand()
-    if (!isActive) return
+    if (!isActive || isNotStarted) return
     router.push(`/poll/${pollId}`)
   }
 
@@ -135,10 +135,18 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
             <>
               <div
                 className={`w-2 h-2 rounded-full ${
-                  isActive ? 'bg-success-900' : 'bg-gray-400'
+                  isNotStarted
+                    ? 'bg-[#eac138]'
+                    : isActive
+                      ? 'bg-success-900'
+                      : 'bg-gray-400'
                 }`}
               />
-              {isActive ? (
+              {isNotStarted ? (
+                <span className="text-sm text-gray-900">
+                  Starting in {timeLeft}
+                </span>
+              ) : isActive ? (
                 <span className="text-sm text-gray-900">
                   {timeLeft} <span className="text-xs">left</span>
                 </span>
@@ -316,9 +324,13 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
         <button
           className="w-full bg-gray-900 text-white h-14 rounded-xl mb-3 font-semibold font-sora disabled:text-gray-400 disabled:bg-gray-200 active:scale-95 active:transition-transform active:duration-100"
           onClick={handleVote}
-          disabled={!isActive}
+          disabled={!isActive || isNotStarted}
         >
-          {isActive ? 'Vote' : 'Voting Ended'}
+          {isNotStarted
+            ? `Starting in ${timeLeft}`
+            : isActive
+              ? 'Vote'
+              : 'Voting Ended'}
         </button>
         {!pollData?.poll?.isAnonymous && (
           <Link

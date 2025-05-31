@@ -57,7 +57,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   const pollOptions = pollDetails?.options
   const isAuthor = worldID === pollDetails?.author?.worldID
 
-  const { timeLeft } = getRelativeTimeString(
+  const { timeLeft, isNotStarted } = getRelativeTimeString(
     pollDetails?.startDate ?? '',
     pollDetails?.endDate ?? '',
   )
@@ -322,10 +322,18 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             <>
               <div
                 className={`w-2 h-2 rounded-full ${
-                  isActive ? 'bg-success-900' : 'bg-gray-400'
+                  isNotStarted
+                    ? 'bg-[#eac138]'
+                    : isActive
+                      ? 'bg-success-900'
+                      : 'bg-gray-400'
                 }`}
               />
-              {isActive ? (
+              {isNotStarted ? (
+                <span className="text-sm text-gray-900">
+                  Starting in {timeLeft}
+                </span>
+              ) : isActive ? (
                 <span className="text-sm text-gray-900">
                   {timeLeft} <span className="text-xs">left</span>
                 </span>
@@ -553,18 +561,21 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             editVotePending ||
             setVotePending ||
             !isActive ||
+            isNotStarted ||
             !votesChanged
           }
         >
-          {isActive
-            ? isLoading
-              ? 'Loading...'
-              : editVotePending
-                ? 'Saving...'
-                : setVotePending
-                  ? 'Submitting...'
-                  : 'Vote'
-            : 'Voting Ended'}
+          {isNotStarted
+            ? `Starting in ${timeLeft}`
+            : isActive
+              ? isLoading
+                ? 'Loading...'
+                : editVotePending
+                  ? 'Saving...'
+                  : setVotePending
+                    ? 'Submitting...'
+                    : 'Vote'
+              : 'Voting Ended'}
         </button>
 
         {/* View Results */}
