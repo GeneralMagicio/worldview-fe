@@ -1,56 +1,72 @@
 import { MONTHS } from '@/lib/constants'
 
+const formatTimeDifference = (timeDiff: number): string => {
+  const absDiff = Math.abs(timeDiff)
+
+  const minutes = Math.floor(absDiff / (1000 * 60))
+  const hours = Math.floor(absDiff / (1000 * 60 * 60))
+  const days = Math.floor(absDiff / (1000 * 60 * 60 * 24))
+  const months = Math.floor(days / 30)
+
+  if (days >= 60) {
+    const remainingDays = days % 30
+    return remainingDays > 0 ? `${months}m ${remainingDays}d` : `${months}m`
+  } else if (days >= 1) {
+    const remainingHours = hours % 24
+    return remainingHours > 0 ? `${days}d ${remainingHours}h` : `${days}d`
+  } else if (hours >= 1) {
+    const remainingMinutes = minutes % 60
+    return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`
+  } else {
+    return `${minutes}m`
+  }
+}
+
 export const getRelativeTimeString = (
   startDate: string,
   endDate: string,
-): { timeLeft: string; isEnded: boolean } => {
+): { timeLeft: string; isEnded: boolean; isNotStarted: boolean } => {
   if (!startDate || !endDate) {
     return {
       timeLeft: 'Ended',
       isEnded: true,
+      isNotStarted: false,
     }
   }
 
   const now = new Date()
   const start = new Date(startDate)
   const end = new Date(endDate)
-  const isOutOfRange = start > now || end < now
 
-  if (isOutOfRange) {
+  // Check if poll hasn't started yet
+  if (start > now) {
+    const diff = start.getTime() - now.getTime()
+    const timeLeft = formatTimeDifference(diff)
+
     return {
-      timeLeft: 'Ended',
-      isEnded: true,
+      timeLeft,
+      isEnded: false,
+      isNotStarted: true,
     }
   }
 
-  const diff = end.getTime() - now.getTime()
-  const absDiff = Math.abs(diff)
-
-  const minutes = Math.floor(absDiff / (1000 * 60))
-  const hours = Math.floor(absDiff / (1000 * 60 * 60))
-  const days = Math.floor(absDiff / (1000 * 60 * 60 * 24))
-  const months = Math.floor(days / 30)
-  // const years = Math.floor(months / 12);
-
-  let timeLeft: string = ''
-
-  if (days >= 60) {
-    const remainingDays = days % 30
-    timeLeft = remainingDays > 0 ? `${months}m ${remainingDays}d` : `${months}m`
-  } else if (days >= 1) {
-    const remainingHours = hours % 24
-    timeLeft = remainingHours > 0 ? `${days}d ${remainingHours}h` : `${days}d`
-  } else if (hours >= 1) {
-    const remainingMinutes = minutes % 60
-    timeLeft =
-      remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`
-  } else {
-    timeLeft = `${minutes}m`
+  // Check if poll has ended
+  if (end < now) {
+    return {
+      timeLeft: 'Ended',
+      isEnded: true,
+      isNotStarted: false,
+    }
   }
+
+  // Poll is active - calculate time left until end
+  const diff = end.getTime() - now.getTime()
+  const timeLeft = formatTimeDifference(diff)
 
   return {
     timeLeft,
-    isEnded: isOutOfRange,
+    isEnded: false,
+    isNotStarted: false,
   }
 }
 

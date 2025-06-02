@@ -13,7 +13,7 @@ import {
 export default function PollCard({ poll }: { poll: IPoll }) {
   const router = useRouter()
 
-  const { timeLeft, isEnded } = getRelativeTimeString(
+  const { timeLeft, isEnded, isNotStarted } = getRelativeTimeString(
     poll.startDate ?? '',
     poll.endDate ?? '',
   )
@@ -53,11 +53,19 @@ export default function PollCard({ poll }: { poll: IPoll }) {
         <div className="flex items-center gap-1">
           <div
             className={`w-2 h-2 rounded-full ${
-              isEnded ? 'bg-gray-400' : 'bg-success-900'
+              isNotStarted
+                ? 'bg-[#eac138]'
+                : isEnded
+                  ? 'bg-gray-400'
+                  : 'bg-success-900'
             }`}
           />
 
-          {isEnded ? (
+          {isNotStarted ? (
+            <span className="text-sm text-gray-900">
+              Starting in {timeLeft}
+            </span>
+          ) : isEnded ? (
             <span className="text-xs text-gray-900">Voting Ended</span>
           ) : (
             <span className="text-sm text-gray-900">
@@ -110,7 +118,7 @@ export default function PollCard({ poll }: { poll: IPoll }) {
         </div>
       )}
 
-      {!poll.hasVoted && !isEnded && (
+      {!poll.hasVoted && !isEnded && !isNotStarted && (
         <button
           className="w-full py-2.5 bg-gray-200 text-gray-900 font-medium rounded-lg mt-3 active:scale-95 active:shadow-inner transition-none active:transition-transform active:duration-100"
           onClick={e => {
