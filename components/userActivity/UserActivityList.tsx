@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useToast } from '@/hooks/useToast'
@@ -7,7 +8,7 @@ import { useUserActivities } from '@/hooks/useUserActivity'
 import { IPollFilters, UserActionDto } from '@/types/poll'
 import { transformActionToPoll } from '@/utils/helpers'
 import FilterBar from '../FilterBar'
-import PollCard from '../Poll/PollCard'
+import { LazyPollCard } from '../Poll/PollCard'
 import { LoadingPolls } from '../Poll/PollList'
 import { Toaster } from '../Toaster'
 import NoUserActivityView from './NoUserActivityView'
@@ -59,11 +60,17 @@ export default function UserActivityList({
 
   return (
     <section aria-label="Poll list" className="mb-6">
-      <FilterBar
-        setFiltersOpen={setFiltersOpen}
-        onSearch={handleSearch}
-        initialSearchTerm={searchTerm}
-      />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <FilterBar
+          setFiltersOpen={setFiltersOpen}
+          onSearch={handleSearch}
+          initialSearchTerm={searchTerm}
+        />
+      </motion.div>
       {renderContent()}
       <Toaster />
     </section>
@@ -81,7 +88,7 @@ export default function UserActivityList({
     return (
       <div className="space-y-4">
         {userActions.map((userAction: UserActionDto) => (
-          <PollCard
+          <LazyPollCard
             key={userAction.pollId}
             poll={transformActionToPoll(userAction)}
           />

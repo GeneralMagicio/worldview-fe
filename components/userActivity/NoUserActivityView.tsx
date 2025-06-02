@@ -1,11 +1,14 @@
+import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 
 export default function NoUserActivityView() {
-  const router = useRouter()
-
   return (
-    <div className="flex flex-col items-center justify-center px-6 pt-16">
+    <motion.div
+      className="flex flex-col items-center justify-center px-6 pt-16"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="mb-10 relative">
         <Image
           src="/illustrations/no-polls.svg"
@@ -17,6 +20,6 @@ export default function NoUserActivityView() {
       <h2 className="text-xl text-gray-900 font-medium mb-2 text-center">
         No corresponding activities to show for this user
       </h2>
-    </div>
+    </motion.div>
   )
 }

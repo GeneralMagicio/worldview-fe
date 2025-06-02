@@ -1,7 +1,10 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
+import { usePathname, useRouter } from 'next/navigation'
+import { useState, useRef, useEffect } from 'react'
 import { CheckIcon, UserIcon } from '@/components/icon-components'
+import { pollCardVariants } from '@/lib/constants/animationVariants'
 import { IPoll } from '@/types/poll'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { getRelativeTimeString } from '@/utils/time'
@@ -12,6 +15,9 @@ import {
 
 export default function PollCard({ poll }: { poll: IPoll }) {
   const router = useRouter()
+  const pathname = usePathname()
+  const isPublicProfile =
+    pathname.includes('/user/') || pathname.includes('/userActivities/')
 
   const { timeLeft, isEnded, isNotStarted } = getRelativeTimeString(
     poll.startDate ?? '',
@@ -130,5 +136,57 @@ export default function PollCard({ poll }: { poll: IPoll }) {
         </button>
       )}
     </div>
+  )
+}
+
+export function LazyPollCard({ poll }: { poll: IPoll }) {
+  const [isIntersecting, setIsIntersecting] = useState(false)
+  const [hasLoaded, setHasLoaded] = useState(false)
+  const elementRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasLoaded) {
+          setIsIntersecting(true)
+          setHasLoaded(true)
+          observer.disconnect()
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px',
+      },
+    )
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [hasLoaded])
+
+  return (
+    <motion.div
+      ref={elementRef}
+      variants={pollCardVariants}
+      initial="hidden"
+      animate={isIntersecting ? 'visible' : 'hidden'}
+      layout
+      whileHover={{
+        scale: 1.02,
+        transition: { duration: 0.2 },
+      }}
+      whileTap={{ scale: 0.98 }}
+      style={{ minHeight: hasLoaded ? 'auto' : '200px' }}
+    >
+      {isIntersecting ? (
+        <PollCard poll={poll} />
+      ) : (
+        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg h-48 flex items-center justify-center">
+          <div className="animate-pulse w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        </div>
+      )}
+    </motion.div>
   )
 }

@@ -8,7 +8,7 @@ import { PlusIcon } from '../icon-components'
 import { Toaster } from '../Toaster'
 import BlurredCard from '../Verify/BlurredCard'
 import NoPollsView from './NoPollsView'
-import PollCard from './PollCard'
+import { LazyPollCard } from './PollCard'
 
 export default function RecentPolls() {
   const { toast } = useToast()
@@ -84,7 +84,7 @@ export default function RecentPolls() {
       <>
         <div className="space-y-4 mb-6" aria-label="Poll list">
           {polls.map((poll: IPoll) => (
-            <PollCard key={poll.pollId} poll={poll} />
+            <LazyPollCard key={poll.pollId} poll={poll} />
           ))}
         </div>
 

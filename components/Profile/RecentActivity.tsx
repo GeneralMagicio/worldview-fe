@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
@@ -7,7 +8,8 @@ import { useUserActivities } from '@/hooks/useUserActivity'
 import { UserActionDto } from '@/types/poll'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { transformActionToPoll } from '@/utils/helpers'
-import PollCard from '../Poll/PollCard'
+import { LazyPollCard } from '../Poll/PollCard'
+import BlurredCard from '../Verify/BlurredCard'
 
 interface UserActivitiesResponseDto {
   userActions: UserActionDto[]
@@ -34,11 +36,18 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
   if (isLoading) {
     return (
       <div className="mb-4">
-        <h3 className="text-lg font-medium mb-4 text-primary">
+        <motion.h3
+          className="text-lg font-medium mb-4 text-primary"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           Recent Activity
-        </h3>
-        <div className="flex justify-center py-4">
-          <p className="text-gray-500">Loading activities...</p>
+        </motion.h3>
+        <div className="flex flex-col gap-4">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <BlurredCard key={index} />
+          ))}
         </div>
       </div>
     )
@@ -47,25 +56,45 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
   if (error) {
     return (
       <div className="mb-4">
-        <h3 className="text-lg font-medium mb-4 text-primary">
+        <motion.h3
+          className="text-lg font-medium mb-4 text-primary"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           Recent Activity
-        </h3>
-        <div className="flex justify-center py-4">
+        </motion.h3>
+        <motion.div
+          className="flex justify-center py-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <p className="text-red-500">Failed to load activities</p>
-        </div>
+        </motion.div>
       </div>
     )
   }
 
   return (
     <div className="mb-4">
-      <h3 className="text-lg font-medium mb-4 text-primary">Recent Activity</h3>
+      <motion.h3
+        className="text-lg font-medium mb-4 text-primary"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        Recent Activity
+      </motion.h3>
       {activities.length === 0 ? (
         <NoActivitiesView isMyProfile={!worldId} />
       ) : (
         <div className="space-y-4">
           {displayActivities.map(action => (
-            <PollCard key={action.id} poll={transformActionToPoll(action)} />
+            <LazyPollCard
+              key={action.id}
+              poll={transformActionToPoll(action)}
+            />
           ))}
         </div>
       )}
