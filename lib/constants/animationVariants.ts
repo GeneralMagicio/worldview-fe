@@ -5,12 +5,12 @@ export const containerVariants = {
     y: 0,
     transition: {
       duration: 0.6,
-      ease: "easeOut",
+      ease: 'easeOut',
       staggerChildren: 0.15,
       delayChildren: 0.1,
     },
   },
-};
+}
 
 export const pollCardVariants = {
   hidden: {
@@ -35,7 +35,7 @@ export const pollCardVariants = {
       duration: 0.3,
     },
   },
-};
+}
 
 export const loadMoreVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -44,9 +44,7 @@ export const loadMoreVariants = {
     y: 0,
     transition: {
       duration: 0.4,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
-};
-
-
+}

@@ -2,7 +2,7 @@ import { IconProps } from './types'
 
 export default function ChevronUpIcon({
   size = 24,
-  color = "#191C20",
+  color = '#191C20',
 }: IconProps) {
   return (
     <svg
@@ -20,5 +20,5 @@ export default function ChevronUpIcon({
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

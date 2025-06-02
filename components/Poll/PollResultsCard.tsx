@@ -61,7 +61,7 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false)
   const [showQVInfoModal, setShowQVInfoModal] = useState(false)
 
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
     if (!pollResults) return
@@ -106,21 +106,21 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
 
   useEffect(() => {
     const timer = requestAnimationFrame(() => {
-      setIsVisible(true);
-    });
+      setIsVisible(true)
+    })
 
-    return () => cancelAnimationFrame(timer);
-  }, []);
+    return () => cancelAnimationFrame(timer)
+  }, [])
 
-  if (!pollId) return null;
+  if (!pollId) return null
 
   return (
     <div
       className={`bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029] transition-all duration-500 ease-out ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
     >
-      {" "}
+      {' '}
       <div className="flex justify-between items-center mb-3">
         <div
           className="flex items-center gap-2 cursor-pointer hover:opacity-80 active:scale-95 active:transition-transform active:duration-100"
@@ -168,8 +168,8 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
         <div
           className="flex items-center gap-2 mb-2"
           onClick={() => {
-            sendHapticFeedbackCommand();
-            setIsVotingTypesModalOpen(true);
+            sendHapticFeedbackCommand()
+            setIsVotingTypesModalOpen(true)
           }}
         >
           {pollDetails?.isAnonymous ? (

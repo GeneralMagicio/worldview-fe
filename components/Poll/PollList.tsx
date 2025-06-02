@@ -1,9 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import { useGetPolls } from '@/hooks/usePoll'
 import { useToast } from '@/hooks/useToast'
+import {
+  containerVariants,
+  loadMoreVariants,
+} from '@/lib/constants/animationVariants'
 import { FilterParams, IPoll, IPollFilters, PollSortBy } from '@/types/poll'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
 import FilterBar from '../FilterBar'
@@ -11,11 +15,7 @@ import { Toaster } from '../Toaster'
 import { Button } from '../ui/Button'
 import BlurredCard from '../Verify/BlurredCard'
 import NoPollsView from './NoPollsView'
-import { LazyPollCard } from "./PollCard";
-import {
-  containerVariants,
-  loadMoreVariants,
-} from "@/lib/constants/animationVariants";
+import { LazyPollCard } from './PollCard'
 
 const POLLS_PER_PAGE = 20
 
@@ -156,7 +156,7 @@ export default function PollList({
         >
           <NoPollsView />
         </motion.div>
-      );
+      )
     }
 
     return (
@@ -196,7 +196,7 @@ export default function PollList({
             disabled={isLoadingMore || currentPage >= totalPages}
             className="w-full py-3 active:scale-95 active:transition-transform active:duration-100"
           >
-            {isLoadingMore ? "Loading..." : "Load More Polls"}
+            {isLoadingMore ? 'Loading...' : 'Load More Polls'}
           </Button>
         </motion.div>
         <motion.div
@@ -217,7 +217,7 @@ export default function PollList({
       >
         All polls loaded ({totalItems} polls)
       </motion.div>
-    );
+    )
   }
 }
 
@@ -234,5 +234,5 @@ export const LoadingPolls = () => {
         <BlurredCard key={index} />
       ))}
     </motion.div>
-  );
-};
+  )
+}

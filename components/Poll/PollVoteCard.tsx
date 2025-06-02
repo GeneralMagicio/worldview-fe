@@ -70,13 +70,13 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   }
 
   // States
-  const [showQVInfoModal, setShowQVInfoModal] = useState(false);
-  const [showVotingSuccessModal, setShowVotingSuccessModal] = useState(false);
-  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
-  const [isVotingTypesModalOpen, setIsVotingTypesModalOpen] = useState(false);
-  const [votes, setVotes] = useState<VoteState[]>();
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const [showQVInfoModal, setShowQVInfoModal] = useState(false)
+  const [showVotingSuccessModal, setShowVotingSuccessModal] = useState(false)
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false)
+  const [isVotingTypesModalOpen, setIsVotingTypesModalOpen] = useState(false)
+  const [votes, setVotes] = useState<VoteState[]>()
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
 
   // Refs
   const sliderRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -247,11 +247,11 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
 
   useEffect(() => {
     const timer = requestAnimationFrame(() => {
-      setIsVisible(true);
-    });
+      setIsVisible(true)
+    })
 
-    return () => cancelAnimationFrame(timer);
-  }, []);
+    return () => cancelAnimationFrame(timer)
+  }, [])
 
   const decreaseVote = (index: number) => {
     sendHapticFeedbackCommand()
@@ -302,7 +302,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   return (
     <div
       className={`bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029] transition-all duration-500 ease-out ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
     >
       {/* Poll Voting Card Header */}
@@ -354,8 +354,8 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         <div
           className="flex items-center gap-2 mb-2"
           onClick={() => {
-            sendHapticFeedbackCommand();
-            setIsVotingTypesModalOpen(true);
+            sendHapticFeedbackCommand()
+            setIsVotingTypesModalOpen(true)
           }}
         >
           {pollDetails?.isAnonymous ? (

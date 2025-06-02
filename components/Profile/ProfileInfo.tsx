@@ -1,9 +1,9 @@
 'use client'
 
-import { motion } from "framer-motion";
-import { useAuth } from "@/context/AuthContext";
-import { useQuery } from "@tanstack/react-query";
-import UserIcon from "../icon-components/UserIcon";
+import { useQuery } from '@tanstack/react-query'
+import { motion } from 'framer-motion'
+import { useAuth } from '@/context/AuthContext'
+import UserIcon from '../icon-components/UserIcon'
 
 interface UserData {
   pollsCreated: number
@@ -36,7 +36,8 @@ export default function ProfileInfo({ worldId }: ProfileInfoProps) {
   })
 
   return (
-    <motion.div className="flex flex-col items-center mb-8"
+    <motion.div
+      className="flex flex-col items-center mb-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -95,5 +96,5 @@ export default function ProfileInfo({ worldId }: ProfileInfoProps) {
         </>
       )}
     </motion.div>
-  );
+  )
 }

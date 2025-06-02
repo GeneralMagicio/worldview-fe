@@ -1,23 +1,23 @@
 'use client'
 
-import { useState, useRef, useEffect } from "react";
-import { CheckIcon, UserIcon } from "@/components/icon-components";
-import { IPoll } from "@/types/poll";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import { getRelativeTimeString } from "@/utils/time";
-import { usePathname, useRouter } from "next/navigation";
+import { motion } from 'framer-motion'
+import { usePathname, useRouter } from 'next/navigation'
+import { useState, useRef, useEffect } from 'react'
+import { CheckIcon, UserIcon } from '@/components/icon-components'
+import { pollCardVariants } from '@/lib/constants/animationVariants'
+import { IPoll } from '@/types/poll'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { getRelativeTimeString } from '@/utils/time'
 import {
   AnonymousIconWrapper,
   PublicIconWrapper,
-} from "../icon-components/IconWrapper";
-import { motion } from "framer-motion";
-import { pollCardVariants } from "@/lib/constants/animationVariants";
+} from '../icon-components/IconWrapper'
 
 export default function PollCard({ poll }: { poll: IPoll }) {
-  const router = useRouter();
-  const pathname = usePathname();
+  const router = useRouter()
+  const pathname = usePathname()
   const isPublicProfile =
-    pathname.includes("/user/") || pathname.includes("/userActivities/");
+    pathname.includes('/user/') || pathname.includes('/userActivities/')
 
   const { timeLeft, isEnded } = getRelativeTimeString(
     poll.startDate ?? '',
@@ -132,45 +132,45 @@ export default function PollCard({ poll }: { poll: IPoll }) {
 }
 
 export function LazyPollCard({ poll }: { poll: IPoll }) {
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false);
-  const elementRef = useRef<HTMLDivElement>(null);
+  const [isIntersecting, setIsIntersecting] = useState(false)
+  const [hasLoaded, setHasLoaded] = useState(false)
+  const elementRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasLoaded) {
-          setIsIntersecting(true);
-          setHasLoaded(true);
-          observer.disconnect();
+          setIsIntersecting(true)
+          setHasLoaded(true)
+          observer.disconnect()
         }
       },
       {
         threshold: 0.1,
-        rootMargin: "50px",
-      }
-    );
+        rootMargin: '50px',
+      },
+    )
 
     if (elementRef.current) {
-      observer.observe(elementRef.current);
+      observer.observe(elementRef.current)
     }
 
-    return () => observer.disconnect();
-  }, [hasLoaded]);
+    return () => observer.disconnect()
+  }, [hasLoaded])
 
   return (
     <motion.div
       ref={elementRef}
       variants={pollCardVariants}
       initial="hidden"
-      animate={isIntersecting ? "visible" : "hidden"}
+      animate={isIntersecting ? 'visible' : 'hidden'}
       layout
       whileHover={{
         scale: 1.02,
         transition: { duration: 0.2 },
       }}
       whileTap={{ scale: 0.98 }}
-      style={{ minHeight: hasLoaded ? "auto" : "200px" }}
+      style={{ minHeight: hasLoaded ? 'auto' : '200px' }}
     >
       {isIntersecting ? (
         <PollCard poll={poll} />
@@ -180,5 +180,5 @@ export function LazyPollCard({ poll }: { poll: IPoll }) {
         </div>
       )}
     </motion.div>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import Image from "next/image";
+import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 export default function NoUserActivityView() {
   return (
@@ -21,5 +21,5 @@ export default function NoUserActivityView() {
         No corresponding activities to show for this user
       </h2>
     </motion.div>
-  );
+  )
 }

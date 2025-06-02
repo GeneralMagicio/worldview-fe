@@ -1,17 +1,17 @@
 'use client'
 
-import { useToast } from "@/hooks/useToast";
-import { useUserActivities } from "@/hooks/useUserActivity";
-import { IPollFilters, UserActionDto } from "@/types/poll";
-import { transformActionToPoll } from "@/utils/helpers";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import FilterBar from "../FilterBar";
-import { LazyPollCard } from "../Poll/PollCard";
-import { LoadingPolls } from "../Poll/PollList";
-import { Toaster } from "../Toaster";
-import NoUserActivityView from "./NoUserActivityView";
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useToast } from '@/hooks/useToast'
+import { useUserActivities } from '@/hooks/useUserActivity'
+import { IPollFilters, UserActionDto } from '@/types/poll'
+import { transformActionToPoll } from '@/utils/helpers'
+import FilterBar from '../FilterBar'
+import { LazyPollCard } from '../Poll/PollCard'
+import { LoadingPolls } from '../Poll/PollList'
+import { Toaster } from '../Toaster'
+import NoUserActivityView from './NoUserActivityView'
 
 interface UserActivityListProps {
   filters: IPollFilters
@@ -29,8 +29,8 @@ export default function UserActivityList({
     setSearchTerm(term)
   }
 
-  const { worldId } = useParams();
-  const userWorldId = Array.isArray(worldId) ? worldId[0] : (worldId as string);
+  const { worldId } = useParams()
+  const userWorldId = Array.isArray(worldId) ? worldId[0] : (worldId as string)
 
   const {
     data: userActivitiesData,
@@ -82,7 +82,7 @@ export default function UserActivityList({
     }
 
     if (!userActions || userActions.length === 0) {
-      return <NoUserActivityView />;
+      return <NoUserActivityView />
     }
 
     return (

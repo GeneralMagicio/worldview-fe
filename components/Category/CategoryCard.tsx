@@ -1,7 +1,7 @@
-import React from "react";
-import Image from "next/image";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion'
+import Image from 'next/image'
+import React from 'react'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 interface CategoryCardProps {
   title: string
@@ -18,7 +18,7 @@ function CategoryCard({ title, icon, href }: CategoryCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
     >
       <h3 className="absolute text-white font-sora text-sm font-semibold z-10 px-1 leading-10">
         {title}
@@ -33,7 +33,7 @@ function CategoryCard({ title, icon, href }: CategoryCardProps) {
         />
       </div>
     </motion.a>
-  );
+  )
 }
 
 export default React.memo(CategoryCard, (prev, next) => {
@@ -41,5 +41,5 @@ export default React.memo(CategoryCard, (prev, next) => {
     prev.title === next.title &&
     prev.icon === next.icon &&
     prev.href === next.href
-  );
-});
+  )
+})

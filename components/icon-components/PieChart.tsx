@@ -1,6 +1,6 @@
 import { IconProps } from './types'
 
-export default function PieChart({ size = 24, color = "#3C424B" }: IconProps) {
+export default function PieChart({ size = 24, color = '#3C424B' }: IconProps) {
   return (
     <svg
       width={size}
@@ -24,5 +24,5 @@ export default function PieChart({ size = 24, color = "#3C424B" }: IconProps) {
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

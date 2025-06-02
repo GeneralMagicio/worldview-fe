@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
@@ -9,7 +10,6 @@ import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { transformActionToPoll } from '@/utils/helpers'
 import { LazyPollCard } from '../Poll/PollCard'
 import BlurredCard from '../Verify/BlurredCard'
-import { motion } from 'framer-motion'
 
 interface UserActivitiesResponseDto {
   userActions: UserActionDto[]
@@ -90,7 +90,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
         <NoActivitiesView isMyProfile={!worldId} />
       ) : (
         <div className="space-y-4">
-          {displayActivities.map((action) => (
+          {displayActivities.map(action => (
             <LazyPollCard
               key={action.id}
               poll={transformActionToPoll(action)}
@@ -104,7 +104,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
           className="w-full bg-primary text-white font-medium text-lg py-3 rounded-lg mt-4 active:scale-95 active:transition-transform active:duration-100"
           onClick={() =>
             router.push(
-              `/${worldId ? "user" : "profile"}Activities/${effectiveWorldId}`
+              `/${worldId ? 'user' : 'profile'}Activities/${effectiveWorldId}`,
             )
           }
           onTouchStart={() => sendHapticFeedbackCommand()}
@@ -127,8 +127,8 @@ function NoActivitiesView({ isMyProfile }: { isMyProfile: boolean }) {
       />
       <p className="text-gray-900 font-medium mt-4 text-center">
         {isMyProfile
-          ? "No activities yet. Start exploring and engage!"
-          : "No voting activity from this user yet. Perhaps soon!"}
+          ? 'No activities yet. Start exploring and engage!'
+          : 'No voting activity from this user yet. Perhaps soon!'}
       </p>
     </div>
   )

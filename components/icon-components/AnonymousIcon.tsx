@@ -2,7 +2,7 @@ import { IconProps } from './types'
 
 export default function AnonymousIcon({
   size = 16,
-  color = "#DC8F00",
+  color = '#DC8F00',
 }: IconProps) {
   return (
     <svg
@@ -48,5 +48,5 @@ export default function AnonymousIcon({
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

@@ -1,12 +1,12 @@
 'use client'
 
-import { Suspense } from "react";
-import CategoryCard from "@/components/Category/CategoryCard";
-import { UserIcon } from "@/components/icon-components";
-import RecentPolls from "@/components/Poll/RecentPolls";
-import { FilterParams } from "@/types/poll";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion'
+import { Suspense } from 'react'
+import CategoryCard from '@/components/Category/CategoryCard'
+import { UserIcon } from '@/components/icon-components'
+import RecentPolls from '@/components/Poll/RecentPolls'
+import { FilterParams } from '@/types/poll'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 const categories = [
   {
