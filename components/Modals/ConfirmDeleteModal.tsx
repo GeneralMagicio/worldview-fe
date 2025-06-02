@@ -1,12 +1,12 @@
-import BottomModal from "../ui/BottomModal";
-import { Button } from "../ui/Button";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import BottomModal from '../ui/BottomModal'
+import { Button } from '../ui/Button'
 type ConfirmDeleteModalProps = {
-  modalOpen: boolean;
-  setModalOpen: (open: boolean) => void;
-  onDelete: () => void;
-  isLoading: boolean;
-};
+  modalOpen: boolean
+  setModalOpen: (open: boolean) => void
+  onDelete: () => void
+  isLoading: boolean
+}
 
 export default function ConfirmDeleteModal({
   modalOpen,
@@ -14,7 +14,7 @@ export default function ConfirmDeleteModal({
   onDelete,
   isLoading,
 }: ConfirmDeleteModalProps) {
-  if (!modalOpen) return null;
+  if (!modalOpen) return null
 
   return (
     <BottomModal modalOpen={modalOpen} setModalOpen={setModalOpen}>
@@ -31,19 +31,19 @@ export default function ConfirmDeleteModal({
           onClick={onDelete}
           disabled={isLoading}
         >
-          {isLoading ? "Deleting..." : "Delete"}
+          {isLoading ? 'Deleting...' : 'Delete'}
         </Button>
         <Button
           variant="ghost"
           className="text-sm font-semibold font-sora text-gray-500"
           onClick={() => {
-            sendHapticFeedbackCommand();
-            setModalOpen(false);
+            sendHapticFeedbackCommand()
+            setModalOpen(false)
           }}
         >
           Cancel
         </Button>
       </div>
     </BottomModal>
-  );
+  )
 }

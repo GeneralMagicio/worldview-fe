@@ -1,6 +1,6 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
-export default function CheckIcon({ size = 14, color = "white" }: IconProps) {
+export default function CheckIcon({ size = 14, color = 'white' }: IconProps) {
   return (
     <svg
       width={size}
@@ -17,5 +17,5 @@ export default function CheckIcon({ size = 14, color = "white" }: IconProps) {
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

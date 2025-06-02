@@ -1,4 +1,4 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
 export default function PieChart({ size = 24, color = "#3C424B" }: IconProps) {
   return (

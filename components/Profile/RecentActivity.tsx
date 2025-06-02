@@ -1,37 +1,37 @@
-"use client";
+'use client'
 
-import { useAuth } from "@/context/AuthContext";
-import { useUserActivities } from "@/hooks/useUserActivity";
-import { UserActionDto } from "@/types/poll";
-import { transformActionToPoll } from "@/utils/helpers";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { LazyPollCard } from "../Poll/PollCard";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import BlurredCard from "../Verify/BlurredCard";
-import { motion } from "framer-motion";
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
+import { useUserActivities } from '@/hooks/useUserActivity'
+import { UserActionDto } from '@/types/poll'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { transformActionToPoll } from '@/utils/helpers'
+import { LazyPollCard } from '../Poll/PollCard'
+import BlurredCard from '../Verify/BlurredCard'
+import { motion } from 'framer-motion'
 
 interface UserActivitiesResponseDto {
-  userActions: UserActionDto[];
+  userActions: UserActionDto[]
 }
 
 interface RecentActivityProps {
-  worldId?: string;
+  worldId?: string
 }
 
-const POLLS_PER_PAGE = 5;
+const POLLS_PER_PAGE = 5
 
 export default function RecentActivity({ worldId }: RecentActivityProps) {
-  const { worldID: authWorldId } = useAuth();
-  const effectiveWorldId = worldId || authWorldId;
-  const router = useRouter();
+  const { worldID: authWorldId } = useAuth()
+  const effectiveWorldId = worldId || authWorldId
+  const router = useRouter()
 
   const { data, isLoading, error } = useUserActivities({
-    worldID: effectiveWorldId || "",
-  });
+    worldID: effectiveWorldId || '',
+  })
 
-  const activities = data?.userActions || [];
-  const displayActivities = activities.slice(0, POLLS_PER_PAGE);
+  const activities = data?.userActions || []
+  const displayActivities = activities.slice(0, POLLS_PER_PAGE)
 
   if (isLoading) {
     return (
@@ -50,7 +50,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
           ))}
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -73,7 +73,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
           <p className="text-red-500">Failed to load activities</p>
         </motion.div>
       </div>
-    );
+    )
   }
 
   return (
@@ -113,7 +113,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
         </button>
       )}
     </div>
-  );
+  )
 }
 
 function NoActivitiesView({ isMyProfile }: { isMyProfile: boolean }) {
@@ -131,5 +131,5 @@ function NoActivitiesView({ isMyProfile }: { isMyProfile: boolean }) {
           : "No voting activity from this user yet. Perhaps soon!"}
       </p>
     </div>
-  );
+  )
 }

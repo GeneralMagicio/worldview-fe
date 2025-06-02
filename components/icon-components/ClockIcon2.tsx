@@ -1,8 +1,8 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
 export default function ClockIcon2({
   size = 24,
-  color = "#191C20",
+  color = '#191C20',
 }: IconProps) {
   return (
     <svg
@@ -25,5 +25,5 @@ export default function ClockIcon2({
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

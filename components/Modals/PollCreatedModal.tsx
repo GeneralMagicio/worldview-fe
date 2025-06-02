@@ -1,16 +1,16 @@
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { ShareIcon } from "../icon-components";
-import { useShare } from "@/hooks/useShare";
-import { Modal } from "../ui/Modal";
-import { Button } from "../ui/Button";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import CustomShareModal from "../Modals/CustomShareModal";
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useShare } from '@/hooks/useShare'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { ShareIcon } from '../icon-components'
+import CustomShareModal from '../Modals/CustomShareModal'
+import { Button } from '../ui/Button'
+import { Modal } from '../ui/Modal'
 
 interface IModalProps {
-  open: boolean;
-  pollTitle: string;
-  pollId: number | undefined;
+  open: boolean
+  pollTitle: string
+  pollId: number | undefined
 }
 
 export default function PollCreatedModal({
@@ -18,8 +18,8 @@ export default function PollCreatedModal({
   pollTitle,
   pollId,
 }: IModalProps) {
-  const router = useRouter();
-  const { handleSharePoll, isOpen, setIsOpen, shareUrl } = useShare();
+  const router = useRouter()
+  const { handleSharePoll, isOpen, setIsOpen, shareUrl } = useShare()
 
   return (
     <>
@@ -47,8 +47,8 @@ export default function PollCreatedModal({
             variant="primary"
             className="w-full flex items-center justify-center gap-2 font-medium active:scale-95 active:transition-transform active:duration-100"
             onClick={() => {
-              sendHapticFeedbackCommand();
-              handleSharePoll(pollTitle, pollId!);
+              sendHapticFeedbackCommand()
+              handleSharePoll(pollTitle, pollId!)
             }}
           >
             <ShareIcon size={24} color="white" />
@@ -59,7 +59,7 @@ export default function PollCreatedModal({
             variant="outline"
             className="w-full text-gray-500 font-medium mt-4 py-3 active:scale-95 active:transition-transform active:duration-100"
             onClick={() => {
-              router.push(`/poll/${pollId}`);
+              router.push(`/poll/${pollId}`)
             }}
             onTouchStart={() => sendHapticFeedbackCommand()}
           >
@@ -73,5 +73,5 @@ export default function PollCreatedModal({
         setIsOpen={setIsOpen}
       />
     </>
-  );
+  )
 }

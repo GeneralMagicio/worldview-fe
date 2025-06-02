@@ -1,21 +1,17 @@
-import { DAYS_OF_WEEK } from "@/lib/constants";
-import {
-  DateObj,
-  DateRange,
-  DateTimePickerProps,
-} from "@/types/dateTimePicker";
-import { formatDate } from "@/utils/time";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
+import { DAYS_OF_WEEK } from '@/lib/constants'
+import { DateObj, DateRange, DateTimePickerProps } from '@/types/dateTimePicker'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { formatDate } from '@/utils/time'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ClockIcon,
-} from "../icon-components";
-import { Button } from "../ui/Button";
-import { Modal } from "../ui/Modal";
-import { CalendarDay } from "./CalendarDay";
-import { TimePicker } from "./TimePicker";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+} from '../icon-components'
+import { Button } from '../ui/Button'
+import { Modal } from '../ui/Modal'
+import { CalendarDay } from './CalendarDay'
+import { TimePicker } from './TimePicker'
 
 export default function DateTimePicker({
   open,
@@ -23,11 +19,11 @@ export default function DateTimePicker({
   onApply,
   initialStartDate = null,
   initialEndDate = null,
-  initialStartTime = "13:00",
-  initialEndTime = "18:00",
+  initialStartTime = '13:00',
+  initialEndTime = '18:00',
 }: DateTimePickerProps) {
-  const today = new Date();
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const today = new Date()
+  const [currentDate, setCurrentDate] = useState(new Date())
 
   // Selected date range
   const [dateRange, setDateRange] = useState<DateRange>({
@@ -35,7 +31,7 @@ export default function DateTimePicker({
     endDate: initialEndDate,
     startTime: initialStartTime,
     endTime: initialEndTime,
-  });
+  })
 
   // Update dateRange when props change
   useEffect(() => {
@@ -44,164 +40,164 @@ export default function DateTimePicker({
       endDate: initialEndDate,
       startTime: initialStartTime,
       endTime: initialEndTime,
-    });
-    
+    })
+
     // If an end date is provided, ensure the calendar navigates to show that month
     if (initialEndDate) {
-      setCurrentDate(new Date(initialEndDate));
+      setCurrentDate(new Date(initialEndDate))
     }
-  }, [initialStartDate, initialEndDate, initialStartTime, initialEndTime, open]);
+  }, [initialStartDate, initialEndDate, initialStartTime, initialEndTime, open])
 
   // Time picker state
-  const [timePickerOpen, setTimePickerOpen] = useState<"end" | null>(null);
+  const [timePickerOpen, setTimePickerOpen] = useState<'end' | null>(null)
 
   // Navigate to previous month
   const previousMonth = () => {
-    sendHapticFeedbackCommand();
-    setCurrentDate((prev) => {
-      const newDate = new Date(prev);
-      newDate.setMonth(newDate.getMonth() - 1);
-      return newDate;
-    });
-  };
+    sendHapticFeedbackCommand()
+    setCurrentDate(prev => {
+      const newDate = new Date(prev)
+      newDate.setMonth(newDate.getMonth() - 1)
+      return newDate
+    })
+  }
 
   // Navigate to next month
   const nextMonth = () => {
-    sendHapticFeedbackCommand();
-    setCurrentDate((prev) => {
-      const newDate = new Date(prev);
-      newDate.setMonth(newDate.getMonth() + 1);
-      return newDate;
-    });
-  };
+    sendHapticFeedbackCommand()
+    setCurrentDate(prev => {
+      const newDate = new Date(prev)
+      newDate.setMonth(newDate.getMonth() + 1)
+      return newDate
+    })
+  }
 
   // Handle date click
   const handleDateClick = (day: number, month: number, year: number) => {
-    sendHapticFeedbackCommand();
-    const clickedDate = new Date(year, month, day);
+    sendHapticFeedbackCommand()
+    const clickedDate = new Date(year, month, day)
 
     if (clickedDate <= today) {
-      return;
+      return
     }
 
     setDateRange({
       ...dateRange,
       endDate: clickedDate,
-    });
-  };
+    })
+  }
 
   // Handle time selection
   const handleTimeChange = (hours: number, minutes: number) => {
-    sendHapticFeedbackCommand();
-    const formattedHours = hours.toString().padStart(2, "0");
-    const formattedMinutes = minutes.toString().padStart(2, "0");
-    const timeString = `${formattedHours}:${formattedMinutes}`;
+    sendHapticFeedbackCommand()
+    const formattedHours = hours.toString().padStart(2, '0')
+    const formattedMinutes = minutes.toString().padStart(2, '0')
+    const timeString = `${formattedHours}:${formattedMinutes}`
 
-    setDateRange((prev) => ({
+    setDateRange(prev => ({
       ...prev,
       endTime: timeString,
-    }));
-  };
+    }))
+  }
 
   // Handle apply button click
   const handleApply = () => {
-    sendHapticFeedbackCommand();
-    onApply(dateRange);
-    onOpenChange(false);
-  };
+    sendHapticFeedbackCommand()
+    onApply(dateRange)
+    onOpenChange(false)
+  }
 
   // Get calendar data for current month view
   const getCalendarData = (): DateObj[][] => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+    const year = currentDate.getFullYear()
+    const month = currentDate.getMonth()
 
     // Get first day of month
-    const firstDayOfMonth = new Date(year, month, 1);
+    const firstDayOfMonth = new Date(year, month, 1)
 
     // Get day of week for first day (0 = Sunday, so we adjust for Monday start)
-    let firstDayOfWeek = firstDayOfMonth.getDay() - 1;
-    if (firstDayOfWeek < 0) firstDayOfWeek = 6; // Sunday becomes last day
+    let firstDayOfWeek = firstDayOfMonth.getDay() - 1
+    if (firstDayOfWeek < 0) firstDayOfWeek = 6 // Sunday becomes last day
 
     // Get last day of month
-    const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+    const lastDayOfMonth = new Date(year, month + 1, 0).getDate()
 
     // Get last day of previous month
-    const lastDayOfPrevMonth = new Date(year, month, 0).getDate();
+    const lastDayOfPrevMonth = new Date(year, month, 0).getDate()
 
-    const calendarDays: DateObj[] = [];
+    const calendarDays: DateObj[] = []
 
     // Add days from previous month
     for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-      const day = lastDayOfPrevMonth - i;
-      const prevMonth = month - 1 < 0 ? 11 : month - 1;
-      const prevYear = prevMonth === 11 ? year - 1 : year;
-      calendarDays.push({ day, month: prevMonth, year: prevYear });
+      const day = lastDayOfPrevMonth - i
+      const prevMonth = month - 1 < 0 ? 11 : month - 1
+      const prevYear = prevMonth === 11 ? year - 1 : year
+      calendarDays.push({ day, month: prevMonth, year: prevYear })
     }
 
     // Add days from current month
     for (let i = 1; i <= lastDayOfMonth; i++) {
-      calendarDays.push({ day: i, month, year });
+      calendarDays.push({ day: i, month, year })
     }
 
     // Add days from next month
-    const remainingDays = 42 - calendarDays.length; // 6 rows of 7 days
+    const remainingDays = 42 - calendarDays.length // 6 rows of 7 days
     for (let i = 1; i <= remainingDays; i++) {
-      const nextMonth = month + 1 > 11 ? 0 : month + 1;
-      const nextYear = nextMonth === 0 ? year + 1 : year;
-      calendarDays.push({ day: i, month: nextMonth, year: nextYear });
+      const nextMonth = month + 1 > 11 ? 0 : month + 1
+      const nextYear = nextMonth === 0 ? year + 1 : year
+      calendarDays.push({ day: i, month: nextMonth, year: nextYear })
     }
 
     // Split into weeks
-    const weeks: DateObj[][] = [];
+    const weeks: DateObj[][] = []
     for (let i = 0; i < calendarDays.length; i += 7) {
-      weeks.push(calendarDays.slice(i, i + 7));
+      weeks.push(calendarDays.slice(i, i + 7))
     }
 
-    return weeks;
-  };
+    return weeks
+  }
 
   // Check if a date is in the selected range
   const isInRange = (day: number, month: number, year: number): boolean => {
-    if (!dateRange.startDate || !dateRange.endDate) return false;
+    if (!dateRange.startDate || !dateRange.endDate) return false
 
-    const date = new Date(year, month, day);
-    return date >= dateRange.startDate && date <= dateRange.endDate;
-  };
+    const date = new Date(year, month, day)
+    return date >= dateRange.startDate && date <= dateRange.endDate
+  }
 
   // Check if a date is the start or end of the range
   const isRangeEdge = (
     day: number,
     month: number,
     year: number,
-    edge: "start" | "end"
+    edge: 'start' | 'end',
   ): boolean => {
-    if (!dateRange.startDate || (edge === "end" && !dateRange.endDate))
-      return false;
+    if (!dateRange.startDate || (edge === 'end' && !dateRange.endDate))
+      return false
 
-    const date = new Date(year, month, day);
+    const date = new Date(year, month, day)
     const compareDate =
-      edge === "start" ? dateRange.startDate : dateRange.endDate;
+      edge === 'start' ? dateRange.startDate : dateRange.endDate
 
-    if (!compareDate) return false;
-    return date.getTime() === compareDate.getTime();
-  };
+    if (!compareDate) return false
+    return date.getTime() === compareDate.getTime()
+  }
 
   // Check if a date should be disabled (current date or past dates)
   const isDateDisabled = (
     day: number,
     month: number,
-    year: number
+    year: number,
   ): boolean => {
-    const date = new Date(year, month, day);
-    date.setHours(0, 0, 0, 0);
-    return date <= today;
-  };
+    const date = new Date(year, month, day)
+    date.setHours(0, 0, 0, 0)
+    return date <= today
+  }
 
   // Get current month and year for display
-  const currentMonthName = new Intl.DateTimeFormat("en-US", {
-    month: "long",
-  }).format(currentDate);
-  const currentYear = currentDate.getFullYear();
+  const currentMonthName = new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+  }).format(currentDate)
+  const currentYear = currentDate.getFullYear()
 
   return (
     <Modal
@@ -253,7 +249,7 @@ export default function DateTimePicker({
               <div className="text-gray-900 text-sm">
                 {dateRange.endDate
                   ? formatDate(dateRange.endDate)
-                  : "Select end date"}
+                  : 'Select end date'}
               </div>
             </button>
           </div>
@@ -272,10 +268,10 @@ export default function DateTimePicker({
 
           <TimePicker
             time={dateRange.endTime}
-            isOpen={timePickerOpen === "end"}
+            isOpen={timePickerOpen === 'end'}
             onTimeChange={(hours, minutes) => handleTimeChange(hours, minutes)}
             onToggle={() =>
-              setTimePickerOpen((prev) => (prev === "end" ? null : "end"))
+              setTimePickerOpen(prev => (prev === 'end' ? null : 'end'))
             }
           />
         </div>
@@ -305,26 +301,26 @@ export default function DateTimePicker({
                   isInSelectedRange={isInRange(
                     dateObj.day,
                     dateObj.month,
-                    dateObj.year
+                    dateObj.year,
                   )}
                   isRangeStart={isRangeEdge(
                     dateObj.day,
                     dateObj.month,
                     dateObj.year,
-                    "start"
+                    'start',
                   )}
                   isRangeEnd={isRangeEdge(
                     dateObj.day,
                     dateObj.month,
                     dateObj.year,
-                    "end"
+                    'end',
                   )}
                   isFirstInWeek={dayIndex === 0}
                   isLastInWeek={dayIndex === 6}
                   isDisabled={isDateDisabled(
                     dateObj.day,
                     dateObj.month,
-                    dateObj.year
+                    dateObj.year,
                   )}
                   onClick={handleDateClick}
                 />
@@ -341,8 +337,8 @@ export default function DateTimePicker({
           variant="outline"
           className="w-5/12 active:scale-95 active:transition-transform active:duration-100"
           onClick={() => {
-            sendHapticFeedbackCommand();
-            onOpenChange(false);
+            sendHapticFeedbackCommand()
+            onOpenChange(false)
           }}
         >
           Cancel
@@ -357,5 +353,5 @@ export default function DateTimePicker({
         </Button>
       </div>
     </Modal>
-  );
+  )
 }

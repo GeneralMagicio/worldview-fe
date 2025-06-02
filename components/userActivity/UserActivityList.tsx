@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { useToast } from "@/hooks/useToast";
 import { useUserActivities } from "@/hooks/useUserActivity";
@@ -14,20 +14,20 @@ import NoUserActivityView from "./NoUserActivityView";
 import { motion } from "framer-motion";
 
 interface UserActivityListProps {
-  filters: IPollFilters;
-  setFiltersOpen: (open: boolean) => void;
+  filters: IPollFilters
+  setFiltersOpen: (open: boolean) => void
 }
 
 export default function UserActivityList({
   filters,
   setFiltersOpen,
 }: UserActivityListProps) {
-  const { toast } = useToast();
-  const [searchTerm, setSearchTerm] = useState("");
+  const { toast } = useToast()
+  const [searchTerm, setSearchTerm] = useState('')
 
   const handleSearch = (term: string) => {
-    setSearchTerm(term);
-  };
+    setSearchTerm(term)
+  }
 
   const { worldId } = useParams();
   const userWorldId = Array.isArray(worldId) ? worldId[0] : (worldId as string);
@@ -43,20 +43,20 @@ export default function UserActivityList({
     isCreated: filters.pollsCreated,
     isParticipated: filters.pollsVoted,
     search: searchTerm || undefined,
-  });
+  })
 
-  const userActions = userActivitiesData?.userActions || [];
+  const userActions = userActivitiesData?.userActions || []
 
   const showErrorToast = () => {
     toast({
-      description: "Error loading user activities. Please try again!",
+      description: 'Error loading user activities. Please try again!',
       duration: 5 * 60 * 1000,
-    });
-  };
+    })
+  }
 
   useEffect(() => {
-    if (error) showErrorToast();
-  }, [error]);
+    if (error) showErrorToast()
+  }, [error])
 
   return (
     <section aria-label="Poll list" className="mb-6">
@@ -74,11 +74,11 @@ export default function UserActivityList({
       {renderContent()}
       <Toaster />
     </section>
-  );
+  )
 
   function renderContent() {
     if (isLoading || error) {
-      return <LoadingPolls />;
+      return <LoadingPolls />
     }
 
     if (!userActions || userActions.length === 0) {
@@ -94,6 +94,6 @@ export default function UserActivityList({
           />
         ))}
       </div>
-    );
+    )
   }
 }

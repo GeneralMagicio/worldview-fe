@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { Suspense } from "react";
 import CategoryCard from "@/components/Category/CategoryCard";
@@ -11,25 +11,25 @@ import { motion } from "framer-motion";
 const categories = [
   {
     id: FilterParams.All,
-    title: "Explore All",
-    icon: "/categories/explore-all.svg",
+    title: 'Explore All',
+    icon: '/categories/explore-all.svg',
   },
   {
     id: FilterParams.Trending,
-    title: "Trending Polls",
-    icon: "/categories/trending-polls.svg",
+    title: 'Trending Polls',
+    icon: '/categories/trending-polls.svg',
   },
   {
     id: FilterParams.Recent,
-    title: "Most Recent",
-    icon: "/categories/most-recent.svg",
+    title: 'Most Recent',
+    icon: '/categories/most-recent.svg',
   },
   {
     id: FilterParams.Voted,
-    title: "My Votes",
-    icon: "/categories/my-votes.svg",
+    title: 'My Votes',
+    icon: '/categories/my-votes.svg',
   },
-];
+]
 
 export default function MainView() {
   return (
@@ -59,7 +59,7 @@ export default function MainView() {
       </motion.h1>
 
       <div className="grid grid-cols-2 gap-4 mb-8">
-        {categories.map((category) => (
+        {categories.map(category => (
           <CategoryCard
             key={category.id}
             title={category.title}
@@ -73,5 +73,5 @@ export default function MainView() {
         <RecentPolls />
       </Suspense>
     </main>
-  );
+  )
 }

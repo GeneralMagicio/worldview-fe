@@ -1,19 +1,19 @@
-import { useGetPolls } from "@/hooks/usePoll";
-import { LazyPollCard } from "./PollCard";
-import BlurredCard from "../Verify/BlurredCard";
-import NoPollsView from "./NoPollsView";
-import Link from "next/link";
-import { PlusIcon } from "../icon-components";
-import { useState, useEffect } from "react";
-import { IPoll } from "@/types/poll";
-import { Toaster } from "../Toaster";
-import { useToast } from "@/hooks/useToast";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { useGetPolls } from '@/hooks/usePoll'
+import { useToast } from '@/hooks/useToast'
+import { FilterParams, IPoll, PollSortBy } from '@/types/poll'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { PlusIcon } from '../icon-components'
+import { Toaster } from '../Toaster'
+import BlurredCard from '../Verify/BlurredCard'
+import NoPollsView from './NoPollsView'
+import { LazyPollCard } from './PollCard'
 
 export default function RecentPolls() {
-  const { toast } = useToast();
+  const { toast } = useToast()
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   const {
     data: pollsData,
@@ -22,36 +22,39 @@ export default function RecentPolls() {
     refetch,
   } = useGetPolls({
     isActive: true,
-    sortBy: "endDate",
-  });
+    sortBy: PollSortBy.END_DATE,
+  })
 
-  const polls = pollsData?.polls || [];
+  const polls = pollsData?.polls || []
 
   // Auto-refresh polls every 5 minutes
   useEffect(() => {
-    const refreshInterval = setInterval(() => {
-      handleRefresh();
-    }, 5 * 60 * 1000);
+    const refreshInterval = setInterval(
+      () => {
+        handleRefresh()
+      },
+      5 * 60 * 1000,
+    )
 
-    return () => clearInterval(refreshInterval);
-  }, []);
+    return () => clearInterval(refreshInterval)
+  }, [])
 
   const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await refetch();
-    setIsRefreshing(false);
-  };
+    setIsRefreshing(true)
+    await refetch()
+    setIsRefreshing(false)
+  }
 
   const showErrorToast = () => {
     toast({
-      description: "Error loading polls. Please try again!",
+      description: 'Error loading polls. Please try again!',
       duration: 5 * 60 * 1000,
-    });
-  };
+    })
+  }
 
   useEffect(() => {
-    if (error) showErrorToast();
-  }, [error]);
+    if (error) showErrorToast()
+  }, [error])
 
   return (
     <section className="mb-6" aria-labelledby="recent-polls-heading">
@@ -70,12 +73,12 @@ export default function RecentPolls() {
 
       <Toaster />
     </section>
-  );
+  )
 
   function renderContent() {
-    if (isLoading || error) return <LoadingPolls />;
+    if (isLoading || error) return <LoadingPolls />
 
-    if (!polls || polls.length === 0) return <NoPollsView />;
+    if (!polls || polls.length === 0) return <NoPollsView />
 
     return (
       <>
@@ -88,7 +91,7 @@ export default function RecentPolls() {
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
           <Link
             className="py-3 bg-gray-300 text-primary font-medium rounded-lg flex items-center justify-center active:scale-95 active:bg-gray-300/90 active:shadow-inner transition-none active:transition-transform active:duration-100"
-            href="/polls"
+            href={`/polls?filter=${FilterParams.All}`}
             onClick={() => sendHapticFeedbackCommand()}
           >
             Explore all
@@ -104,7 +107,7 @@ export default function RecentPolls() {
           </Link>
         </div>
       </>
-    );
+    )
   }
 }
 
@@ -115,5 +118,5 @@ const LoadingPolls = () => {
         <BlurredCard key={index} />
       ))}
     </div>
-  );
-};
+  )
+}

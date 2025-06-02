@@ -1,9 +1,9 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
 export default function CalendarIcon({
   height = 21,
   width = 20,
-  color = "#191C20",
+  color = '#191C20',
 }: IconProps) {
   return (
     <svg
@@ -49,5 +49,5 @@ export default function CalendarIcon({
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }
