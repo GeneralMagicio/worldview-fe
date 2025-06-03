@@ -1,4 +1,4 @@
-import { CheckIcon } from "../icon-components";
+import { CheckIcon } from '../icon-components'
 
 export default function CustomCheckbox({
   id,
@@ -6,17 +6,17 @@ export default function CustomCheckbox({
   onChange,
   label,
 }: {
-  id: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-  label: string;
+  id: string
+  checked: boolean
+  onChange: (checked: boolean) => void
+  label: string
 }) {
   return (
     <div className="flex items-center space-x-3">
       <div
         onClick={() => onChange(!checked)}
         className={`h-6 w-6 rounded flex items-center justify-center cursor-pointer ${
-          checked ? "bg-primary" : "border border-gray-300"
+          checked ? 'bg-primary' : 'border border-gray-300'
         }`}
       >
         {checked && <CheckIcon />}
@@ -29,5 +29,5 @@ export default function CustomCheckbox({
         {label}
       </label>
     </div>
-  );
+  )
 }

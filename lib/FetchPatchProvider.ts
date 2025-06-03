@@ -1,12 +1,12 @@
-"use client";
+'use client'
 
-import { useEffect } from "react";
-import { patchGlobalFetch } from "@/lib/patchGlobalFetch";
+import { useEffect } from 'react'
+import { patchGlobalFetch } from '@/lib/patchGlobalFetch'
 
 export const FetchPatchProvider = () => {
   useEffect(() => {
-    patchGlobalFetch();
-  }, []);
+    patchGlobalFetch()
+  }, [])
 
-  return null;
-};
+  return null
+}

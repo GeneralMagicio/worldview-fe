@@ -1,9 +1,9 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
 export default function SlidingIcon({
   width = 5,
   height = 16,
-  color = "#9BA3AE",
+  color = '#9BA3AE',
 }: IconProps) {
   return (
     <svg
@@ -16,5 +16,5 @@ export default function SlidingIcon({
       <line x1="0.5" y1="2.34168e-08" x2="0.499999" y2="16" stroke={color} />
       <line x1="4.5" y1="2.34168e-08" x2="4.5" y2="16" stroke={color} />
     </svg>
-  );
+  )
 }

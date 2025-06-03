@@ -1,9 +1,6 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
-export default function TrashIcon({
-  size = 18,
-  color = "#DC0025",
-}: IconProps) {
+export default function TrashIcon({ size = 18, color = '#DC0025' }: IconProps) {
   return (
     <svg
       width={size}
@@ -37,5 +34,5 @@ export default function TrashIcon({
         strokeLinecap="round"
       />
     </svg>
-  );
+  )
 }

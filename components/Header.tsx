@@ -1,33 +1,33 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, MoreVertical, PlusIcon } from "./icon-components";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { ArrowLeft, MoreVertical, PlusIcon } from './icon-components'
 
 interface IHeaderProps {
-  backUrl?: string;
-  title?: string;
-  isCreatePoll?: boolean;
-  onBackClick?: () => void;
+  backUrl?: string
+  title?: string
+  isCreatePoll?: boolean
+  onBackClick?: () => void
 }
 
 export default function Header({
-  backUrl = "/",
-  title = "All Polls",
+  backUrl = '/',
+  title = 'All Polls',
   isCreatePoll = false,
   onBackClick,
 }: IHeaderProps) {
-  const router = useRouter();
+  const router = useRouter()
 
   const goBack = () => {
-    sendHapticFeedbackCommand();
+    sendHapticFeedbackCommand()
     if (window.history.length > 1) {
-      router.back();
+      router.back()
     } else {
-      router.push(backUrl);
+      router.push(backUrl)
     }
-  };
+  }
 
   return (
     <div className="flex items-center justify-between mt-2 mb-8">
@@ -61,5 +61,5 @@ export default function Header({
         </Link>
       )}
     </div>
-  );
+  )
 }

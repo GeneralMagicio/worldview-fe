@@ -1,8 +1,8 @@
-import { IconProps } from "./types";
+import { IconProps } from './types'
 
 export default function XOutlinedIcon({
   size = 20,
-  color = "#FF5A76",
+  color = '#FF5A76',
 }: IconProps) {
   return (
     <svg
@@ -23,5 +23,5 @@ export default function XOutlinedIcon({
         stroke={color}
       />
     </svg>
-  );
+  )
 }

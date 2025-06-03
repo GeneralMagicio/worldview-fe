@@ -1,7 +1,7 @@
-import Image from "next/image";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import Image from 'next/image'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 interface IModalProps {
-  setShowModal: (showModal: boolean) => void;
+  setShowModal: (showModal: boolean) => void
 }
 
 export default function QVInfoModal({ setShowModal }: IModalProps) {
@@ -38,8 +38,8 @@ export default function QVInfoModal({ setShowModal }: IModalProps) {
           <button
             className="w-full bg-gray-900 text-white py-4 rounded-xl font-semibold font-sora"
             onClick={() => {
-              sendHapticFeedbackCommand();
-              setShowModal(false);
+              sendHapticFeedbackCommand()
+              setShowModal(false)
             }}
           >
             Ok
@@ -47,5 +47,5 @@ export default function QVInfoModal({ setShowModal }: IModalProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

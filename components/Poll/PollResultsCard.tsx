@@ -1,108 +1,126 @@
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import {
   CheckIcon,
   InfoIcon,
   ShareIcon,
   TrashIcon,
-  UserIcon
-} from "@/components/icon-components";
-import QVInfoModal from "@/components/Modals/QVInfoModal";
-import { useAuth } from "@/context/AuthContext";
-import { useDeletePoll, useGetPollDetails } from "@/hooks/usePoll";
-import { useShare } from "@/hooks/useShare";
-import { useGetUserVotes } from "@/hooks/useUser";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
-import { formatFloat } from "@/utils/number";
-import { getRelativeTimeString } from "@/utils/time";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { AnonymousIconWrapper, PublicIconWrapper } from "../icon-components/IconWrapper";
-import PieChart from "../icon-components/PieChart";
-import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
-import CustomShareModal from "../Modals/CustomShareModal";
-import VotingTypesModal from "../Modals/VotingTypesModal";
-import { Button } from "../ui/Button";
+  UserIcon,
+} from '@/components/icon-components'
+import QVInfoModal from '@/components/Modals/QVInfoModal'
+import { useAuth } from '@/context/AuthContext'
+import { useDeletePoll, useGetPollDetails } from '@/hooks/usePoll'
+import { useShare } from '@/hooks/useShare'
+import { useGetUserVotes } from '@/hooks/useUser'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import { formatFloat } from '@/utils/number'
+import { getRelativeTimeString } from '@/utils/time'
+import {
+  AnonymousIconWrapper,
+  PublicIconWrapper,
+} from '../icon-components/IconWrapper'
+import PieChart from '../icon-components/PieChart'
+import ConfirmDeleteModal from '../Modals/ConfirmDeleteModal'
+import CustomShareModal from '../Modals/CustomShareModal'
+import VotingTypesModal from '../Modals/VotingTypesModal'
+import { Button } from '../ui/Button'
 
 type VoteState = {
-  option: string;
-  percentage: number;
-  count: number;
-};
+  option: string
+  percentage: number
+  count: number
+}
 
 export default function PollResultsCard({ pollId }: { pollId: number }) {
-  const router = useRouter();
-  const { worldID } = useAuth();
-  const { handleShareResults, isOpen, setIsOpen, shareUrl } = useShare();
+  const router = useRouter()
+  const { worldID } = useAuth()
+  const { handleShareResults, isOpen, setIsOpen, shareUrl } = useShare()
 
-  const { data: pollData, isLoading } = useGetPollDetails(pollId);
-  const { data: userVotes } = useGetUserVotes(pollId);
-  const { mutate: deletePoll, isPending: deletePollPending } = useDeletePoll();
+  const { data: pollData, isLoading } = useGetPollDetails(pollId)
+  const { data: userVotes } = useGetUserVotes(pollId)
+  const { mutate: deletePoll, isPending: deletePollPending } = useDeletePoll()
 
-  const pollDetails = pollData?.poll;
-  const isActive = pollData?.isActive;
-  const pollResults = pollData?.optionsTotalVotes;
-  const pollOptions = pollDetails?.options;
-  const totalVotes = pollData?.totalVotes;
-  const didVote = userVotes?.voteID;
-  const isAuthor = worldID === pollDetails?.author?.worldID;
+  const pollDetails = pollData?.poll
+  const isActive = pollData?.isActive
+  const pollResults = pollData?.optionsTotalVotes
+  const pollOptions = pollDetails?.options
+  const totalVotes = pollData?.totalVotes
+  const didVote = userVotes?.voteID
+  const isAuthor = worldID === pollDetails?.author?.worldID
 
-  const { timeLeft } = getRelativeTimeString(
-    pollDetails?.startDate ?? "",
-    pollDetails?.endDate ?? ""
-  );
+  const { timeLeft, isNotStarted } = getRelativeTimeString(
+    pollDetails?.startDate ?? '',
+    pollDetails?.endDate ?? '',
+  )
 
-  const [votes, setVotes] = useState<VoteState[]>();
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isVotingTypesModalOpen, setIsVotingTypesModalOpen] = useState(false);
+  const [votes, setVotes] = useState<VoteState[]>()
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [isVotingTypesModalOpen, setIsVotingTypesModalOpen] = useState(false)
 
-  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
-  const [showQVInfoModal, setShowQVInfoModal] = useState(false);
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false)
+  const [showQVInfoModal, setShowQVInfoModal] = useState(false)
+
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    if (!pollResults) return;
+    if (!pollResults) return
 
-    const mappedVotes = pollOptions?.map((option) => ({
+    const mappedVotes = pollOptions?.map(option => ({
       option: option,
       percentage: totalVotes ? (pollResults[option] / totalVotes) * 100 : 0,
       count: pollResults[option] ?? 0,
-    }));
+    }))
 
-    setVotes(mappedVotes);
-  }, [pollResults]);
+    setVotes(mappedVotes)
+  }, [pollResults])
 
   const handleVote = () => {
-    sendHapticFeedbackCommand();
-    if (!isActive) return;
-    router.push(`/poll/${pollId}`);
-  };
+    sendHapticFeedbackCommand()
+    if (!isActive || isNotStarted) return
+    router.push(`/poll/${pollId}`)
+  }
 
   const handleDeletePoll = () => {
-    sendHapticFeedbackCommand();
+    sendHapticFeedbackCommand()
     deletePoll(
       { id: pollId },
       {
         onSuccess: () => {
-          router.push("/");
-          setShowConfirmDeleteModal(false);
+          router.push('/')
+          setShowConfirmDeleteModal(false)
         },
-        onError: (error) => {
-          setShowConfirmDeleteModal(false);
+        onError: error => {
+          setShowConfirmDeleteModal(false)
         },
-      }
-    );
-  };
+      },
+    )
+  }
 
   const navigateToUserProfile = () => {
-    sendHapticFeedbackCommand();
+    sendHapticFeedbackCommand()
     if (pollDetails?.author?.worldID) {
-      router.push(`/user/${pollDetails.author.worldID}`);
+      router.push(`/user/${pollDetails.author.worldID}`)
     }
-  };
+  }
 
-  if (!pollId) return null;
+  useEffect(() => {
+    const timer = requestAnimationFrame(() => {
+      setIsVisible(true)
+    })
+
+    return () => cancelAnimationFrame(timer)
+  }, [])
+
+  if (!pollId) return null
 
   return (
-    <div className="bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029]">
+    <div
+      className={`bg-white rounded-3xl border border-secondary overflow-hidden mb-4 p-4 shadow-[0px_0px_16px_0px_#00000029] transition-all duration-500 ease-out ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}
+    >
+      {' '}
       <div className="flex justify-between items-center mb-3">
         <div
           className="flex items-center gap-2 cursor-pointer hover:opacity-80 active:scale-95 active:transition-transform active:duration-100"
@@ -121,7 +139,7 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
             <span className="text-sm text-gray-900">
               {pollDetails?.author?.name
                 ? `@${pollDetails?.author?.name}`
-                : "Anon"}
+                : 'Anon'}
             </span>
           )}
         </div>
@@ -132,10 +150,18 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
             <>
               <div
                 className={`w-2 h-2 rounded-full ${
-                  isActive ? "bg-success-900" : "bg-gray-400"
+                  isNotStarted
+                    ? 'bg-[#eac138]'
+                    : isActive
+                      ? 'bg-success-900'
+                      : 'bg-gray-400'
                 }`}
               />
-              {isActive ? (
+              {isNotStarted ? (
+                <span className="text-sm text-gray-900">
+                  Starting in {timeLeft}
+                </span>
+              ) : isActive ? (
                 <span className="text-sm text-gray-900">
                   {timeLeft} <span className="text-xs">left</span>
                 </span>
@@ -146,18 +172,21 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
           )}
         </div>
       </div>
-
-     {!isLoading && <div className="flex items-center gap-2 mb-2" onClick={() => {
-        sendHapticFeedbackCommand();
-        setIsVotingTypesModalOpen(true)
-      }}>
-        {pollDetails?.isAnonymous ? (
-          <AnonymousIconWrapper texty />
-        ) : (
-          <PublicIconWrapper texty />
-        )}
-      </div>}
-
+      {!isLoading && (
+        <div
+          className="flex items-center gap-2 mb-2"
+          onClick={() => {
+            sendHapticFeedbackCommand()
+            setIsVotingTypesModalOpen(true)
+          }}
+        >
+          {pollDetails?.isAnonymous ? (
+            <AnonymousIconWrapper texty />
+          ) : (
+            <PublicIconWrapper texty />
+          )}
+        </div>
+      )}
       {/* Poll Title + Description */}
       <div className="pb-2">
         {isLoading ? (
@@ -176,7 +205,7 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
               <>
                 <p
                   className={`text-gray-900 text-sm mb-1 ${
-                    isExpanded ? "" : "line-clamp-2"
+                    isExpanded ? '' : 'line-clamp-2'
                   }`}
                 >
                   {pollDetails?.description}
@@ -186,7 +215,7 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
                     className="text-gray-700 font-medium text-xs mb-4"
                     onClick={() => setIsExpanded(!isExpanded)}
                   >
-                    {isExpanded ? "Read less" : "Read more"}
+                    {isExpanded ? 'Read less' : 'Read more'}
                   </button>
                 )}
               </>
@@ -202,7 +231,7 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
           </div>
         ) : (
           <div className="flex gap-2 mb-4">
-            {pollDetails?.tags.map((tag) => (
+            {pollDetails?.tags.map(tag => (
               <span
                 key={tag}
                 className="px-3 py-0.5 bg-gray-300 border border-gray-300 text-gray-900 rounded-full font-medium text-xs"
@@ -227,10 +256,10 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
                       className="absolute left-0 top-0 bottom-0 flex items-center gap-3 py-2 rounded-lg bg-gray-200 px-2"
                       style={{
                         width: `${vote.percentage}%`,
-                        maxWidth: "100%",
+                        maxWidth: '100%',
                         borderRight:
-                          vote.percentage > 0 ? "1px solid #d6d9dd" : "none",
-                        position: "relative",
+                          vote.percentage > 0 ? '1px solid #d6d9dd' : 'none',
+                        position: 'relative',
                       }}
                     >
                       <span className="text-gray-900 block text-ellipsis whitespace-nowrap">
@@ -240,8 +269,8 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
                   </div>
                   <div className="flex items-center justify-end ml-4 shrink-0">
                     <span className="text-gray-500 text-sm justify-end mr-4 whitespace-nowrap">
-                      {formatFloat(vote.count)}{" "}
-                      {vote.count === 1 ? "Vote" : "Votes"}{" "}
+                      {formatFloat(vote.count)}{' '}
+                      {vote.count === 1 ? 'Vote' : 'Votes'}{' '}
                     </span>
                     <span className="text-gray-900 text-sm w-12 text-right">
                       {formatFloat(vote.percentage)}%
@@ -265,7 +294,7 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
                 </span>
                 {!didVote ? (
                   `${
-                    pollDetails?.participantCount === 1 ? "voter" : "voters"
+                    pollDetails?.participantCount === 1 ? 'voter' : 'voters'
                   } participated`
                 ) : (
                   <span className="flex items-center gap-2">votes</span>
@@ -284,8 +313,8 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
             <button
               className="rounded-full h-8 w-8 disabled:opacity-50"
               onClick={() => {
-                sendHapticFeedbackCommand();
-                setShowQVInfoModal(true);
+                sendHapticFeedbackCommand()
+                setShowQVInfoModal(true)
               }}
               disabled={isLoading}
             >
@@ -294,8 +323,8 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
             <button
               className="rounded-full h-8 w-8 disabled:opacity-50 active:scale-95 active:transition-transform active:duration-100"
               onClick={() => {
-                sendHapticFeedbackCommand();
-                handleShareResults(pollDetails?.title ?? "", pollId);
+                sendHapticFeedbackCommand()
+                handleShareResults(pollDetails?.title ?? '', pollId)
               }}
               disabled={isLoading}
             >
@@ -308,26 +337,32 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
         <button
           className="w-full bg-gray-900 text-white h-14 rounded-xl mb-3 font-semibold font-sora disabled:text-gray-400 disabled:bg-gray-200 active:scale-95 active:transition-transform active:duration-100"
           onClick={handleVote}
-          disabled={!isActive}
+          disabled={!isActive || isNotStarted}
         >
-          {isActive ? "Vote" : "Voting Ended"}
+          {isNotStarted
+            ? `Starting in ${timeLeft}`
+            : isActive
+              ? 'Vote'
+              : 'Voting Ended'}
         </button>
-        {!pollData?.poll?.isAnonymous && (<Link
-          className="w-full flex items-center justify-center bg-gray-50 gap-2 py-3 text-gray-700 font-semibold rounded-xl font-sora active:scale-95 active:transition-transform active:duration-100"
-          href={`/voters/${pollId}`}
-          onClick={() => sendHapticFeedbackCommand()}
-        >
-          <PieChart />
-          View Voters
-        </Link>)}
+        {!pollData?.poll?.isAnonymous && (
+          <Link
+            className="w-full flex items-center justify-center bg-gray-50 gap-2 py-3 text-gray-700 font-semibold rounded-xl font-sora active:scale-95 active:transition-transform active:duration-100"
+            href={`/voters/${pollId}`}
+            onClick={() => sendHapticFeedbackCommand()}
+          >
+            <PieChart />
+            View Voters
+          </Link>
+        )}
 
         {isAuthor && (
           <Button
             variant="ghost"
             className="w-full flex items-center justify-center gap-3 text-error-800 text-sm font-semibold font-sora active:scale-95 active:transition-transform active:duration-100"
             onClick={() => {
-              sendHapticFeedbackCommand();
-              setShowConfirmDeleteModal(true);
+              sendHapticFeedbackCommand()
+              setShowConfirmDeleteModal(true)
             }}
           >
             <TrashIcon />
@@ -335,9 +370,7 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
           </Button>
         )}
       </div>
-
       {showQVInfoModal && <QVInfoModal setShowModal={setShowQVInfoModal} />}
-
       {isAuthor && (
         <ConfirmDeleteModal
           modalOpen={showConfirmDeleteModal}
@@ -346,20 +379,22 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
           isLoading={deletePollPending}
         />
       )}
-      {isVotingTypesModalOpen && <VotingTypesModal onClose={() => setIsVotingTypesModalOpen(false)} />}
+      {isVotingTypesModalOpen && (
+        <VotingTypesModal onClose={() => setIsVotingTypesModalOpen(false)} />
+      )}
       <CustomShareModal
         message={shareUrl}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
       />
     </div>
-  );
+  )
 }
 
 const OptionsLoadingSkeleton = () => {
   return (
     <>
-      {[1, 2, 3].map((index) => (
+      {[1, 2, 3].map(index => (
         <div key={index} className="space-y-1">
           <div className="flex items-center justify-between">
             <div className="relative w-full h-10 bg-gray-100 rounded-lg overflow-hidden">
@@ -377,5 +412,5 @@ const OptionsLoadingSkeleton = () => {
         </div>
       ))}
     </>
-  );
-};
+  )
+}

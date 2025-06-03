@@ -1,5 +1,5 @@
-import Header from "@/components/Header"
-import VotersList from "@/components/Voters/VotersList"
+import Header from '@/components/Header'
+import VotersList from '@/components/Voters/VotersList'
 
 export default function VotersPage() {
   return (

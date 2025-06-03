@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { IPollFilters } from "@/types/poll";
-import CustomCheckbox from "../ui/CustomCheckbox";
-import BottomModal from "../ui/BottomModal";
-import { sendHapticFeedbackCommand } from "@/utils/animation";
+import { useEffect, useState } from 'react'
+import { IPollFilters } from '@/types/poll'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
+import BottomModal from '../ui/BottomModal'
+import CustomCheckbox from '../ui/CustomCheckbox'
 interface FilterModalProps {
-  filters: IPollFilters;
-  setFilters: (filters: IPollFilters) => void;
-  filtersOpen: boolean;
-  setFiltersOpen: (open: boolean) => void;
+  filters: IPollFilters
+  setFilters: (filters: IPollFilters) => void
+  filtersOpen: boolean
+  setFiltersOpen: (open: boolean) => void
 }
 
 export const DEFAULT_FILTERS: IPollFilters = {
@@ -15,7 +15,7 @@ export const DEFAULT_FILTERS: IPollFilters = {
   finishedPolls: false,
   pollsVoted: false,
   pollsCreated: false,
-};
+}
 
 export default function FilterModal({
   filters,
@@ -23,20 +23,20 @@ export default function FilterModal({
   filtersOpen,
   setFiltersOpen,
 }: FilterModalProps) {
-  const [tempFilters, setTempFilters] = useState<IPollFilters>(filters);
+  const [tempFilters, setTempFilters] = useState<IPollFilters>(filters)
 
   const applyFilters = () => {
-    setFilters(tempFilters);
-    setFiltersOpen(false);
-  };
+    setFilters(tempFilters)
+    setFiltersOpen(false)
+  }
 
   const resetFilters = () => {
-    setTempFilters(DEFAULT_FILTERS);
-  };
+    setTempFilters(DEFAULT_FILTERS)
+  }
 
   useEffect(() => {
-    setTempFilters(filters);
-  }, [filters]);
+    setTempFilters(filters)
+  }, [filters])
 
   return (
     <BottomModal modalOpen={filtersOpen} setModalOpen={setFiltersOpen}>
@@ -47,36 +47,36 @@ export default function FilterModal({
           id="live"
           label="Live Polls"
           checked={tempFilters.livePolls}
-          onChange={(checked) => {
-            sendHapticFeedbackCommand({ type: "selectionChanged" });
-            setTempFilters({ ...tempFilters, livePolls: checked });
+          onChange={checked => {
+            sendHapticFeedbackCommand({ type: 'selectionChanged' })
+            setTempFilters({ ...tempFilters, livePolls: checked })
           }}
         />
         <CustomCheckbox
           id="finished"
           label="Finished Polls"
           checked={tempFilters.finishedPolls}
-          onChange={(checked) => {
-            sendHapticFeedbackCommand({ type: "selectionChanged" });
-            setTempFilters({ ...tempFilters, finishedPolls: checked });
+          onChange={checked => {
+            sendHapticFeedbackCommand({ type: 'selectionChanged' })
+            setTempFilters({ ...tempFilters, finishedPolls: checked })
           }}
         />
         <CustomCheckbox
           id="voted"
           label="Polls Voted"
           checked={tempFilters.pollsVoted}
-          onChange={(checked) => {
-            sendHapticFeedbackCommand({ type: "selectionChanged" });
-            setTempFilters({ ...tempFilters, pollsVoted: checked });
+          onChange={checked => {
+            sendHapticFeedbackCommand({ type: 'selectionChanged' })
+            setTempFilters({ ...tempFilters, pollsVoted: checked })
           }}
         />
         <CustomCheckbox
           id="created"
           label="Polls Created"
           checked={tempFilters.pollsCreated}
-          onChange={(checked) => {
-            sendHapticFeedbackCommand({ type: "selectionChanged" });
-            setTempFilters({ ...tempFilters, pollsCreated: checked });
+          onChange={checked => {
+            sendHapticFeedbackCommand({ type: 'selectionChanged' })
+            setTempFilters({ ...tempFilters, pollsCreated: checked })
           }}
         />
       </div>
@@ -103,5 +103,5 @@ export default function FilterModal({
         Reset
       </button>
     </BottomModal>
-  );
+  )
 }
