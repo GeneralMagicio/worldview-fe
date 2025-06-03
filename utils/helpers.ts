@@ -7,7 +7,7 @@ export const transformActionToPoll = (action: UserActionDto): IPoll => {
     title: action.pollTitle,
     description: action.pollDescription,
     endDate: action.endDate,
-    startDate: action.createdAt,
+    startDate: action.startDate,
     creationDate: action.createdAt,
     participantCount: action.votersParticipated,
     hasVoted: action.hasVoted,

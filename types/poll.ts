@@ -62,6 +62,7 @@ export interface UserActionDto {
   pollTitle: string
   pollDescription: string
   isAnonymous: boolean
+  startDate: string
   endDate: string
   isActive: boolean
   votersParticipated: number
