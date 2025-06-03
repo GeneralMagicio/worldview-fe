@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState, useRef, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CheckIcon, UserIcon } from '@/components/icon-components'
 import { pollCardVariants } from '@/lib/constants/animationVariants'
 import { IPoll } from '@/types/poll'
@@ -23,6 +23,7 @@ export default function PollCard({ poll }: { poll: IPoll }) {
     poll.startDate ?? '',
     poll.endDate ?? '',
   )
+  console.log('poll', isNotStarted, poll.startDate, poll.endDate)
 
   const navigateToPoll = () => {
     sendHapticFeedbackCommand()
