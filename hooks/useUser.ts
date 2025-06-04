@@ -1,6 +1,6 @@
 import {
-  useQuery,
   useMutation,
+  useQuery,
   useQueryClient,
   UseQueryResult,
 } from '@tanstack/react-query'
@@ -11,6 +11,7 @@ const MAX_RETRIES = 2
 interface IUser {
   id: string
   username: string
+  isAdmin: boolean
   email: string
   createdAt: string
   updatedAt: string
