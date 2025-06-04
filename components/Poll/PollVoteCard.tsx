@@ -18,7 +18,12 @@ import VotingSuccessModal from '@/components/Modals/VotingSuccessModal'
 import { useAuth } from '@/context/AuthContext'
 import { useDeletePoll, useGetPollDetails } from '@/hooks/usePoll'
 import { useShare } from '@/hooks/useShare'
-import { useEditVote, useGetUserVotes, useSetVote } from '@/hooks/useUser'
+import {
+  useEditVote,
+  useGetUserVotes,
+  useSetVote,
+  useUserData,
+} from '@/hooks/useUser'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { formatFloat } from '@/utils/number'
 import { getRelativeTimeString } from '@/utils/time'
@@ -46,6 +51,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   const { mutate: editVote, isPending: editVotePending } = useEditVote()
   const { mutate: setVote, isPending: setVotePending } = useSetVote()
   const { mutate: deletePoll, isPending: deletePollPending } = useDeletePoll()
+  const { data: userData } = useUserData()
   const {
     data: userVotes,
     isFetched: userVotesFetched,
@@ -56,6 +62,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
   const isActive = pollData?.isActive
   const pollOptions = pollDetails?.options
   const isAuthor = worldID === pollDetails?.author?.worldID
+  const isAdmin = userData?.isAdmin || false
 
   const { timeLeft, isNotStarted } = getRelativeTimeString(
     pollDetails?.startDate ?? '',
@@ -601,7 +608,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
           View Poll Results
         </Link>
 
-        {isAuthor && (
+        {(isAuthor || isAdmin) && (
           <Button
             variant="ghost"
             className="w-full flex items-center justify-center gap-3 text-error-800 text-sm font-semibold font-sora active:scale-95 active:transition-transform active:duration-100"
@@ -625,7 +632,7 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         />
       )}
 
-      {isAuthor && (
+      {(isAuthor || isAdmin) && (
         <ConfirmDeleteModal
           modalOpen={showConfirmDeleteModal}
           setModalOpen={setShowConfirmDeleteModal}
