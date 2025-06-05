@@ -23,7 +23,6 @@ export default function PollCard({ poll }: { poll: IPoll }) {
     poll.startDate ?? '',
     poll.endDate ?? '',
   )
-  console.log('poll', isNotStarted, poll.startDate, poll.endDate)
 
   const navigateToPoll = () => {
     sendHapticFeedbackCommand()

@@ -135,12 +135,7 @@ export default function VotersList() {
             <h2 className="text-lg font-medium">
               Check out how others voted in this poll
             </h2>
-            <button
-              onClick={() => {
-                console.log('setShowModal clicked')
-                setShowModal(true)
-              }}
-            >
+            <button onClick={() => setShowModal(true)}>
               <InfoIcon />
             </button>
           </div>
