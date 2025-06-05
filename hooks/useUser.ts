@@ -47,10 +47,16 @@ export const useUserData = (): UseQueryResult<IUser> => {
   return useQuery({
     queryKey: ['user', 'data', worldID],
     queryFn: async () => {
-      const res = await fetch('/user/getUserData')
-      if (!res.ok) throw new Error('Failed to fetch user data')
+      try {
+        const res = await fetch('/user/getUserData')
+        console.log('res', res, worldID)
+        if (!res.ok) throw new Error('Failed to fetch user data')
 
-      return res.json()
+        return res.json()
+      } catch (error) {
+        console.error('Error fetching user data:', error)
+        throw error
+      }
     },
   })
 }
