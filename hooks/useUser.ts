@@ -44,6 +44,7 @@ interface IGetUserVotesResponse {
 export const useUserData = (worldId?: string): UseQueryResult<IUser> => {
   const { worldID: authWorldId } = useAuth()
   const effectiveWorldId = worldId || authWorldId
+
   return useQuery({
     queryKey: ['user', 'data', effectiveWorldId],
     queryFn: async () => {
@@ -59,6 +60,7 @@ export const useUserData = (worldId?: string): UseQueryResult<IUser> => {
         throw error
       }
     },
+    enabled: !!effectiveWorldId,
   })
 }
 
