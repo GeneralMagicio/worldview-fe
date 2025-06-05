@@ -41,16 +41,16 @@ interface IGetUserVotesResponse {
   weightDistribution: Record<string, number>
 }
 
-export const useUserData = (): UseQueryResult<IUser> => {
-  const { worldID } = useAuth()
-
+export const useUserData = (worldId?: string): UseQueryResult<IUser> => {
+  const { worldID: authWorldId } = useAuth()
+  const effectiveWorldId = worldId || authWorldId
   return useQuery({
-    queryKey: ['user', 'data', worldID],
+    queryKey: ['user', 'data', effectiveWorldId],
     queryFn: async () => {
       try {
-        const res = await fetch('/user/getUserData')
+        const res = await fetch(`/user/getUserData?worldID=${effectiveWorldId}`)
         const data = await res.json()
-        console.log('data', data, worldID)
+        console.log('data', data, effectiveWorldId)
         if (!res.ok) throw new Error('Failed to fetch user data')
 
         return res.json()
