@@ -51,7 +51,7 @@ export default function PollResultsCard({ pollId }: { pollId: number }) {
   const isAuthor = worldID === pollDetails?.author?.worldID
   const isAdmin = userData?.isAdmin || false
 
-  console.log('isAdmin', isAdmin)
+  console.log('isAdmin', isAdmin, userData)
 
   const { timeLeft, isNotStarted } = getRelativeTimeString(
     pollDetails?.startDate ?? '',
