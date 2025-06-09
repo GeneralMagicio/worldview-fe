@@ -47,6 +47,8 @@ export default function UserActivityList({
 
   const userActions = userActivitiesData?.userActions || []
 
+  console.log('userActions', userActions)
+
   const showErrorToast = () => {
     toast({
       description: 'Error loading user activities. Please try again!',
