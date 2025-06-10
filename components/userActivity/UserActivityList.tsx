@@ -91,6 +91,8 @@ export default function UserActivityList({
         index === self.findIndex(t => t.pollId === userAction.pollId),
     )
 
+    console.log('uniqueUserActions', uniqueUserActions)
+
     return (
       <div className="space-y-4">
         {uniqueUserActions.map(userAction => (
