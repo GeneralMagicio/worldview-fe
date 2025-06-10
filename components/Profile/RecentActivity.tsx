@@ -33,6 +33,12 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
   const activities = data?.userActions || []
   const displayActivities = activities.slice(0, POLLS_PER_PAGE)
 
+  // Remove duplicate user actions based on pollId - where the user has voted on the poll that has been created by the user
+  const uniqueUserActions = displayActivities.filter(
+    (userAction, index, self) =>
+      index === self.findIndex(t => t.pollId === userAction.pollId),
+  )
+
   if (isLoading) {
     return (
       <div className="mb-4">
@@ -90,7 +96,7 @@ export default function RecentActivity({ worldId }: RecentActivityProps) {
         <NoActivitiesView isMyProfile={!worldId} />
       ) : (
         <div className="space-y-4">
-          {displayActivities.map(action => (
+          {uniqueUserActions.map(action => (
             <LazyPollCard
               key={action.id}
               poll={transformActionToPoll(action)}

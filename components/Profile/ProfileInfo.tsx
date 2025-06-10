@@ -1,17 +1,9 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
+import { useUserData } from '@/hooks/useUser'
 import UserIcon from '../icon-components/UserIcon'
-
-interface UserData {
-  pollsCreated: number
-  pollsParticipated: number
-  worldID: string
-  worldProfilePic?: string
-  name?: string
-}
 
 interface ProfileInfoProps {
   worldId?: string
@@ -21,19 +13,7 @@ export default function ProfileInfo({ worldId }: ProfileInfoProps) {
   const { worldID: authWorldId } = useAuth()
   const effectiveWorldId = worldId || authWorldId
 
-  const {
-    data: userData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['user', 'profile', effectiveWorldId],
-    queryFn: async () => {
-      const res = await fetch(`/user/getUserData?worldID=${effectiveWorldId}`)
-      if (!res.ok) throw new Error('Failed to fetch user data')
-      return (await res.json()) as UserData
-    },
-    enabled: !!effectiveWorldId,
-  })
+  const { data: userData, isLoading, error } = useUserData(effectiveWorldId)
 
   return (
     <motion.div

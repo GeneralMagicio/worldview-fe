@@ -1,6 +1,6 @@
 import {
-  useQuery,
   useMutation,
+  useQuery,
   useQueryClient,
   UseQueryResult,
 } from '@tanstack/react-query'
@@ -11,6 +11,12 @@ const MAX_RETRIES = 2
 interface IUser {
   id: string
   username: string
+  isAdmin: boolean
+  pollsCreated: number
+  pollsParticipated: number
+  worldID: string
+  worldProfilePic?: string
+  name?: string
   email: string
   createdAt: string
   updatedAt: string
@@ -40,17 +46,25 @@ interface IGetUserVotesResponse {
   weightDistribution: Record<string, number>
 }
 
-export const useUserData = (): UseQueryResult<IUser> => {
-  const { worldID } = useAuth()
+export const useUserData = (
+  worldId?: string | null,
+): UseQueryResult<IUser, Error> => {
+  const { worldID: authWorldId } = useAuth()
+  const effectiveWorldId = worldId || authWorldId
 
   return useQuery({
-    queryKey: ['user', 'data', worldID],
+    queryKey: ['user', 'data', effectiveWorldId],
     queryFn: async () => {
-      const res = await fetch('/user/getUserData')
-      if (!res.ok) throw new Error('Failed to fetch user data')
-
-      return res.json()
+      try {
+        const res = await fetch(`/user/getUserData?worldID=${effectiveWorldId}`)
+        if (!res.ok) throw new Error('Failed to fetch user data')
+        return await res.json()
+      } catch (error) {
+        console.error('Error fetching user data:', error)
+        throw error
+      }
     },
+    enabled: !!effectiveWorldId,
   })
 }
 

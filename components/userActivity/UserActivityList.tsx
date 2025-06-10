@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useToast } from '@/hooks/useToast'
 import { useUserActivities } from '@/hooks/useUserActivity'
-import { IPollFilters, UserActionDto } from '@/types/poll'
+import { IPollFilters } from '@/types/poll'
 import { transformActionToPoll } from '@/utils/helpers'
 import FilterBar from '../FilterBar'
 import { LazyPollCard } from '../Poll/PollCard'
@@ -85,9 +85,15 @@ export default function UserActivityList({
       return <NoUserActivityView />
     }
 
+    // Remove duplicate user actions based on pollId - where the user has voted on the poll that has been created by the user
+    const uniqueUserActions = userActions.filter(
+      (userAction, index, self) =>
+        index === self.findIndex(t => t.pollId === userAction.pollId),
+    )
+
     return (
       <div className="space-y-4">
-        {userActions.map((userAction: UserActionDto) => (
+        {uniqueUserActions.map(userAction => (
           <LazyPollCard
             key={userAction.pollId}
             poll={transformActionToPoll(userAction)}
