@@ -1,9 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import CategoryCard from '@/components/Category/CategoryCard'
 import { UserIcon } from '@/components/icon-components'
+import TermsOfServiceModal from '@/components/Modals/TermsModal'
 import RecentPolls from '@/components/Poll/RecentPolls'
 import { FilterParams } from '@/types/poll'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
@@ -32,6 +33,18 @@ const categories = [
 ]
 
 export default function MainView() {
+  const [showTerms, setShowTerms] = useState(false)
+  useEffect(() => {
+    const hasAcceptedTerms = localStorage.getItem('worldview-terms-accepted')
+    if (!hasAcceptedTerms) {
+      setShowTerms(true)
+    }
+  }, [])
+
+  const handleAcceptTerms = () => {
+    localStorage.setItem('worldview-terms-accepted', 'true')
+    setShowTerms(false)
+  }
   return (
     <main className="flex-1 bg-white rounded-t-3xl p-5">
       <div className="flex justify-end mb-4">
@@ -72,6 +85,7 @@ export default function MainView() {
       <Suspense fallback={<div>Loading...</div>}>
         <RecentPolls />
       </Suspense>
+      {showTerms && <TermsOfServiceModal onAccept={handleAcceptTerms} />}
     </main>
   )
 }
