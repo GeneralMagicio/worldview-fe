@@ -7,9 +7,22 @@ export function useBackNavigation() {
   const [previousPath, setPreviousPath] = useState<string>('/')
 
   useEffect(() => {
-    // Store the current path before it changes
+    // Get the previous path from the referrer
+    const referrer = document.referrer
+    if (referrer) {
+      try {
+        const url = new URL(referrer)
+        // Only store internal navigation paths
+        if (url.origin === window.location.origin) {
+          setPreviousPath(url.pathname + url.search)
+        }
+      } catch (e) {
+        // Invalid URL, ignore
+      }
+    }
+
+    // Store the current path for future navigation
     const handleRouteChange = () => {
-      // Always store the previous path, including /poll/create
       setPreviousPath(pathname)
     }
 
