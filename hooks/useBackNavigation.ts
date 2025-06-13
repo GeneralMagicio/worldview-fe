@@ -24,7 +24,7 @@ export function useBackNavigation() {
     // Store current path in sessionStorage for tracking
     const currentPath = pathname
     const storedPreviousPath = sessionStorage.getItem('worldview-previous-path')
-
+    console.log('pathname', storedPreviousPath, previousPath)
     if (storedPreviousPath && storedPreviousPath !== currentPath) {
       setPreviousPath(storedPreviousPath)
     }
@@ -35,6 +35,7 @@ export function useBackNavigation() {
 
   const getBackUrl = () => {
     // Return the previous path if it's a user-related or polls page
+    console.log('getBackUrl', previousPath)
     if (
       previousPath.startsWith('/user/') ||
       previousPath.startsWith('/userActivities/') ||
