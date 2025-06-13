@@ -11,7 +11,7 @@ export default function PollPage() {
   const { id } = useParams()
   const idParam = id && Array.isArray(id) ? id[0] : id
   const pollId = Number(idParam)
-
+  console.log('PollPage')
   useEffect(() => {
     const cameFromCreate = sessionStorage.getItem('worldview-came-from-create')
     if (cameFromCreate === 'true') {
