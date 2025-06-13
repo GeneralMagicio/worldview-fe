@@ -13,7 +13,7 @@ interface IHeaderProps {
 }
 
 export default function Header({
-  backUrl = '/',
+  backUrl,
   title = 'All Polls',
   isCreatePoll = false,
   onBackClick,
@@ -22,10 +22,12 @@ export default function Header({
 
   const goBack = () => {
     sendHapticFeedbackCommand()
-    if (window.history.length > 1) {
+    if (backUrl) {
+      router.push(backUrl)
+    } else if (window.history.length > 1) {
       router.back()
     } else {
-      router.push(backUrl)
+      router.push('/')
     }
   }
 

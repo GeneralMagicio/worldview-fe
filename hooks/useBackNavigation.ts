@@ -4,52 +4,24 @@ import { FilterParams } from '@/types/poll'
 
 export function useBackNavigation() {
   const pathname = usePathname()
-  const [previousPath, setPreviousPath] = useState<string>('/')
+  const [backUrl, setBackUrl] = useState<string>('/polls')
 
   useEffect(() => {
-    // Get the initial previous path from the referrer
-    const referrer = document.referrer
-    if (referrer) {
-      try {
-        const url = new URL(referrer)
-        // Only store internal navigation paths
-        if (url.origin === window.location.origin) {
-          setPreviousPath(url.pathname + url.search)
-        }
-      } catch (e) {
-        // Invalid URL, ignore
-      }
-    }
+    // Check if user came from poll create page
+    const cameFromCreate = sessionStorage.getItem('worldview-came-from-create')
 
-    // Store current path in sessionStorage for tracking
-    const currentPath = pathname
-    const storedPreviousPath = sessionStorage.getItem('worldview-previous-path')
-    console.log('pathname', storedPreviousPath, previousPath)
-    if (storedPreviousPath && storedPreviousPath !== currentPath) {
-      setPreviousPath(storedPreviousPath)
+    if (cameFromCreate === 'true') {
+      // User came from poll create, redirect to all polls
+      setBackUrl(`/polls?filter=${FilterParams.All}`)
+      // Clear the flag after use
+      sessionStorage.removeItem('worldview-came-from-create')
+    } else {
+      // Normal navigation, let browser handle back (return null to use browser's back)
+      setBackUrl('/polls') // fallback for direct access
     }
-
-    // Update sessionStorage with current path for next navigation
-    sessionStorage.setItem('worldview-previous-path', currentPath)
   }, [pathname])
 
-  const getBackUrl = () => {
-    // Return the previous path if it's a user-related or polls page
-    console.log('getBackUrl', previousPath)
-    if (
-      previousPath.startsWith('/user/') ||
-      previousPath.startsWith('/userActivities/') ||
-      previousPath.startsWith('/profileActivities/') ||
-      previousPath.startsWith('/polls')
-    ) {
-      return previousPath
-    }
-
-    // Default to all polls page
-    return `/polls?filter=${FilterParams.All}`
-  }
-
   return {
-    backUrl: getBackUrl(),
+    backUrl,
   }
 }

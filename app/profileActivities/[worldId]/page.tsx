@@ -12,7 +12,7 @@ export default function ProfileActivitiesPage() {
 
   return (
     <main className="flex-1 bg-white rounded-t-3xl p-5">
-      <Header title="My Activities" backUrl="/profile" />
+      <Header title="My Activities" />
       <FilterModal
         filters={filters}
         setFilters={setFilters}

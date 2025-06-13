@@ -21,6 +21,12 @@ export default function PollCreatedModal({
   const router = useRouter()
   const { handleSharePoll, isOpen, setIsOpen, shareUrl } = useShare()
 
+  const handleViewPoll = () => {
+    // Set flag to indicate user is navigating from poll create
+    sessionStorage.setItem('worldview-came-from-create', 'true')
+    router.push(`/poll/${pollId}`)
+  }
+
   return (
     <>
       <Modal open={open} className="p-0 rounded-xl max-w-md">
@@ -59,9 +65,9 @@ export default function PollCreatedModal({
             variant="outline"
             className="w-full text-gray-500 font-medium mt-4 py-3 active:scale-95 active:transition-transform active:duration-100"
             onClick={() => {
-              router.push(`/poll/${pollId}`)
+              sendHapticFeedbackCommand()
+              handleViewPoll()
             }}
-            onTouchStart={() => sendHapticFeedbackCommand()}
           >
             View Poll
           </Button>

@@ -1,15 +1,26 @@
 'use client'
 
 import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import PollResultsCard from '@/components/Poll/PollResultsCard'
-import { useBackNavigation } from '@/hooks/useBackNavigation'
+import { FilterParams } from '@/types/poll'
 
 export default function PollPage() {
+  const [backUrl, setBackUrl] = useState<string>()
   const { id } = useParams()
   const idParam = id && Array.isArray(id) ? id[0] : id
   const pollId = Number(idParam)
-  const { backUrl } = useBackNavigation()
+
+  useEffect(() => {
+    const cameFromCreate = sessionStorage.getItem('worldview-came-from-create')
+    if (cameFromCreate === 'true') {
+      // User came from poll create, redirect to all polls
+      setBackUrl(`/polls?filter=${FilterParams.All}`)
+      // Clear the flag after use
+      sessionStorage.removeItem('worldview-came-from-create')
+    }
+  }, [])
 
   if (!pollId) {
     return <div>Poll not found</div>
