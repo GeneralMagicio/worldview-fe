@@ -19,7 +19,7 @@ export default function Header({
   onBackClick,
 }: IHeaderProps) {
   const router = useRouter()
-
+  console.log('Header', backUrl)
   const goBack = () => {
     sendHapticFeedbackCommand()
     if (backUrl) {

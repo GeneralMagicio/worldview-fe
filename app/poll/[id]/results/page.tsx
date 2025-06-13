@@ -20,6 +20,7 @@ export default function PollPage() {
       // Clear the flag after use
       sessionStorage.removeItem('worldview-came-from-create')
     }
+    console.log('PollPage useEffect', backUrl)
   }, [])
 
   if (!pollId) {
