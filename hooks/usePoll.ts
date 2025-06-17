@@ -139,6 +139,8 @@ export const useGetDraftPoll = () => {
         headers: { 'Content-Type': 'application/json' },
       })
 
+      console.log('useGetDraftPoll', await res.json())
+
       if (res.status === 404) {
         return null // No draft poll exists
       }

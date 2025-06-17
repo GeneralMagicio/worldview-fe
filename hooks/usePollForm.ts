@@ -34,6 +34,8 @@ export function usePollForm() {
 
   const { data: draftPoll, isLoading: isLoadingDraft } = useGetDraftPoll()
 
+  console.log('usePollForm', draftPoll, isLoadingDraft)
+
   const { mutate: createOrUpdateDraftPoll, isPending: isSavingDraft } =
     useCreateOrUpdateDraftPoll()
 
