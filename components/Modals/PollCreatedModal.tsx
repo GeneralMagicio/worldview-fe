@@ -24,7 +24,7 @@ export default function PollCreatedModal({
   const handleViewPoll = () => {
     // Set flag to indicate user is navigating from poll create
     sessionStorage.setItem('worldview-came-from-create', 'true')
-    router.push(`/poll/${pollId}`)
+    router.push(`/poll/${pollId}/results`)
   }
 
   return (
