@@ -134,6 +134,7 @@ export const useGetDraftPoll = () => {
   return useQuery({
     queryKey: ['draftPoll'],
     queryFn: async () => {
+      console.log('useGetDraftPoll')
       const res = await fetch('/poll/draft', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
