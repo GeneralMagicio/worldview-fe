@@ -18,6 +18,7 @@ export default function PollPage() {
       // User came from poll create, redirect to all polls
       setBackUrl(`/polls?filter=${FilterParams.All}`)
     }
+    sessionStorage.removeItem('worldview-came-from-create')
     console.log(
       'PollPage useEffect',
       backUrl,

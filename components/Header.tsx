@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import { sendHapticFeedbackCommand } from '@/utils/animation'
 import { ArrowLeft, MoreVertical, PlusIcon } from './icon-components'
 
@@ -19,7 +20,7 @@ export default function Header({
   onBackClick,
 }: IHeaderProps) {
   const router = useRouter()
-  console.log('Header', backUrl)
+
   const goBack = () => {
     sendHapticFeedbackCommand()
     if (backUrl) {
@@ -30,6 +31,26 @@ export default function Header({
       router.push('/')
     }
   }
+
+  // Intercept browser back button
+  useEffect(() => {
+    const handlePopState = () => {
+      // Apply the same logic as goBack function
+      if (onBackClick) {
+        onBackClick()
+      } else goBack()
+    }
+
+    // Add a history entry to catch back button
+    window.history.pushState({ intercepted: true }, '', window.location.href)
+
+    // Listen for popstate events (browser back/forward)
+    window.addEventListener('popstate', handlePopState)
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+    }
+  }, [backUrl, onBackClick, router])
 
   return (
     <div className="flex items-center justify-between mt-2 mb-8">
