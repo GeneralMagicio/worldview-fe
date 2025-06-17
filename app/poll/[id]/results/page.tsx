@@ -17,10 +17,16 @@ export default function PollPage() {
     if (cameFromCreate === 'true') {
       // User came from poll create, redirect to all polls
       setBackUrl(`/polls?filter=${FilterParams.All}`)
-      // Clear the flag after use
+    }
+    console.log(
+      'PollPage useEffect',
+      backUrl,
+      cameFromCreate,
+      cameFromCreate === 'true',
+    )
+    return () => {
       sessionStorage.removeItem('worldview-came-from-create')
     }
-    console.log('PollPage useEffect', backUrl)
   }, [])
 
   if (!pollId) {
