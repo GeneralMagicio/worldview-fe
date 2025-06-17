@@ -134,21 +134,26 @@ export const useGetDraftPoll = () => {
   return useQuery({
     queryKey: ['draftPoll'],
     queryFn: async () => {
-      console.log('useGetDraftPoll')
+      console.log('useGetDraftPoll - fetching')
       const res = await fetch('/poll/draft', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       })
-
-      console.log('useGetDraftPoll', await res.json())
 
       if (res.status === 404) {
         return null // No draft poll exists
       }
 
       if (!res.ok) throw new Error('Failed to fetch draft poll')
-      return res.json()
+
+      const data = await res.json()
+      console.log('useGetDraftPoll - result:', data)
+      return data
     },
+    staleTime: 1 * 60 * 1000, // Don't refetch for 1 minute
+    refetchOnWindowFocus: false, // Don't refetch when window gains focus
+    refetchOnMount: false, // Don't refetch on component mount
+    retry: 1, // Only retry once on failure
   })
 }
 
