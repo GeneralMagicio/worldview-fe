@@ -145,9 +145,12 @@ export const useGetDraftPoll = () => {
 
       if (!res.ok) throw new Error('Failed to fetch draft poll')
 
-      const data = await res.json()
-      return data
+      return await res.json()
     },
+    staleTime: 1 * 60 * 1000, // Don't refetch for 1 minute
+    refetchOnWindowFocus: false, // Don't refetch when window gains focus
+    refetchOnMount: false, // Don't refetch on component mount
+    retry: 1, // Only retry once on failure
   })
 }
 
