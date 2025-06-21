@@ -13,7 +13,6 @@ import {
   UserIcon,
 } from '@/components/icon-components'
 import ConfirmDeleteModal from '@/components/Modals/ConfirmDeleteModal'
-import QVInfoModal from '@/components/Modals/QVInfoModal'
 import VotingSuccessModal from '@/components/Modals/VotingSuccessModal'
 import { useAuth } from '@/context/AuthContext'
 import { useDeletePoll, useGetPollDetails } from '@/hooks/usePoll'
@@ -32,6 +31,7 @@ import {
   PublicIconWrapper,
 } from '../icon-components/IconWrapper'
 import CustomShareModal from '../Modals/CustomShareModal'
+import QuadraticInfoModal from '../Modals/QuadraticInfoModal'
 import VotingTypesModal from '../Modals/VotingTypesModal'
 import { Button } from '../ui/Button'
 
@@ -623,7 +623,9 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
         )}
       </div>
 
-      {showQVInfoModal && <QVInfoModal setShowModal={setShowQVInfoModal} />}
+      {showQVInfoModal && (
+        <QuadraticInfoModal onClose={() => setShowQVInfoModal(false)} />
+      )}
       {showVotingSuccessModal && (
         <VotingSuccessModal
           setShowModal={setShowVotingSuccessModal}
