@@ -625,14 +625,6 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
             </Button>
           )}
         </div>
-        {showVotingSuccessModal && (
-          <VotingSuccessModal
-            setShowModal={setShowVotingSuccessModal}
-            pollTitle={pollDetails?.title ?? ''}
-            pollId={pollId}
-          />
-        )}
-
         {(isAuthor || isAdmin) && (
           <ConfirmDeleteModal
             modalOpen={showConfirmDeleteModal}
@@ -652,6 +644,13 @@ export default function PollVoteCard({ pollId }: { pollId: number }) {
       </div>
       {showQVInfoModal && (
         <QuadraticInfoModal onClose={() => setShowQVInfoModal(false)} />
+      )}
+      {showVotingSuccessModal && (
+        <VotingSuccessModal
+          setShowModal={setShowVotingSuccessModal}
+          pollTitle={pollDetails?.title ?? ''}
+          pollId={pollId}
+        />
       )}
     </>
   )
