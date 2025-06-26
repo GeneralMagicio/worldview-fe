@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { sendHapticFeedbackCommand } from '@/utils/animation'
 
 interface QuadraticInfoModalProps {
   onClose: () => void
@@ -40,7 +41,10 @@ export default function QuadraticInfoModal({
           </p>
 
           <button
-            onClick={onClose}
+            onClick={() => {
+              sendHapticFeedbackCommand()
+              onClose()
+            }}
             className="w-full bg-gray-900 text-white py-4 rounded-lg font-medium"
           >
             Ok

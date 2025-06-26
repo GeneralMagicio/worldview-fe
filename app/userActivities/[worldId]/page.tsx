@@ -14,7 +14,7 @@ export default function UserActivitiesPage() {
 
   return (
     <main className="flex-1 bg-white rounded-t-3xl p-5">
-      <Header title="All Activities" backUrl={`/user/${worldId}`} />
+      <Header title="All Activities" />
       <FilterModal
         filters={filters}
         setFilters={setFilters}

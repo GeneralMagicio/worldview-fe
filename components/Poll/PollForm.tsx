@@ -55,7 +55,6 @@ export default function PollForm({
     handlePublish,
     saveDraftPoll,
     deleteDraftPoll,
-    isLoadingDraft,
     isAnonymous,
     setIsAnonymous,
   } = usePollFormData
@@ -253,12 +252,6 @@ export default function PollForm({
       </div>
     </div>
   )
-
-  if (isLoadingDraft) {
-    return (
-      <div className="flex-1 flex items-center justify-center">Loading...</div>
-    )
-  }
 
   return (
     <form onSubmit={form.handleSubmit(data => {})}>
